@@ -64,5 +64,9 @@ contract VotingContract {
         require(now > votingEndTime && now < resultsEndTime);
         return votes;
     }
+
+    function viewContractInfo() view public hasPermission returns(string, address, string[], uint256, uint256)  {
+        return (question, category, options, votingEndTime, resultsEndTime);
+    }
     
 }
