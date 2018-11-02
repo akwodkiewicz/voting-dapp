@@ -3,7 +3,6 @@ pragma experimental ABIEncoderV2;
 
 contract VotingContract {
     
-    address manager;
     string public question;
     address public category;
     string[] public options;
@@ -13,11 +12,6 @@ contract VotingContract {
     mapping(address => bool) permissions;
     mapping(address => bool) hasVoted;
     uint256[] votes;
-    
-    modifier isManager(address user) {
-        require(user == manager);
-        _;
-    }
 
     modifier hasPermission(address user) {
         require(!isPrivate || (isPrivate && permissions[user]), "You don't have voting permission");
@@ -34,19 +28,18 @@ contract VotingContract {
         _;
     }
     
-    constructor (address _manager,
-                string _question,
-                address _category,
-                string[] _options,
-                uint256 _votingEndTime,
-                uint256 _resultsEndTime,
-                bool _isPrivate,
-                address[] _permissions) public {
+    constructor (string _question,
+        address _category,
+        string[] _options,
+        uint256 _votingEndTime,
+        uint256 _resultsEndTime,
+        bool _isPrivate,
+        address[] _permissions) public {
+
         require(_votingEndTime > now, "Voting end time has to be somwhere in the future");
         require(_votingEndTime < _resultsEndTime, "Voting end time has to be earlier than results end time");
         require(_options.length >= 2, "You cannot create a ballot without at least 2 options");
                     
-        manager = _manager;
         question = _question;
         category = _category;
         options = _options;
@@ -68,7 +61,8 @@ contract VotingContract {
     }
     
     function viewVotes() view public returns(uint256[]) {
-        require(manager == msg.sender || (now > votingEndTime && now < resultsEndTime));
+        require(now > votingEndTime && now < resultsEndTime);
         return votes;
     }
+    
 }
