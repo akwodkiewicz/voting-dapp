@@ -1,6 +1,7 @@
 pragma solidity ^0.4.23;
 pragma experimental ABIEncoderV2;
 
+
 contract VotingContract {
     
     string public question;
@@ -9,9 +10,9 @@ contract VotingContract {
     uint256 public votingEndTime;
     uint256 public resultsEndTime;
     bool public isPrivate;
-    mapping(address => bool) permissions;
-    mapping(address => bool) hasVoted;
-    uint256[] votes;
+    mapping(address => bool) internal permissions;
+    mapping(address => bool) internal hasVoted;
+    uint256[] internal votes;
 
     modifier hasPermission(address user) {
         require(!isPrivate || (isPrivate && permissions[user]), "You don't have voting permission");
@@ -65,7 +66,7 @@ contract VotingContract {
         return votes;
     }
 
-    function viewContractInfo() public view hasPermission(msg.sender) returns(string, address, string[], uint256, uint256)  {
+    function viewContractInfo() public view hasPermission(msg.sender) returns(string, address, string[], uint256, uint256) {
         return (question, category, options, votingEndTime, resultsEndTime);
     }
     

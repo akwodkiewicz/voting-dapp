@@ -3,11 +3,12 @@ pragma experimental ABIEncoderV2;
 
 import "./VotingContract.sol";
 
+
 contract CategoryContract {
     
-    address[] votingContracts;
-    string categoryName;
-    uint8 numberOfContractsToDelete = 1;
+    address[] public votingContracts;
+    string public categoryName;
+    uint8 internal numberOfContractsToDelete = 1;
     
     constructor(string _categoryName, 
         string _question,
@@ -36,7 +37,6 @@ contract CategoryContract {
     
     // Scenario: user creates new VC within existing category.
     // TODO: require MC address
-
     function createVotingContract (
         string _question,
         string[] _options,
@@ -64,9 +64,4 @@ contract CategoryContract {
 
         return address(vc);
     }
-    
-    function viewVotingContracts() public view returns(address[]) {
-        return votingContracts;
-    }
-
 }
