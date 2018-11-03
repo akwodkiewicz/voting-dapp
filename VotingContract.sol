@@ -28,7 +28,7 @@ contract VotingContract {
         _;
     }
     
-    constructor (string _question,
+    constructor(string _question,
         address _category,
         string[] _options,
         uint256 _votingEndTime,
@@ -60,12 +60,12 @@ contract VotingContract {
         hasVoted[msg.sender] = true;
     }
     
-    function viewVotes() view public returns(uint256[]) {
-        require(now > votingEndTime && now < resultsEndTime);
+    function viewVotes() public view returns(uint256[]) {
+        require(now > votingEndTime && now < resultsEndTime, "You cannot view the votes now");
         return votes;
     }
 
-    function viewContractInfo() view public hasPermission(msg.sender) returns(string, address, string[], uint256, uint256)  {
+    function viewContractInfo() public view hasPermission(msg.sender) returns(string, address, string[], uint256, uint256)  {
         return (question, category, options, votingEndTime, resultsEndTime);
     }
     

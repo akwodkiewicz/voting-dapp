@@ -15,7 +15,7 @@ contract CategoryContract {
         uint256 _votingEndTime,
         uint256 _resultsEndTime,
         bool _isPrivate,
-        address[] _permissions) {
+        address[] _permissions) public {
                     
         categoryName = _categoryName;
         
@@ -25,7 +25,7 @@ contract CategoryContract {
         
         // TODO: require MC address
 
-        if(bytes(_question).length > 0) {
+        if (bytes(_question).length > 0) {
             VotingContract vc = new VotingContract(
             _question, address(this), _options, _votingEndTime, _resultsEndTime, _isPrivate, _permissions);
         
@@ -38,16 +38,15 @@ contract CategoryContract {
     // TODO: require MC address
 
     function createVotingContract (
-        string _question, 
-        address _category, 
-        string[] _options, 
-        uint256 _votingEndTime, 
-        uint256 _resultsEndTime, 
-        bool _isPrivate, address[] _permissions) public returns(address) {
+        string _question,
+        string[] _options,
+        uint256 _votingEndTime,
+        uint256 _resultsEndTime,
+        bool _isPrivate,
+        address[] _permissions) public returns(address) {
         
         VotingContract vc = new VotingContract(
             _question, address(this), _options, _votingEndTime, _resultsEndTime, _isPrivate, _permissions);
-        
         
         uint8 i = 0;
         // iterating to remove the contract which is expired
@@ -59,14 +58,14 @@ contract CategoryContract {
             }
         }
         
-        if(i == votingContracts.length) {
+        if (i == votingContracts.length) {
             votingContracts.push(address(vc));
         }
 
         return address(vc);
     }
     
-    function viewVotingContracts() view public returns(address[]) {
+    function viewVotingContracts() public view returns(address[]) {
         return votingContracts;
     }
 
