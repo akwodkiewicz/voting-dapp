@@ -8,7 +8,6 @@ contract CategoryContract {
     address[] votingContracts;
     string categoryName;
     uint8 numberOfContractsToDelete = 1;
-    uint8 votingContractsLimit = 2;
     
     constructor(string _categoryName, 
         string _question,
@@ -52,13 +51,11 @@ contract CategoryContract {
         
         uint8 i = 0;
         // iterating to remove the contract which is expired
-        if(votingContracts.length > votingContractsLimit) {
-            for(i = 0; i < votingContracts.length; i++) {
-                VotingContract v = VotingContract(votingContracts[i]);
-                if(now > v.resultsEndTime()) {
-                    votingContracts[i] = address(vc);
-                    break;
-                }
+        for (i = 0; i < votingContracts.length; i++) {
+            VotingContract v = VotingContract(votingContracts[i]);
+            if (now > v.resultsEndTime()) {
+                votingContracts[i] = address(vc);
+                break;
             }
         }
         
