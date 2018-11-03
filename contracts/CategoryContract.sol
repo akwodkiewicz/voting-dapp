@@ -1,4 +1,4 @@
-pragma solidity ^0.4.23;
+pragma solidity 0.4.24;
 pragma experimental ABIEncoderV2;
 
 import "./VotingContract.sol";
@@ -10,32 +10,11 @@ contract CategoryContract {
     string public categoryName;
     uint8 internal numberOfContractsToDelete = 1;
     
-    constructor(string _categoryName, 
-        string _question,
-        string[] _options,
-        uint256 _votingEndTime,
-        uint256 _resultsEndTime,
-        bool _isPrivate,
-        address[] _permissions) public {
-                    
+    // TODO: require MC address
+    constructor(string _categoryName) public {
         categoryName = _categoryName;
-        
-        // Scenario: user creates new VC with a new category: a new CC should be created along with the VC
-        // It is better to make it in one transaction instead of creating CC and then creating VC in seperate
-        // To create just a CC use as arguments: "CategoryName", "", [], "", "", false, []
-        
-        // TODO: require MC address
-
-        if (bytes(_question).length > 0) {
-            VotingContract vc = new VotingContract(
-            _question, address(this), _options, _votingEndTime, _resultsEndTime, _isPrivate, _permissions);
-        
-            votingContracts.push(address(vc));
-        }
-        
     }
     
-    // Scenario: user creates new VC within existing category.
     // TODO: require MC address
     function createVotingContract (
         string _question,

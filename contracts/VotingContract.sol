@@ -1,4 +1,4 @@
-pragma solidity ^0.4.23;
+pragma solidity 0.4.24;
 pragma experimental ABIEncoderV2;
 
 
@@ -29,6 +29,7 @@ contract VotingContract {
         _;
     }
     
+    // TODO: Do we need some creator requirements?
     constructor(string _question,
         address _category,
         string[] _options,
