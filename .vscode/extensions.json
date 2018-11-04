@@ -6,7 +6,8 @@
 	"recommendations": [
 		"juanblanco.solidity",
 		"christian-kohler.path-intellisense",
-		"wayou.vscode-todo-highlight"
+		"wayou.vscode-todo-highlight",
+		"maty.vscode-mocha-sidebar"
 	],
 	// List of extensions recommended by VS Code that should not be recommended for users of this workspace.
 	"unwantedRecommendations": [
