@@ -8,11 +8,20 @@
   },
   "dependencies": {},
   "devDependencies": {
+    "@types/bignumber.js": "^5.0.0",
+    "@types/chai": "^4.1.7",
+    "@types/mocha": "^5.2.5",
+    "@types/node": "^10.12.2",
     "chai": "^4.2.0",
-    "mocha": "^5.2.0"
+    "mocha": "^5.2.0",
+    "truffle-typings": "^1.0.4",
+    "ts-node": "^7.0.1",
+    "typechain": "^0.3.8",
+    "typescript": "^3.1.6"
   },
   "scripts": {
-    "test": "mocha"
+    "test": "truffle test",
+    "generate": "truffle compile && typechain --target truffle './build/**/*.json'"
   },
   "repository": {
     "type": "git",
