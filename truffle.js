@@ -11,7 +11,6 @@
  *     gasPrice: 10000000000,
  *   },
  */
-
 module.exports = {
   networks: {
     ganache: {
@@ -25,5 +24,6 @@ module.exports = {
       enabled: true,
       runs: 200
     }
-  }
+  },
+  test_file_extension_regexp: /.*\.ts$/,
 };
