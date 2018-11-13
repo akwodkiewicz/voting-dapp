@@ -1,7 +1,6 @@
-const ManagerContract = artifacts.require('ManagerContract');
-const CategoryContract = artifacts.require('CategoryContract');
-const truffleAssert = require('truffle-assertions');
-const web3 = require('web3');
+import truffleAssert = require('truffle-assertions');
+import web3 = require('web3');
+import { CategoryContract, ManagerContract } from "./consts";
 
 contract('ManagerContract', async (accounts) => {
 
