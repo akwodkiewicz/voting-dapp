@@ -6,7 +6,6 @@ import "./VotingContract.sol";
 contract CategoryContract {
     
     address[] public votingContracts;
-    uint8 internal numberOfContractsToDelete = 1;
     bytes32 public categoryName;
 
 
@@ -42,5 +41,9 @@ contract CategoryContract {
         }
 
         return address(vc);
+    }
+
+    function numberOfContracts() public view returns (uint) {
+        return votingContracts.length;
     }
 }
