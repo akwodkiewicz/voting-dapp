@@ -74,6 +74,8 @@ contract('ManagerContract', async (accounts) => {
 
         it("throws an error, when user tries to create Xyzzy second time", async () => {
             let instance = await ManagerContract.deployed();
+            let xyzzyAddress = await instance.categoryAddress(categoryName);
+            expect(xyzzyAddress).not.equals(web3.utils.numberToHex(0));
 
             await truffleAssert.fails(instance.createVotingWithNewCategory(
                 categoryName,
