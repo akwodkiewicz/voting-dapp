@@ -8,7 +8,7 @@ contract ManagerContract {
    
     address[] public categoryContractsList;
     mapping(address => bool) public doesCategoryExist;
-    mapping(bytes32 => bool) public isCategoryNameUsed;
+    mapping(bytes32 => address) public categoryAddress;
 
 
     function createVotingWithExistingCategory(address _category,
@@ -33,10 +33,10 @@ contract ManagerContract {
         bool _isPrivate,
         address[] _permissions) public returns(address) {
         
-        require(!isCategoryNameUsed[_categoryName], "This category name is already used");
+        require(categoryAddress[_categoryName] == 0, "This category name is already used");
 
-        CategoryContract cc = new CategoryContract(_categoryName);
-        isCategoryNameUsed[_categoryName] = true;
+        CategoryContract cc = new CategoryContract(_categoryName); 
+        categoryAddress[_categoryName] = address(cc);
         doesCategoryExist[address(cc)] = true;
         categoryContractsList.push(address(cc));
 
