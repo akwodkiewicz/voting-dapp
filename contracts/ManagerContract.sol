@@ -1,5 +1,4 @@
 pragma solidity 0.4.24;
-pragma experimental ABIEncoderV2;
 
 import "./VotingContract.sol";
 import "./CategoryContract.sol";
@@ -11,9 +10,10 @@ contract ManagerContract {
     mapping(address => bool) public doesCategoryExist;
     mapping(bytes32 => bool) public isCategoryNameUsed;
 
+
     function createVotingWithExistingCategory(address _category,
         string _question,
-        string[] _options,
+        bytes32[] _options,
         uint256 _votingEndTime,
         uint256 _resultsEndTime,
         bool _isPrivate,
@@ -27,7 +27,7 @@ contract ManagerContract {
 
     function createVotingWithNewCategory(bytes32 _categoryName,
         string _question,
-        string[] _options,
+        bytes32[] _options,
         uint256 _votingEndTime,
         uint256 _resultsEndTime,
         bool _isPrivate,
@@ -35,13 +35,7 @@ contract ManagerContract {
         
         require(!isCategoryNameUsed[_categoryName], "This category name is already used");
 
-        bytes memory categoryNameArray = new bytes(32);
-        for (uint256 i; i < 32; i++) {
-            categoryNameArray[i] = _categoryName[i];
-        }
-        string memory categoryName = string(categoryNameArray);
-
-        CategoryContract cc = new CategoryContract(categoryName);
+        CategoryContract cc = new CategoryContract(_categoryName);
         isCategoryNameUsed[_categoryName] = true;
         doesCategoryExist[address(cc)] = true;
         categoryContractsList.push(address(cc));

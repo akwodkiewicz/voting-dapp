@@ -1,12 +1,11 @@
 pragma solidity 0.4.24;
-pragma experimental ABIEncoderV2;
 
 
 contract VotingContract {
     
     string public question;
     address public category;
-    string[] public options;
+    bytes32[] public options;
     uint256 public votingEndTime;
     uint256 public resultsEndTime;
     bool public isPrivate;
@@ -32,7 +31,7 @@ contract VotingContract {
     // TODO: Do we need some creator requirements?
     constructor(string _question,
         address _category,
-        string[] _options,
+        bytes32[] _options,
         uint256 _votingEndTime,
         uint256 _resultsEndTime,
         bool _isPrivate,
@@ -67,7 +66,7 @@ contract VotingContract {
         return votes;
     }
 
-    function viewContractInfo() public view hasPermission(msg.sender) returns(string, address, string[], uint256, uint256) {
+    function viewContractInfo() public view hasPermission(msg.sender) returns(string, address, bytes32[], uint256, uint256) {
         return (question, category, options, votingEndTime, resultsEndTime);
     }
     

@@ -1,5 +1,4 @@
 pragma solidity 0.4.24;
-pragma experimental ABIEncoderV2;
 
 import "./VotingContract.sol";
 
@@ -7,18 +6,19 @@ import "./VotingContract.sol";
 contract CategoryContract {
     
     address[] public votingContracts;
-    string public categoryName;
     uint8 internal numberOfContractsToDelete = 1;
-    
+    bytes32 public categoryName;
+
+
     // TODO: require MC address
-    constructor(string _categoryName) public {
+    constructor(bytes32 _categoryName) public {
         categoryName = _categoryName;
     }
     
     // TODO: require MC address
     function createVotingContract (
         string _question,
-        string[] _options,
+        bytes32[] _options,
         uint256 _votingEndTime,
         uint256 _resultsEndTime,
         bool _isPrivate,
