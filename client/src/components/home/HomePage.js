@@ -1,13 +1,15 @@
 import React, { Component } from "react";
+import {Link} from 'react-router-dom';
+/*
 import ManagerContract from "./contracts/ManagerContract.json";
 import getWeb3 from "./utils/getWeb3";
 import truffleContract from "truffle-contract";
+*/
 
-import "./App.css";
-
-class App extends Component {
+class HomePage extends Component {
   state = { storageValue: 0, web3: null, accounts: null, contract: null };
 
+  /*
   componentDidMount = async () => {
     try {
       // Get network provider and web3 instance.
@@ -32,7 +34,7 @@ class App extends Component {
       console.log(error);
     }
   };
-
+    
   runExample = async () => {
     const { accounts, contract } = this.state;
 
@@ -45,9 +47,9 @@ class App extends Component {
     // Update state with the result.
     this.setState({ storageValue: response.toNumber() });
   };
-
+  */
   render() {
-    if (!this.state.web3) {
+    /*if (!this.state.web3) {
       return <div>Loading Web3, accounts, and contract...</div>;
     }
     return (
@@ -65,7 +67,15 @@ class App extends Component {
         <div>The stored value is: {this.state.storageValue}</div>
       </div>
     );
+    */
+    return (
+      <div className="jumbotron">
+        <h1>Testing routing</h1>
+        <p>This app is the future</p>
+        <Link to="/about" className="btn btn-primary btn-lg">About us</Link>
+      </div>
+    );
   }
 }
 
-export default App;
+export default HomePage;
