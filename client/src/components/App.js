@@ -6,6 +6,7 @@ import {
 
 import HomePage from './home/HomePage';
 import AboutPage from './about/AboutPage';
+import CreateVotePage from './createVote/CreateVotePage';
 import Header from './common/Header';
 
 class App extends Component {
@@ -21,6 +22,7 @@ class App extends Component {
           <div>
             <Route exact path="/" component={HomePage} />
             <Route path="/about" component={AboutPage} />
+            <Route path="/createvote" component={CreateVotePage}/>
           </div>          
         </div>  
       </Router>      
