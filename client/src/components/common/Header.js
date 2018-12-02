@@ -6,9 +6,11 @@ const Header = () => {
     <nav>
       <Link to="/">Home</Link>
       {" | "}
-      <Link to="/about">About</Link>
-      {" | "}
       <Link to="/createvote">Create vote</Link>
+      {" | "}
+      <Link to="/listvotes">List of votes</Link>
+      {" | "}
+      <Link to="/about">About</Link>
     </nav>
   );
 };
