@@ -20,6 +20,7 @@
     "truffle-assertions": "^0.6.3",
     "truffle-typings": "^1.0.4",
     "ts-node": "^7.0.1",
+    "tslint": "^5.11.0",
     "typechain": "^0.3.8",
     "typescript": "^3.1.6"
   },
