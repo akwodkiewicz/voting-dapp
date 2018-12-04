@@ -11,6 +11,8 @@
  *     gasPrice: 10000000000,
  *   },
  */
+require('ts-node').register();
+
 module.exports = {
   networks: {
     ganache: {

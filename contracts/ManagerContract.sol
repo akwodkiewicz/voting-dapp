@@ -37,7 +37,7 @@ contract ManagerContract {
         
         require(categoryAddress[_categoryName] == 0, "This category name is already used");
 
-        CategoryContract cc = new CategoryContract(_categoryName); 
+        CategoryContract cc = new CategoryContract(_categoryName, address(this)); 
         categoryAddress[_categoryName] = address(cc);
         doesCategoryExist[address(cc)] = true;
         categoryContractsList.push(address(cc));

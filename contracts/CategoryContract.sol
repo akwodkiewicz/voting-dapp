@@ -7,14 +7,13 @@ contract CategoryContract {
     
     address[] public votingContracts;
     bytes32 public categoryName;
+    address internal managerContract;
 
-
-    // TODO: require MC address
-    constructor(bytes32 _categoryName) public {
+    constructor(bytes32 _categoryName, address _managerContract) public {
         categoryName = _categoryName;
+        managerContract = _managerContract;
     }
     
-    // TODO: require MC address
     function createVotingContract (
         string _question,
         bytes32[] _options,
@@ -23,6 +22,8 @@ contract CategoryContract {
         bool _isPrivate,
         address[] _permissions) public returns(address) {
         
+        require(msg.sender == managerContract, "Only the ManagerContract is authorised to create a new voting");
+
         VotingContract vc = new VotingContract(
             _question, address(this), _options, _votingEndTime, _resultsEndTime, _isPrivate, _permissions);
         

@@ -1,0 +1,19 @@
+{
+    "defaultSeverity": "error",
+    "extends": [
+       "tslint:latest", "tslint-config-prettier"
+    ],
+    "jsRules": {},
+    "rules": {
+        "curly": [true, "ignore-same-line"],
+        "whitespace": [true],
+        "no-trailing-whitespace": [true],
+        "max-line-length": [true, 120],
+        "ordered-imports": true,
+        "no-unused-expression": false,
+        "no-unused-variable": true,
+        "no-console": false,
+        "no-implicit-dependencies": [true, "dev"],
+    },
+    "rulesDirectory": []
+}

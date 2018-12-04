@@ -37,8 +37,8 @@ contract VotingContract {
         bool _isPrivate,
         address[] _permissions) public {
 
-        require(_votingEndTime > now, "Voting end time has to be somwhere in the future");
-        require(_votingEndTime < _resultsEndTime, "Voting end time has to be earlier than results end time");
+        require(_votingEndTime >= now + 20, "Voting end time has to be somewhere in the future (at least 20s from now)");
+        require(_resultsEndTime >= _votingEndTime + 20, "Results end time has to be later than voting end time (at least 20s)");
         require(_options.length >= 2, "You cannot create a ballot without at least 2 options");
                     
         question = _question;
@@ -61,8 +61,12 @@ contract VotingContract {
         hasVoted[msg.sender] = true;
     }
     
-    function viewVotes() public view returns(uint256[]) {
-        require(now > votingEndTime && now < resultsEndTime, "You cannot view the votes now");
+    function numberOfOptions() public view returns(uint) {
+        return options.length;
+    }
+
+    function viewVotes() public view returns(uint256[] memory) {
+        require(now >= votingEndTime && now < resultsEndTime, "You cannot view the votes now");
         return votes;
     }
 
