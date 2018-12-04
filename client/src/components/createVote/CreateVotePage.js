@@ -1,7 +1,9 @@
 import React, { Component } from "react";
 import {Link} from 'react-router-dom';
 import AnswersList from "./AnswersList";
-
+import * as Datetime from 'react-datetime';
+import 'react-datetime/css/react-datetime.css';
+import moment from 'moment';
 class CreateVotePage extends Component {
   constructor() {
     super();
@@ -15,6 +17,7 @@ class CreateVotePage extends Component {
     this.handleChange = this.handleChange.bind(this);
     this.changeVoteType = this.changeVoteType.bind(this);
     this.addAnswer = this.addAnswer.bind(this);
+    this.handleChangeRaw = this.handleChangeRaw.bind(this);
   }
 
 
@@ -42,14 +45,15 @@ class CreateVotePage extends Component {
   }
 
   changeVoteType({target}) {
-    var isPublic = document.getElementById('option-public').checked;
-    var voteType = isPublic ? 'public' : 'private';
-    console.log(voteType);
+    var voteType = 'private';
     this.setState(() => ({
       [voteType]: voteType
     }))
+    console.log(this.state[voteType])
   }
-
+  
+  handleChangeRaw = (date) => { date.currentTarget.value = moment(this.props.input.value).format("DD/MM/YYYY") }
+  
   render() {
     return (
       <form onSubmit={this.handleCreateVote}>
@@ -60,7 +64,40 @@ class CreateVotePage extends Component {
         </div>
 
         <div className="form-group">
-          <label htmlFor="categories">Categories</label>
+          <label htmlFor="answers">Possible answers</label>
+          <small id="answersHelp" className="form-text text-muted">There must be at least two answers.</small>
+
+          <AnswersList answers={this.state.answers}/>
+
+          <div className="input-group">
+            <input type="text" id="answer" className="form-control" placeholder="Type an answer"/>
+            <div className="input-group-append">
+              <button type="button" className="btn btn-outline-secondary" onClick={this.addAnswer}>Add</button>                       
+            </div>
+          </div>
+        </div>
+
+        <div style={{display: 'inline-block'}}>
+          <label>Voting end time</label>
+          <Datetime 
+            isValidDate = {function(current) {              
+              return current.isAfter(moment());
+            }}
+            id = 'voteEndDate'
+          />
+
+          <label>Voting expiration time</label>
+          <Datetime 
+            isValidDate = {function(current) {                            
+              let voteEndTime = document.getElementById('voteEndDate');
+              return voteEndTime != null ? current.isAfter(voteEndTime.value) : current.isAfter(moment().subtract(1, 'day'));
+            }}
+          />
+        </div>
+        
+
+        <div className="form-group">
+          <label htmlFor="categories">Category</label>
             <input id="categories" 
               type="text" 
               className="form-control" 
@@ -75,25 +112,13 @@ class CreateVotePage extends Component {
             </datalist>          
         </div>
 
-        <div className="form-group">
-          <label htmlFor="answers">Answers</label>
-          <small id="answersHelp" className="form-text text-muted">There must be at least two answers.</small>
-
-          <AnswersList answers={this.state.answers}/>
-
-          <div className="input-group">
-            <input type="text" id="answer" className="form-control" placeholder="Type an answer"/>
-            <div className="input-group-append">
-              <button type="button" className="btn btn-outline-secondary" onClick={this.addAnswer}>Add</button>                       
-            </div>
-          </div>
-        </div>
+        
 
         <fieldset className="form-group">
             <legend>Vote type</legend>
             <div className="form-check">
               <label className="form-check-label">
-                <input type="radio" className="form-check-input" name="optionsRadios" id="option-public" onChange={this.changeVoteType} checked/>
+                <input type="radio" className="form-check-input" name="optionsRadios" id="option-public" onChange={this.changeVoteType} defaultChecked/>
                 Public
               </label>
             </div>
@@ -106,6 +131,8 @@ class CreateVotePage extends Component {
         </fieldset>
 
         <PrivateAdressTextBox voteType={this.state.voteType} />
+      
+        
 
         <button type="submit" className="btn btn-primary">Submit</button>
       </form>
@@ -116,6 +143,7 @@ class CreateVotePage extends Component {
 
 function PrivateAdressTextBox(props) {
   const voteType = props.voteType;
+  //console.log(voteType)
   if(voteType === 'private') {
     return <h1> LOL </h1>
   }  
