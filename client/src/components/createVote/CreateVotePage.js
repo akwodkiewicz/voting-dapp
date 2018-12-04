@@ -4,6 +4,8 @@ import AnswersList from "./AnswersList";
 import * as Datetime from 'react-datetime';
 import 'react-datetime/css/react-datetime.css';
 import moment from 'moment';
+import { FormGroup, FormControl, ControlLabel, Button, Radio, InputGroup, HelpBlock } from 'react-bootstrap';
+import FieldGroup from '../common/FieldGroup';
 class CreateVotePage extends Component {
   constructor() {
     super();
@@ -54,87 +56,63 @@ class CreateVotePage extends Component {
   
   handleChangeRaw = (date) => { date.currentTarget.value = moment(this.props.input.value).format("DD/MM/YYYY") }
   
+  
+
   render() {
     return (
       <form onSubmit={this.handleCreateVote}>
        
-        <div className="form-group">
-          <label htmlFor="question">Question</label>
-          <input type="text" name = "question" className="form-control" id="question" placeholder="Type a question for vote" onChange={this.handleChange} value={this.state.question}/>
-        </div>
-
-        <div className="form-group">
-          <label htmlFor="answers">Possible answers</label>
-          <small id="answersHelp" className="form-text text-muted">There must be at least two answers.</small>
-
-          <AnswersList answers={this.state.answers}/>
-
-          <div className="input-group">
-            <input type="text" id="answer" className="form-control" placeholder="Type an answer"/>
-            <div className="input-group-append">
-              <button type="button" className="btn btn-outline-secondary" onClick={this.addAnswer}>Add</button>                       
-            </div>
-          </div>
-        </div>
-
-        <div style={{display: 'inline-block'}}>
-          <label>Voting end time</label>
-          <Datetime 
-            isValidDate = {function(current) {              
-              return current.isAfter(moment());
-            }}
-            id = 'voteEndDate'
-          />
-
-          <label>Voting expiration time</label>
-          <Datetime 
-            isValidDate = {function(current) {                            
-              let voteEndTime = document.getElementById('voteEndDate');
-              return voteEndTime != null ? current.isAfter(voteEndTime.value) : current.isAfter(moment().subtract(1, 'day'));
-            }}
-          />
-        </div>
+        <FieldGroup
+          id="question"
+          type="text"
+          label="Question"
+          placeholder="Enter the question for vore"
+        />
         
+        <ControlLabel>Answers</ControlLabel>                            
 
-        <div className="form-group">
-          <label htmlFor="categories">Category</label>
-            <input id="categories" 
-              type="text" 
-              className="form-control" 
-              name="city" 
-              onChange={this.handleChange}
-              placeholder="Select existing category or type a new one" 
-              list="existing-categories"/>
-            <datalist  id="existing-categories">
-              <option value="Arts"/>
-              <option value="Politics"/>
-              <option value="Business"/>
-            </datalist>          
-        </div>
+        <FormGroup>
+          <InputGroup help="lol">            
+            <FormControl id="answer" type="text" placeholder="Enter the answer"/>
 
+            <InputGroup.Button>
+              <Button onClick={this.addAnswer}>Add answer</Button>
+            </InputGroup.Button>
+          </InputGroup>
+          <HelpBlock>There must be at least 2 answers.</HelpBlock>
+        </FormGroup>
+        <AnswersList answers={this.state.answers}/>
+
+
+        <FormGroup>
+          <ControlLabel>Category</ControlLabel>
+          <FormControl componentClass="select" placeholder="select">
+            <option value="arts">Arts</option>
+            <option value="politics">Business</option>
+            <option value="computer-science">Computer science</option>
+          </FormControl>
+          <FieldGroup
+            id="new-category"
+            type="text"
+            label="New Category"
+            placeholder="Enter the new category"
+          />
+        </FormGroup>
         
-
-        <fieldset className="form-group">
-            <legend>Vote type</legend>
-            <div className="form-check">
-              <label className="form-check-label">
-                <input type="radio" className="form-check-input" name="optionsRadios" id="option-public" onChange={this.changeVoteType} defaultChecked/>
-                Public
-              </label>
-            </div>
-            <div className="form-check">
-            <label className="form-check-label">
-                <input type="radio" className="form-check-input" name="optionsRadios" id="option-private" onChange={this.changeVoteType}/>
-                Private
-              </label>
-            </div>
-        </fieldset>
+        <ControlLabel>Vote type</ControlLabel>
+        <FormGroup>
+          <Radio name="radioGroup" checked inline onChange={this.changeVoteType}>
+            Public
+          </Radio>
+          <Radio name="radioGroup" inline>
+            Private
+          </Radio>
+        </FormGroup>
 
         <PrivateAdressTextBox voteType={this.state.voteType} />
-      
-        
 
-        <button type="submit" className="btn btn-primary">Submit</button>
+
+        <Button type="submit">Submit</Button>
       </form>
     );
   }
