@@ -26,7 +26,8 @@
     "typescript": "^3.1.6"
   },
   "scripts": {
-    "test": "truffle test --network ganache",
+    "test": "truffle test",
+    "test-ganache": "truffle test --network ganache",
     "generate": "truffle compile && typechain --target truffle './build/**/*.json'"
   },
   "repository": {

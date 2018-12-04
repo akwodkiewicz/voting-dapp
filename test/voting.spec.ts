@@ -1,4 +1,4 @@
-import * as truffleAssert from "truffle-assertions";
+import truffleAssert = require("truffle-assertions");
 import Web3 = require("web3");
 import {
     CategoryContractInstance,
