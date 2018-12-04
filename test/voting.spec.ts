@@ -1,4 +1,3 @@
-import truffleAssert = require("truffle-assertions");
 import Web3 = require("web3");
 import {
     CategoryContractInstance,
@@ -21,17 +20,17 @@ contract("VotingContract", async accounts => {
 
     context("In a public voting with 10 options", async () => {
         let votingContract: VotingContractInstance;
-        const votingEndTime = Math.floor(Date.now() / 1000) + 25;
-        const resultsEndTime = votingEndTime + 25;
+        const votingEndTime = Math.floor(Date.now() / 1000) + 23;
+        const resultsEndTime = votingEndTime + 21;
 
         const userOneOption = 4;
         const userTwoOption = 7;
 
         before(async () => {
             const createVotingTxResp = await managerInstance.createVotingWithNewCategory(
-                categoryName,
+                web3.utils.fromAscii(categoryName),
                 "Pick your favourite letter",
-                ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J"],
+                ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J"].map((v)=>web3.utils.fromAscii(v)),
                 votingEndTime,
                 resultsEndTime,
                 false,
@@ -74,22 +73,27 @@ contract("VotingContract", async accounts => {
             })
 
             context("when user #1 tries to vote second time for the same option", async () => {
-                it("reverts", async () => {
-                    await truffleAssert.fails(
-                        votingContract.vote(userOneOption, { from: userOne }),
-                        truffleAssert.ErrorType.REVERT
-                    );
+                it("reverts with right message", async () => {
+                    try {
+                        await votingContract.vote(userOneOption, { from: userOne });
+                        assert(false, "This method was supposed to revert, but it didn't");
+                    } catch (error) {
+                        assert(error.reason === "You have already voted", `This method reverted with wrong message: ${error}`);
+                    }
                 });
             })
 
             context("when user #1 tries to vote second time for another option", async () => {
-                it("reverts ", async () => {
-                    await truffleAssert.fails(
-                        votingContract.vote(userTwoOption, { from: userOne }),
-                        truffleAssert.ErrorType.REVERT
-                    );
+                it("reverts with right message", async () => {
+                    try {
+                        await votingContract.vote(userTwoOption, { from: userOne });
+                        assert(false, "This method was supposed to revert, but it didn't");
+                    } catch (error) {
+                        assert(error.reason === "You have already voted", `This method reverted with wrong message: ${error}`);
+                    }
                 });
-            })
+            });
+
 
             context("when user #2 votes for the first time", async () => {
                 it("does not throw", async () => {
@@ -100,13 +104,17 @@ contract("VotingContract", async accounts => {
         });
 
         describe("#viewVotes", async () => {
+
             context("when it's too early to see the votes", async () => {
-                assert(Math.floor(Date.now()/1000) < votingEndTime);
-                it("reverts", async () => {
-                    await truffleAssert.fails(
-                        votingContract.viewVotes(),
-                        truffleAssert.ErrorType.REVERT
-                    );
+                assert(Math.floor(Date.now() / 1000) < votingEndTime);
+
+                it("reverts with right message", async () => {
+                    try {
+                        await votingContract.viewVotes();
+                        assert(false, "This method was supposed to revert, but it didn't");
+                    } catch (error) {
+                        assert(error.message.includes("It's too early to see the votes"), `This method reverted with wrong message: ${error}`);
+                    }
                 });
             })
 

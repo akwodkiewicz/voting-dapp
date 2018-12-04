@@ -1,4 +1,3 @@
-import truffleAssert = require("truffle-assertions");
 import web3 = require("web3");
 import { CategoryContractInstance, ManagerContractInstance } from "../types/truffle-contracts";
 import { CategoryContract, ManagerContract, VotingContract } from "./consts";
@@ -13,9 +12,9 @@ contract("CategoryContract", async (accounts) => {
         expect(managerInstance).to.be.not.null.and.not.undefined;
 
         const createVotingTxResp = await managerInstance.createVotingWithNewCategory(
-            categoryName,
+            web3.utils.fromAscii(categoryName),
             "Example question",
-            ["Answer 1", "Answer 2", "Answer 3"],
+            ["Answer 1", "Answer 2", "Answer 3"].map((v)=>web3.utils.fromAscii(v)),
             Date.now() + 1000,
             Date.now() + 1020,
             false,
@@ -46,25 +45,32 @@ contract("CategoryContract", async (accounts) => {
             expect(votingInstance).to.be.not.null.and.not.undefined;
         });
 
-        it("throws when accessing second item in array", async () => {
-            await truffleAssert.fails(categoryInstance.votingContracts(1),
-                truffleAssert.ErrorType.INVALID_OPCODE);
+        it("throws invalid_opcode error when accessing second item in array", async () => {
+            try {
+                await categoryInstance.votingContracts(1);
+                assert(false, "This method was supposed to revert, but it didn't");
+            } catch (error) {
+                assert(error.message.includes("invalid opcode") ,`This method reverted with wrong message: ${error}`);
+            }
         });
     });
 
     describe("When adding second voting", async () => {
 
         it("reverts when voting is not created via ManagerContract", async () => {
-            await truffleAssert.fails(
-                categoryInstance.createVotingContract(
+            try {
+                await categoryInstance.createVotingContract(
                     "Second question",
-                    ["Opt1", "Opt2"],
+                    ["Opt1", "Opt2"].map((v) => web3.utils.fromAscii(v)),
                     Date.now() + 100,
                     Date.now() + 200,
                     false,
                     [],
-                    { from: accounts[0] }),
-                truffleAssert.ErrorType.REVERT);
+                    { from: accounts[0] });
+                assert(false, "This method was supposed to revert, but it didn't");
+            } catch (error) {
+                assert(error.reason === "Only the ManagerContract is authorised to create a new voting", `This method reverted with wrong reason: ${error}`);
+            }
         });
     });
 
@@ -74,7 +80,7 @@ contract("CategoryContract", async (accounts) => {
             const createVotingTxResp = await managerInstance.createVotingWithExistingCategory(
                 categoryInstance.address,
                 "Example question no 2",
-                ["Answer A", "Answer B", "Answer C", "D"],
+                ["Answer A", "Answer B", "Answer C", "D"].map((v)=>web3.utils.fromAscii(v)),
                 Date.now() + 1000,
                 Date.now() + 1020,
                 false,

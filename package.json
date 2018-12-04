@@ -17,7 +17,6 @@
     "@types/web3": "^1.0.13",
     "chai": "^4.2.0",
     "mocha": "^5.2.0",
-    "truffle-assertions": "^0.6.3",
     "truffle-typings": "^1.0.4",
     "ts-node": "^7.0.1",
     "tslint": "^5.11.0",

@@ -1,4 +1,4 @@
-pragma solidity 0.4.24;
+pragma solidity 0.5.1;
 
 
 contract VotingContract {
@@ -29,13 +29,13 @@ contract VotingContract {
     }
     
     // TODO: Do we need some creator requirements?
-    constructor(string _question,
+    constructor(string memory _question,
         address _category,
-        bytes32[] _options,
+        bytes32[] memory _options,
         uint256 _votingEndTime,
         uint256 _resultsEndTime,
         bool _isPrivate,
-        address[] _permissions) public {
+        address[] memory _permissions) public {
 
         require(_votingEndTime >= now + 20, "Voting end time has to be somewhere in the future (at least 20s from now)");
         require(_resultsEndTime >= _votingEndTime + 20, "Results end time has to be later than voting end time (at least 20s)");
@@ -66,11 +66,12 @@ contract VotingContract {
     }
 
     function viewVotes() public view returns(uint256[] memory) {
-        require(now >= votingEndTime && now < resultsEndTime, "You cannot view the votes now");
+        require(now >= votingEndTime, "It's too early to see the votes");
+        require(now < resultsEndTime, "It's too late to see the votes");
         return votes;
     }
 
-    function viewContractInfo() public view hasPermission(msg.sender) returns(string, address, bytes32[], uint256, uint256) {
+    function viewContractInfo() public view hasPermission(msg.sender) returns(string memory, address, bytes32[] memory, uint256, uint256) {
         return (question, category, options, votingEndTime, resultsEndTime);
     }
     

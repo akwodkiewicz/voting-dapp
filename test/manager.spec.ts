@@ -1,4 +1,3 @@
-import truffleAssert = require("truffle-assertions");
 import web3 = require("web3");
 import { CategoryContract, ManagerContract } from "./consts";
 
@@ -18,23 +17,26 @@ contract("ManagerContract", async (accounts) => {
         it("throws invalid_opcode error, when accessing empty categoryContractsList", async () => {
             const instance = await ManagerContract.deployed();
 
-            await truffleAssert.fails(
-                instance.categoryContractsList(0),
-                truffleAssert.ErrorType.INVALID_OPCODE,
-            );
+            try {
+                await instance.categoryContractsList(0);
+                assert(false, "This method was supposed to revert, but it didn't");
+            }catch (error) {
+                assert(error.message.includes("invalid opcode") ,`This method reverted with wrong message: ${error}`);
+            }
         });
 
-        it("doesn't have a category of address '0x00000000'", async () => {
+        it("doesn't have a category of a zero address", async () => {
             const instance = await ManagerContract.deployed();
-
-            const result = await instance.doesCategoryExist("0x00000000");
+            const addr = "0x0000000000000000000000000000000000000000"
+            assert(web3.utils.isAddress(addr), `${addr}`);
+            const result = await instance.doesCategoryExist(addr);
             expect(result).to.be.false;
         });
 
         it("doesn't have a category named 'Xyzzy'", async () => {
             const instance = await ManagerContract.deployed();
 
-            const resultInHex = await instance.categoryAddress("Xyzzy");
+            const resultInHex = await instance.categoryAddress(web3.utils.fromAscii("Xyzzy"));
             const result = web3.utils.hexToNumber(resultInHex);
             expect(result).to.be.equal(0);
         });
@@ -47,9 +49,9 @@ contract("ManagerContract", async (accounts) => {
 
             const question = "Do you like this question?";
             const result = await instance.createVotingWithNewCategory(
-                categoryName,
+                web3.utils.fromAscii(categoryName),
                 question,
-                ["Yes", "No"],
+                ["Yes", "No"].map((v)=>web3.utils.fromAscii(v)),
                 Date.now() + 100,
                 Date.now() + 200,
                 false,
@@ -59,7 +61,7 @@ contract("ManagerContract", async (accounts) => {
             expect(result.logs[1].event).equals("VotingCreated");
 
             expect(result.logs[0].args.creator).equals(accounts[0]);
-            const xyzzyAddress = await instance.categoryAddress(categoryName);
+            const xyzzyAddress = await instance.categoryAddress(web3.utils.fromAscii(categoryName));
             expect(result.logs[0].args.categoryAddress).equals(xyzzyAddress);
             expect(web3.utils.hexToString(result.logs[0].args.categoryName)).equals(categoryName);
 
@@ -73,31 +75,34 @@ contract("ManagerContract", async (accounts) => {
 
         it("throws an error, when user tries to create Xyzzy second time", async () => {
             const instance = await ManagerContract.deployed();
-            const xyzzyAddress = await instance.categoryAddress(categoryName);
+            const xyzzyAddress = await instance.categoryAddress(web3.utils.fromAscii(categoryName));
             expect(xyzzyAddress).not.equals(web3.utils.numberToHex(0));
 
-            await truffleAssert.fails(instance.createVotingWithNewCategory(
-                categoryName,
-                "Do you like this question?",
-                ["Yes", "No"],
-                Date.now() + 100,
-                Date.now() + 200,
-                false,
-                [], { from: accounts[0] }),
-                truffleAssert.ErrorType.REVERT,
-            );
+            try {
+                await instance.createVotingWithNewCategory(
+                    web3.utils.fromAscii(categoryName),
+                    "Do you like this question?",
+                    ["Yes", "No"].map((v)=>web3.utils.fromAscii(v)),
+                    Date.now() + 100,
+                    Date.now() + 200,
+                    false,
+                    [], { from: accounts[0] });
+                assert(false, "This method was supposed to revert, but it didn't");
+            } catch (error) {
+                assert(error.reason === "This category name is already used", `This method reverted with wrong reason: ${error}`);
+            }
         });
 
         it("creates a second voting in Xyzzy", async () => {
             const instance = await ManagerContract.deployed();
-            const xyzzyAddress = await instance.categoryAddress(categoryName);
+            const xyzzyAddress = await instance.categoryAddress(web3.utils.fromAscii(categoryName));
             const xyzzy = await CategoryContract.at(xyzzyAddress);
             const question = "Did you like first question?";
 
             const result = await instance.createVotingWithExistingCategory(
                 xyzzyAddress,
                 question,
-                ["Very much", "A little", "Not at all"],
+                ["Very much", "A little", "Not at all"].map((v)=>web3.utils.fromAscii(v)),
                 Date.now() + 100,
                 Date.now() + 200,
                 false,
