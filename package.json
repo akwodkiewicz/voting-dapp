@@ -14,18 +14,19 @@
     "@types/chai": "^4.1.7",
     "@types/mocha": "^5.2.5",
     "@types/node": "^10.12.2",
-    "@types/web3": "^1.0.12",
+    "@types/web3": "^1.0.13",
     "chai": "^4.2.0",
     "mocha": "^5.2.0",
     "truffle-assertions": "^0.6.3",
     "truffle-typings": "^1.0.4",
     "ts-node": "^7.0.1",
     "tslint": "^5.11.0",
+    "tslint-config-prettier": "^1.17.0",
     "typechain": "^0.3.8",
     "typescript": "^3.1.6"
   },
   "scripts": {
-    "test": "truffle test",
+    "test": "truffle test --network ganache",
     "generate": "truffle compile && typechain --target truffle './build/**/*.json'"
   },
   "repository": {
