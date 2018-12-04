@@ -74,7 +74,7 @@ contract("CategoryContract", async (accounts) => {
             const createVotingTxResp = await managerInstance.createVotingWithExistingCategory(
                 categoryInstance.address,
                 "Example question no 2",
-                ["Answer A", "Answer B", "Answer C"],
+                ["Answer A", "Answer B", "Answer C", "D"],
                 Date.now() + 1000,
                 Date.now() + 1020,
                 false,
@@ -89,9 +89,23 @@ contract("CategoryContract", async (accounts) => {
             const votingOneAddr = await categoryInstance.votingContracts(0);
             const votingOne = await VotingContract.at(votingOneAddr);
             expect(votingOne).is.not.null;
+            expect((await votingOne.numberOfOptions()).toNumber()).to.equal(3);
+            expect(await votingOne.category()).to.equal(categoryInstance.address);
+            expect(await votingOne.question()).to.equal("Example question");
+            expect(web3.utils.hexToString(await votingOne.options(0))).to.equal("Answer 1");
+            expect(web3.utils.hexToString(await votingOne.options(1))).to.equal("Answer 2");
+            expect(web3.utils.hexToString(await votingOne.options(2))).to.equal("Answer 3");
+
             const votingTwoAddr = await categoryInstance.votingContracts(1);
             const votingTwo = await VotingContract.at(votingTwoAddr);
             expect(votingTwo).is.not.null;
+            expect((await votingTwo.numberOfOptions()).toNumber()).to.equal(4);
+            expect(await votingTwo.category()).to.equal(categoryInstance.address);
+            expect(await votingTwo.question()).to.equal("Example question no 2");
+            expect(web3.utils.hexToString(await votingTwo.options(0))).to.equal("Answer A");
+            expect(web3.utils.hexToString(await votingTwo.options(1))).to.equal("Answer B");
+            expect(web3.utils.hexToString(await votingTwo.options(2))).to.equal("Answer C");
+            expect(web3.utils.hexToString(await votingTwo.options(3))).to.equal("D");
         });
     });
 
