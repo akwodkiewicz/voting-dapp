@@ -1,11 +1,15 @@
 import React, { Component } from "react";
 import {Link} from 'react-router-dom';
 import AnswersList from "./AnswersList";
+import VoteType from './VoteType';
+import VoteDates from './VoteDates';
+import FieldGroup from '../common/FieldGroup';
 import * as Datetime from 'react-datetime';
 import 'react-datetime/css/react-datetime.css';
 import moment from 'moment';
-import { FormGroup, FormControl, ControlLabel, Button, Radio, InputGroup, HelpBlock } from 'react-bootstrap';
-import FieldGroup from '../common/FieldGroup';
+import { FormGroup, FormControl, ControlLabel, Button, Radio, InputGroup, HelpBlock, Grid, Row, Col } from 'react-bootstrap';
+
+
 class CreateVotePage extends Component {
   constructor() {
     super();
@@ -17,7 +21,7 @@ class CreateVotePage extends Component {
       voteType: 'public'      
     }
     this.handleChange = this.handleChange.bind(this);
-    this.changeVoteType = this.changeVoteType.bind(this);
+    //this.changeVoteType = this.changeVoteType.bind(this);
     this.addAnswer = this.addAnswer.bind(this);
     this.handleChangeRaw = this.handleChangeRaw.bind(this);
   }
@@ -46,13 +50,13 @@ class CreateVotePage extends Component {
     console.log(this.state.category);
   }
 
-  changeVoteType({target}) {
-    var voteType = 'private';
-    this.setState(() => ({
-      [voteType]: voteType
-    }))
-    console.log(this.state[voteType])
-  }
+  // changeVoteType({target}) {
+  //   var voteType = 'private';
+  //   this.setState(() => ({
+  //     [voteType]: voteType
+  //   }))
+  //   console.log(this.state[voteType])
+  // }
   
   handleChangeRaw = (date) => { date.currentTarget.value = moment(this.props.input.value).format("DD/MM/YYYY") }
   
@@ -72,7 +76,7 @@ class CreateVotePage extends Component {
         <ControlLabel>Answers</ControlLabel>                            
 
         <FormGroup>
-          <InputGroup help="lol">            
+          <InputGroup>            
             <FormControl id="answer" type="text" placeholder="Enter the answer"/>
 
             <InputGroup.Button>
@@ -83,33 +87,44 @@ class CreateVotePage extends Component {
         </FormGroup>
         <AnswersList answers={this.state.answers}/>
 
+        <VoteDates/>
+        
+
+
 
         <FormGroup>
           <ControlLabel>Category</ControlLabel>
-          <FormControl componentClass="select" placeholder="select">
-            <option value="arts">Arts</option>
-            <option value="politics">Business</option>
-            <option value="computer-science">Computer science</option>
-          </FormControl>
-          <FieldGroup
-            id="new-category"
-            type="text"
-            label="New Category"
-            placeholder="Enter the new category"
-          />
+          <HelpBlock>Select existing category from the list or create a new one.</HelpBlock>
+
+          <Grid>
+            <Row className="showGrid">
+              <Col xs={6}>
+                <ControlLabel>Available categories</ControlLabel>
+              </Col>
+              <Col xs={6}>
+                <ControlLabel>New category</ControlLabel>
+              </Col>
+            </Row>
+            <Row className="showGrid">
+            <Col xs={6}> 
+                <FormControl componentClass="select" placeholder="select">
+                  <option value="arts"></option>
+                  <option value="arts">Arts</option>
+                  <option value="politics">Business</option>
+                  <option value="computer-science">Computer science</option>
+                </FormControl>
+              </Col>
+              <Col xs={6}> 
+              <FormControl id="answer" type="text" placeholder="Enter new category"/>
+
+              </Col>
+            </Row>
+          </Grid>          
+          
+          
         </FormGroup>
         
-        <ControlLabel>Vote type</ControlLabel>
-        <FormGroup>
-          <Radio name="radioGroup" checked inline onChange={this.changeVoteType}>
-            Public
-          </Radio>
-          <Radio name="radioGroup" inline>
-            Private
-          </Radio>
-        </FormGroup>
-
-        <PrivateAdressTextBox voteType={this.state.voteType} />
+        <VoteType voteType={this.state.voteType}/>
 
 
         <Button type="submit">Submit</Button>
@@ -119,13 +134,6 @@ class CreateVotePage extends Component {
 
 }
 
-function PrivateAdressTextBox(props) {
-  const voteType = props.voteType;
-  //console.log(voteType)
-  if(voteType === 'private') {
-    return <h1> LOL </h1>
-  }  
-  return null;  
-}
+
 
 export default CreateVotePage;
