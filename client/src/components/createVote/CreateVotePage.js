@@ -1,10 +1,9 @@
 import React, { Component } from "react";
-import {Link} from 'react-router-dom';
 import AnswersList from "./AnswersList";
 import VoteType from './VoteType';
 import VoteDates from './VoteDates';
 import FieldGroup from '../common/FieldGroup';
-import * as Datetime from 'react-datetime';
+import CategoryPanel from "./CategoryPanel";
 import 'react-datetime/css/react-datetime.css';
 import moment from 'moment';
 import { FormGroup, FormControl, ControlLabel, Button, Radio, InputGroup, HelpBlock, Grid, Row, Col } from 'react-bootstrap';
@@ -16,20 +15,26 @@ class CreateVotePage extends Component {
 
     this.state = {
       question: '',
-      category: 'aaa',
+      categoryPanel: 'existing',
+      category: '',
       answers: [],
-      voteType: 'public'      
+      voteType: 'public',            
     }
-    this.handleChange = this.handleChange.bind(this);
-    //this.changeVoteType = this.changeVoteType.bind(this);
     this.addAnswer = this.addAnswer.bind(this);
-    this.handleChangeRaw = this.handleChangeRaw.bind(this);
+    this.changeCategoryPanel = this.changeCategoryPanel.bind(this);
   }
 
+  changeCategoryPanel({target}) {
+    var categoryQuestion = document.getElementById('category-from-list');
+    var categoryAnswer = categoryQuestion.checked ? 'existing' : 'new';
 
-
+    this.setState(() => ({
+      categoryPanel : categoryAnswer  
+    }))
+  }
   
-  handleCreateVote() {    
+  handleCreateVote() { 
+    // TODO   
   }
   
   addAnswer({target}) {
@@ -49,19 +54,7 @@ class CreateVotePage extends Component {
     console.log(this.state.question);
     console.log(this.state.category);
   }
-
-  // changeVoteType({target}) {
-  //   var voteType = 'private';
-  //   this.setState(() => ({
-  //     [voteType]: voteType
-  //   }))
-  //   console.log(this.state[voteType])
-  // }
-  
-  handleChangeRaw = (date) => { date.currentTarget.value = moment(this.props.input.value).format("DD/MM/YYYY") }
-  
-  
-
+    
   render() {
     return (
       <form onSubmit={this.handleCreateVote}>
@@ -89,43 +82,20 @@ class CreateVotePage extends Component {
 
         <VoteDates/>
         
-
-
-
-        <FormGroup>
+        <FormGroup onChange={this.changeCategoryPanel}>
           <ControlLabel>Category</ControlLabel>
-          <HelpBlock>Select existing category from the list or create a new one.</HelpBlock>
-
-          <Grid>
-            <Row className="showGrid">
-              <Col xs={6}>
-                <ControlLabel>Available categories</ControlLabel>
-              </Col>
-              <Col xs={6}>
-                <ControlLabel>New category</ControlLabel>
-              </Col>
-            </Row>
-            <Row className="showGrid">
-            <Col xs={6}> 
-                <FormControl componentClass="select" placeholder="select">
-                  <option value="arts"></option>
-                  <option value="arts">Arts</option>
-                  <option value="politics">Business</option>
-                  <option value="computer-science">Computer science</option>
-                </FormControl>
-              </Col>
-              <Col xs={6}> 
-              <FormControl id="answer" type="text" placeholder="Enter new category"/>
-
-              </Col>
-            </Row>
-          </Grid>          
-          
-          
+          <HelpBlock>Select existing category from the list or create a new one.</HelpBlock>       
+            <Radio name="categoryGroup" id="category-from-list" defaultChecked inline>
+              Select existing category
+            </Radio>
+            <Radio name="categoryGroup" id="category-new" inline>
+              Create new category
+            </Radio>
         </FormGroup>
-        
+              
+        <CategoryPanel categoryPanel={this.state.categoryPanel}/>
+                  
         <VoteType voteType={this.state.voteType}/>
-
 
         <Button type="submit">Submit</Button>
       </form>
