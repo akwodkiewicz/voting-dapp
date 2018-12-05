@@ -22,6 +22,8 @@ class CreateVotePage extends Component {
     }
     this.addAnswer = this.addAnswer.bind(this);
     this.changeCategoryPanel = this.changeCategoryPanel.bind(this);
+    this.handleCreateVote = this.handleCreateVote.bind(this);
+    this.getCategory = this.getCategory.bind(this);
   }
 
   changeCategoryPanel({target}) {
@@ -32,32 +34,33 @@ class CreateVotePage extends Component {
       categoryPanel : categoryAnswer  
     }))
   }
+
+  getCategory(category) {
+    this.setState(() => ({
+      category : category
+    }))
+  }
   
   handleCreateVote() { 
     // TODO   
+    console.log(this.state.question);
+    console.log(this.state.category);
+    console.log(this.state.answer);
+    console.log(this.state.voteType);
   }
   
   addAnswer({target}) {
-      var answer = document.getElementById('answer').value;
-      var allAnswers = this.state.answers;
-      allAnswers.push(answer);
-      this.setState(() => ({
-        answers : allAnswers
-      })
-    )
-  }
-
-  handleChange({target}) {
+    var answer = document.getElementById('answer').value;
+    var allAnswers = this.state.answers;
+    allAnswers.push(answer);
     this.setState(() => ({
-      [target.name]: target.value
+      answers : allAnswers
     }))
-    console.log(this.state.question);
-    console.log(this.state.category);
   }
     
   render() {
     return (
-      <form onSubmit={this.handleCreateVote}>
+      <form>
        
         <FieldGroup
           id="question"
@@ -93,11 +96,11 @@ class CreateVotePage extends Component {
             </Radio>
         </FormGroup>
               
-        <CategoryPanel categoryPanel={this.state.categoryPanel}/>
+        <CategoryPanel getCategory={this.getCategory} categoryPanel={this.state.categoryPanel}/>
                   
         <VoteType voteType={this.state.voteType}/>
 
-        <Button type="submit">Submit</Button>
+        <Button onClick={this.handleCreateVote}>Submit</Button>
       </form>
     );
   }
