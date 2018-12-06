@@ -6,7 +6,7 @@ class VoteType extends Component {
     super(props);
 
     this.state = {
-      voteType: "chuj"      
+      voteType: "public"      
     }
     this.changeVoteType = this.changeVoteType.bind(this);
   }
@@ -28,7 +28,7 @@ class VoteType extends Component {
       <React.Fragment>
         <ControlLabel>Vote type</ControlLabel>
         <FormGroup onChange={this.changeVoteType}>
-          <Radio name="radioGroup" id="votePublic" inline>
+          <Radio name="radioGroup" defaultChecked id="votePublic" inline>
             Public
           </Radio>
           <Radio name="radioGroup" inline>
@@ -42,6 +42,7 @@ class VoteType extends Component {
 }
 
 function PrivateAdressTextBox(props) {
+  
   if(props.voteType === 'private') {
     return (
       <FormGroup>
