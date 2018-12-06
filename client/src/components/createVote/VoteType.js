@@ -17,13 +17,11 @@ class VoteType extends Component {
   changeVoteType({target}) {
     var publicVote = document.getElementById('votePublic');
     var voteType = publicVote.checked ? 'public' : 'private';
-    console.log("Public vote value: " + publicVote.checked)
-    console.log("Vote type: " + voteType)
 
     this.setState(() => ({
       voteType: voteType
     }))
-    console.log("State: " + this.state.voteType)
+    this.props.getVoteType(voteType);
   }
 
   getPrivilegedAddresses(addresses) {

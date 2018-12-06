@@ -27,11 +27,13 @@ class CreateVotePage extends Component {
     this.getAnswers = this.getAnswers.bind(this);
     this.getVoteEnd = this.getVoteEnd.bind(this);
     this.getResultsViewingEndTime = this.getResultsViewingEndTime.bind(this);
-    this.getPrivilegedVoters = this.getPrivilegedVoters.bind(this);
+    this.getCategory = this.getCategory.bind(this);
+    this.getVoteType = this.getVoteType.bind(this);
+    this.getPrivilegedVoters = this.getPrivilegedVoters.bind(this);    
     this.addAnswer = this.addAnswer.bind(this);
     this.changeCategoryPanel = this.changeCategoryPanel.bind(this);
     this.handleCreateVote = this.handleCreateVote.bind(this);
-    this.getCategory = this.getCategory.bind(this);
+
   }
 
   getQuestion(e) {
@@ -47,12 +49,6 @@ class CreateVotePage extends Component {
     }))
   }
 
-  getPrivilegedVoters(privilegedVoters) {
-    this.setState(() => ({
-      privilegedVoters : privilegedVoters
-    }))
-  }
-
   getVoteEnd(timeFromChild) {
     this.setState(()=>({
       voteEndTime: timeFromChild
@@ -65,6 +61,23 @@ class CreateVotePage extends Component {
     }))
   }
 
+  getCategory(categoryFromChild) {
+    this.setState(() => ({
+      category : categoryFromChild
+    }))
+  }
+
+  getVoteType(voteTypeFromChild) {
+    this.setState(()=>({
+      voteType: voteTypeFromChild
+    }))
+  }
+
+  getPrivilegedVoters(privilegedVoters) {
+    this.setState(() => ({
+      privilegedVoters : privilegedVoters
+    }))
+  }
 
   changeCategoryPanel() {
     var categoryQuestion = document.getElementById('category-from-list');
@@ -75,11 +88,7 @@ class CreateVotePage extends Component {
     }))
   }
 
-  getCategory(categoryFromChild) {
-    this.setState(() => ({
-      category : categoryFromChild
-    }))
-  }
+  
 
   
   
@@ -141,7 +150,7 @@ class CreateVotePage extends Component {
               
         <CategoryPanel getCategory={this.getCategory} categoryPanel={this.state.categoryPanel}/>
                   
-        <VoteType getPrivilegedVoters={this.getPrivilegedVoters} voteType={this.state.voteType}/>
+        <VoteType getVoteType={this.getVoteType} getPrivilegedVoters={this.getPrivilegedVoters}/>
 
         <Button onClick={this.handleCreateVote}>Submit</Button>
       </form>
