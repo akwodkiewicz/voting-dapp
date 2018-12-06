@@ -18,12 +18,23 @@ class CreateVotePage extends Component {
       categoryPanel: 'existing',
       category: '',
       answers: [],
-      voteType: 'public',            
+      voteType: 'public',   
+      // TODO:
+      //privilegedVoters: []         
     }
+    this.getQuestion = this.getQuestion.bind(this);
     this.addAnswer = this.addAnswer.bind(this);
     this.changeCategoryPanel = this.changeCategoryPanel.bind(this);
     this.handleCreateVote = this.handleCreateVote.bind(this);
     this.getCategory = this.getCategory.bind(this);
+    //this.getPrivilegedVoters = this.getPrivilegedVoters.bind(this);
+  }
+
+  getQuestion(e) {
+    const question = e.target.value;
+    this.setState(() => ({
+      question : question
+    }))
   }
 
   changeCategoryPanel({target}) {
@@ -40,9 +51,16 @@ class CreateVotePage extends Component {
       category : category
     }))
   }
+
+  // TODO:
+  // getPrivilegedVoters(privilegedVoters) {
+  //   this.setState(() => ({
+  //     privilegedVoters : privilegedVoters
+  //   }))
+  // }
   
   handleCreateVote() { 
-    // TODO   
+    // TODO: validation   
     console.log(this.state.question);
     console.log(this.state.category);
     console.log(this.state.answer);
@@ -62,11 +80,8 @@ class CreateVotePage extends Component {
     return (
       <form>
        
-        <FieldGroup
-          id="question"
-          type="text"
-          label="Question"
-          placeholder="Enter the question for vore"
+        <FieldGroup id="question" type="text" label="Question" 
+          placeholder="Enter the question for vore" onChange={this.getQuestion}
         />
         
         <ControlLabel>Answers</ControlLabel>                            
@@ -98,7 +113,7 @@ class CreateVotePage extends Component {
               
         <CategoryPanel getCategory={this.getCategory} categoryPanel={this.state.categoryPanel}/>
                   
-        <VoteType voteType={this.state.voteType}/>
+        <VoteType getPrivilegedVoters={this.getPrivilegedVoters} voteType={this.state.voteType}/>
 
         <Button onClick={this.handleCreateVote}>Submit</Button>
       </form>
