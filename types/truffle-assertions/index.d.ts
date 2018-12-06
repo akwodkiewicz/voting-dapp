@@ -1,5 +1,5 @@
 declare module "truffle-assertions" {
-        export const ErrorType: {
+    export const ErrorType: {
         INVALID_JUMP: string;
         INVALID_OPCODE: string;
         OUT_OF_GAS: string;

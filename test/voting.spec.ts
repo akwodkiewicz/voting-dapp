@@ -1,14 +1,11 @@
 import Web3 = require("web3");
-import {
-    CategoryContractInstance,
-    ManagerContractInstance,
-    VotingContractInstance
-} from "../types/truffle-contracts";
+import { createCategoryName, createVotingOptions } from "../app/web3helpers";
+import { CategoryContractInstance, ManagerContractInstance, VotingContractInstance } from "../types/truffle-contracts";
 import { CategoryContract, ManagerContract, VotingContract } from "./consts";
 
 const web3 = new Web3(Web3.givenProvider);
 
-contract("VotingContract", async accounts => {
+contract("VotingContract", async (accounts) => {
     let managerInstance: ManagerContractInstance;
     let categoryInstance: CategoryContractInstance;
     const categoryName = "FizzBuzz";
@@ -28,9 +25,9 @@ contract("VotingContract", async accounts => {
 
         before(async () => {
             const createVotingTxResp = await managerInstance.createVotingWithNewCategory(
-                web3.utils.fromAscii(categoryName),
+                createCategoryName(categoryName),
                 "Pick your favourite letter",
-                ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J"].map((v)=>web3.utils.fromAscii(v)),
+                createVotingOptions(["A", "B", "C", "D", "E", "F", "G", "H", "I", "J"]),
                 votingEndTime,
                 resultsEndTime,
                 false,
@@ -39,12 +36,9 @@ contract("VotingContract", async accounts => {
             );
             expect(createVotingTxResp.logs[0].event).equals("CategoryCreated");
             expect(createVotingTxResp.logs[1].event).equals("VotingCreated");
-            categoryInstance = await CategoryContract.at(
-                createVotingTxResp.logs[0].args.categoryAddress
-            );
+            categoryInstance = await CategoryContract.at(createVotingTxResp.logs[0].args.categoryAddress);
             expect(categoryInstance).to.be.not.null.and.not.undefined;
-            const votingAddress: string =
-                createVotingTxResp.logs[1].args.votingAddress;
+            const votingAddress: string = createVotingTxResp.logs[1].args.votingAddress;
             votingContract = await VotingContract.at(votingAddress);
             expect(votingContract).to.be.not.null.and.not.undefined;
         });
@@ -70,41 +64,48 @@ contract("VotingContract", async accounts => {
                 it("does not throw", async () => {
                     await votingContract.vote(userOneOption, { from: userOne });
                 });
-            })
+            });
 
             context("when user #1 tries to vote second time for the same option", async () => {
                 it("reverts with right message", async () => {
                     try {
-                        await votingContract.vote(userOneOption, { from: userOne });
+                        await votingContract.vote(userOneOption, {
+                            from: userOne,
+                        });
                         assert(false, "This method was supposed to revert, but it didn't");
                     } catch (error) {
-                        assert(error.reason === "You have already voted", `This method reverted with wrong message: ${error}`);
-                    }
-                });
-            })
-
-            context("when user #1 tries to vote second time for another option", async () => {
-                it("reverts with right message", async () => {
-                    try {
-                        await votingContract.vote(userTwoOption, { from: userOne });
-                        assert(false, "This method was supposed to revert, but it didn't");
-                    } catch (error) {
-                        assert(error.reason === "You have already voted", `This method reverted with wrong message: ${error}`);
+                        assert(
+                            error.reason === "You have already voted",
+                            `This method reverted with wrong message: ${error}`
+                        );
                     }
                 });
             });
 
+            context("when user #1 tries to vote second time for another option", async () => {
+                it("reverts with right message", async () => {
+                    try {
+                        await votingContract.vote(userTwoOption, {
+                            from: userOne,
+                        });
+                        assert(false, "This method was supposed to revert, but it didn't");
+                    } catch (error) {
+                        assert(
+                            error.reason === "You have already voted",
+                            `This method reverted with wrong message: ${error}`
+                        );
+                    }
+                });
+            });
 
             context("when user #2 votes for the first time", async () => {
                 it("does not throw", async () => {
                     await votingContract.vote(userTwoOption, { from: userTwo });
                 });
-            })
-
+            });
         });
 
         describe("#viewVotes", async () => {
-
             context("when it's too early to see the votes", async () => {
                 assert(Math.floor(Date.now() / 1000) < votingEndTime);
 
@@ -113,24 +114,34 @@ contract("VotingContract", async accounts => {
                         await votingContract.viewVotes();
                         assert(false, "This method was supposed to revert, but it didn't");
                     } catch (error) {
-                        assert(error.message.includes("It's too early to see the votes"), `This method reverted with wrong message: ${error}`);
+                        assert(
+                            error.message.includes("It's too early to see the votes"),
+                            `This method reverted with wrong message: ${error}`
+                        );
                     }
                 });
-            })
+            });
 
             context("when votingEndTime has passed", async () => {
-
                 before(async () => {
                     // Wait till votingEndtime
-                    while(Math.floor(Date.now()/1000) < votingEndTime);
+                    while (Math.floor(Date.now() / 1000) < votingEndTime);
 
                     // Mine an empty block to bump the latest block timestamp
-                    web3.currentProvider.send({jsonrpc: "2.0", method: "evm_mine", params: [], id: 0}, ()=>{;});
+                    web3.currentProvider.send(
+                        {
+                            id: 0,
+                            jsonrpc: "2.0",
+                            method: "evm_mine",
+                            params: [],
+                        },
+                        () => undefined
+                    );
                 });
 
                 it("returns correct voting results", async () => {
                     const votingResults = await votingContract.viewVotes();
-                    const votingResultsNumbers = votingResults.map(big => big.toNumber());
+                    const votingResultsNumbers = votingResults.map((big) => big.toNumber());
 
                     votingResultsNumbers.forEach((num, idx) => {
                         if (idx === userOneOption || idx === userTwoOption) {

@@ -1,4 +1,5 @@
 import web3 = require("web3");
+import { createCategoryName, createVotingOptions } from "../app/web3helpers";
 import { CategoryContractInstance, ManagerContractInstance } from "../types/truffle-contracts";
 import { CategoryContract, ManagerContract, VotingContract } from "./consts";
 
@@ -12,13 +13,15 @@ contract("CategoryContract", async (accounts) => {
         expect(managerInstance).to.be.not.null.and.not.undefined;
 
         const createVotingTxResp = await managerInstance.createVotingWithNewCategory(
-            web3.utils.fromAscii(categoryName),
+            createCategoryName(categoryName),
             "Example question",
-            ["Answer 1", "Answer 2", "Answer 3"].map((v)=>web3.utils.fromAscii(v)),
+            createVotingOptions(["Answer 1", "Answer 2", "Answer 3"]),
             Date.now() + 1000,
             Date.now() + 1020,
             false,
-            [], { from: accounts[0] });
+            [],
+            { from: accounts[0] }
+        );
         expect(createVotingTxResp.logs[0].event).equals("CategoryCreated");
         expect(createVotingTxResp.logs[1].event).equals("VotingCreated");
         categoryInstance = await CategoryContract.at(createVotingTxResp.logs[0].args.categoryAddress);
@@ -26,7 +29,6 @@ contract("CategoryContract", async (accounts) => {
     });
 
     describe("When added only initial voting", async () => {
-
         it("returns valid name", async () => {
             const returnedHexName = await categoryInstance.categoryName();
             const returnedName = web3.utils.hexToString(returnedHexName);
@@ -50,41 +52,45 @@ contract("CategoryContract", async (accounts) => {
                 await categoryInstance.votingContracts(1);
                 assert(false, "This method was supposed to revert, but it didn't");
             } catch (error) {
-                assert(error.message.includes("invalid opcode") ,`This method reverted with wrong message: ${error}`);
+                assert(error.message.includes("invalid opcode"), `This method reverted with wrong message: ${error}`);
             }
         });
     });
 
     describe("When adding second voting", async () => {
-
         it("reverts when voting is not created via ManagerContract", async () => {
             try {
                 await categoryInstance.createVotingContract(
                     "Second question",
-                    ["Opt1", "Opt2"].map((v) => web3.utils.fromAscii(v)),
+                    createVotingOptions(["Opt1", "Opt2"]),
                     Date.now() + 100,
                     Date.now() + 200,
                     false,
                     [],
-                    { from: accounts[0] });
+                    { from: accounts[0] }
+                );
                 assert(false, "This method was supposed to revert, but it didn't");
             } catch (error) {
-                assert(error.reason === "Only the ManagerContract is authorised to create a new voting", `This method reverted with wrong reason: ${error}`);
+                assert(
+                    error.reason === "Only the ManagerContract is authorised to create a new voting",
+                    `This method reverted with wrong reason: ${error}`
+                );
             }
         });
     });
 
     describe("After adding second voting", async () => {
-
         before(async () => {
             const createVotingTxResp = await managerInstance.createVotingWithExistingCategory(
                 categoryInstance.address,
                 "Example question no 2",
-                ["Answer A", "Answer B", "Answer C", "D"].map((v)=>web3.utils.fromAscii(v)),
+                createVotingOptions(["Answer A", "Answer B", "Answer C", "D"]),
                 Date.now() + 1000,
                 Date.now() + 1020,
                 false,
-                [], { from: accounts[0] });
+                [],
+                { from: accounts[0] }
+            );
             expect(createVotingTxResp.logs[0].event).equals("VotingCreated");
         });
 
@@ -114,5 +120,4 @@ contract("CategoryContract", async (accounts) => {
             expect(web3.utils.hexToString(await votingTwo.options(3))).to.equal("D");
         });
     });
-
 });

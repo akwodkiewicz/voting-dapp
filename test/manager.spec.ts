@@ -1,8 +1,8 @@
 import web3 = require("web3");
+import { createCategoryName, createVotingOptions } from "../app/web3helpers";
 import { CategoryContract, ManagerContract } from "./consts";
 
 contract("ManagerContract", async (accounts) => {
-
     const categoryName = "Xyzzy";
 
     describe("Starting tests", async () => {
@@ -13,21 +13,20 @@ contract("ManagerContract", async (accounts) => {
     });
 
     describe("Right after deployment", async () => {
-
         it("throws invalid_opcode error, when accessing empty categoryContractsList", async () => {
             const instance = await ManagerContract.deployed();
 
             try {
                 await instance.categoryContractsList(0);
                 assert(false, "This method was supposed to revert, but it didn't");
-            }catch (error) {
-                assert(error.message.includes("invalid opcode") ,`This method reverted with wrong message: ${error}`);
+            } catch (error) {
+                assert(error.message.includes("invalid opcode"), `This method reverted with wrong message: ${error}`);
             }
         });
 
         it("doesn't have a category of a zero address", async () => {
             const instance = await ManagerContract.deployed();
-            const addr = "0x0000000000000000000000000000000000000000"
+            const addr = "0x0000000000000000000000000000000000000000";
             assert(web3.utils.isAddress(addr), `${addr}`);
             const result = await instance.doesCategoryExist(addr);
             expect(result).to.be.false;
@@ -43,19 +42,20 @@ contract("ManagerContract", async (accounts) => {
     });
 
     describe("User wants to create votings", async () => {
-
         it("creates a first voting in a new category 'Xyzzy'", async () => {
             const instance = await ManagerContract.deployed();
 
             const question = "Do you like this question?";
             const result = await instance.createVotingWithNewCategory(
-                web3.utils.fromAscii(categoryName),
+                createCategoryName(categoryName),
                 question,
-                ["Yes", "No"].map((v)=>web3.utils.fromAscii(v)),
+                createVotingOptions(["Yes", "No"]),
                 Date.now() + 100,
                 Date.now() + 200,
                 false,
-                [], { from: accounts[0] });
+                [],
+                { from: accounts[0] }
+            );
 
             expect(result.logs[0].event).equals("CategoryCreated");
             expect(result.logs[1].event).equals("VotingCreated");
@@ -80,16 +80,21 @@ contract("ManagerContract", async (accounts) => {
 
             try {
                 await instance.createVotingWithNewCategory(
-                    web3.utils.fromAscii(categoryName),
+                    createCategoryName(categoryName),
                     "Do you like this question?",
-                    ["Yes", "No"].map((v)=>web3.utils.fromAscii(v)),
+                    createVotingOptions(["Yes", "No"]),
                     Date.now() + 100,
                     Date.now() + 200,
                     false,
-                    [], { from: accounts[0] });
+                    [],
+                    { from: accounts[0] }
+                );
                 assert(false, "This method was supposed to revert, but it didn't");
             } catch (error) {
-                assert(error.reason === "This category name is already used", `This method reverted with wrong reason: ${error}`);
+                assert(
+                    error.reason === "This category name is already used",
+                    `This method reverted with wrong reason: ${error}`
+                );
             }
         });
 
@@ -102,11 +107,13 @@ contract("ManagerContract", async (accounts) => {
             const result = await instance.createVotingWithExistingCategory(
                 xyzzyAddress,
                 question,
-                ["Very much", "A little", "Not at all"].map((v)=>web3.utils.fromAscii(v)),
+                createVotingOptions(["Very much", "A little", "Not at all"]),
                 Date.now() + 100,
                 Date.now() + 200,
                 false,
-                [], { from: accounts[0] });
+                [],
+                { from: accounts[0] }
+            );
 
             expect(result.logs[0].event).equals("VotingCreated");
 
@@ -115,6 +122,5 @@ contract("ManagerContract", async (accounts) => {
             expect(result.logs[0].args.votingAddress).equals(votingAddress);
             expect(result.logs[0].args.question).equals(question);
         });
-
     });
 });

@@ -1,8 +1,6 @@
 {
     "defaultSeverity": "error",
-    "extends": [
-       "tslint:latest", "tslint-config-prettier"
-    ],
+    "extends": ["tslint:latest", "tslint-config-prettier"],
     "jsRules": {},
     "rules": {
         "curly": [true, "ignore-same-line"],
@@ -11,9 +9,8 @@
         "max-line-length": [true, 120],
         "ordered-imports": true,
         "no-unused-expression": false,
-        "no-unused-variable": true,
         "no-console": false,
-        "no-implicit-dependencies": [true, "dev"],
+        "no-implicit-dependencies": [true, "dev"]
     },
     "rulesDirectory": []
 }
