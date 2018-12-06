@@ -21,14 +21,13 @@ class CreateVotePage extends Component {
       categoryPanel: 'existing',
       category: '',
       voteType: 'public',   
-      // TODO:
-      //privilegedVoters: []         
+      privilegedVoters: []         
     }
     this.getQuestion = this.getQuestion.bind(this);
     this.getAnswers = this.getAnswers.bind(this);
     this.getVoteEnd = this.getVoteEnd.bind(this);
     this.getResultsViewingEndTime = this.getResultsViewingEndTime.bind(this);
-    //this.getPrivilegedVoters = this.getPrivilegedVoters.bind(this);
+    this.getPrivilegedVoters = this.getPrivilegedVoters.bind(this);
     this.addAnswer = this.addAnswer.bind(this);
     this.changeCategoryPanel = this.changeCategoryPanel.bind(this);
     this.handleCreateVote = this.handleCreateVote.bind(this);
@@ -48,12 +47,11 @@ class CreateVotePage extends Component {
     }))
   }
 
-  // TODO:
-  // getPrivilegedVoters(privilegedVoters) {
-  //   this.setState(() => ({
-  //     privilegedVoters : privilegedVoters
-  //   }))
-  // }
+  getPrivilegedVoters(privilegedVoters) {
+    this.setState(() => ({
+      privilegedVoters : privilegedVoters
+    }))
+  }
 
   getVoteEnd(timeFromChild) {
     this.setState(()=>({
@@ -88,14 +86,12 @@ class CreateVotePage extends Component {
   handleCreateVote() { 
     // TODO: validation   
     console.log(this.state.question);
-    console.log(this.state.category);
-    console.log(this.state.answer);
-    console.log('cip');
     console.log(this.state.answers);
-    console.log('cip');
-    console.log(this.state.voteType);
     console.log(this.state.voteEndTime)
     console.log(this.state.resultsViewingEndTime)
+    console.log(this.state.category);
+    console.log(this.state.voteType);    
+    console.log(this.state.privilegedVoters);
   }
   
   addAnswer({target}) {

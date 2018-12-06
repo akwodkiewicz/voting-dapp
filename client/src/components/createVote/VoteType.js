@@ -1,14 +1,17 @@
 import React, { Component } from "react";
 import {ControlLabel, FormGroup, Radio, FormControl}from 'react-bootstrap';
+import PrivilegedAddresses from './PrivilegedAddresses';
 
 class VoteType extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      voteType: "public"      
+      voteType: "public",
+      privilegedAddresses: []      
     }
     this.changeVoteType = this.changeVoteType.bind(this);
+    this.getPrivilegedAddresses = this.getPrivilegedAddresses.bind(this);
   }
   
   changeVoteType({target}) {
@@ -23,6 +26,10 @@ class VoteType extends Component {
     console.log("State: " + this.state.voteType)
   }
 
+  getPrivilegedAddresses(addresses) {
+    this.props.getPrivilegedVoters(addresses);
+  }
+
   render() {
     return (
       <React.Fragment>
@@ -35,23 +42,11 @@ class VoteType extends Component {
             Private
           </Radio>
         </FormGroup>
-        <PrivateAdressTextBox voteType={this.state.voteType} />
+
+        <PrivilegedAddresses getPrivilegedAddresses={this.getPrivilegedAddresses} voteType={this.state.voteType} />
       </React.Fragment>
     );
   }    
-}
-
-function PrivateAdressTextBox(props) {
-  
-  if(props.voteType === 'private') {
-    return (
-      <FormGroup>
-        <ControlLabel>Privileged addresses</ControlLabel>
-        <FormControl componentClass="textarea" placeholder="textarea" />
-      </FormGroup>
-    )
-  }  
-  return null;  
 }
 
 export default VoteType;
