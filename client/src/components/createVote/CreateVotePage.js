@@ -26,6 +26,7 @@ class CreateVotePage extends Component {
     }
     this.getQuestion = this.getQuestion.bind(this);
     this.getVoteEnd = this.getVoteEnd.bind(this);
+    this.getResultsViewingEndTime = this.getResultsViewingEndTime.bind(this);
     //this.getPrivilegedVoters = this.getPrivilegedVoters.bind(this);
     this.addAnswer = this.addAnswer.bind(this);
     this.changeCategoryPanel = this.changeCategoryPanel.bind(this);

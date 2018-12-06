@@ -53,7 +53,7 @@ class VoteDates extends Component {
     }))
     if(this.state.resultsEndTime !== '') {
       result.set({'hour': this.state.resultsEndTime.hour(), 'minute': this.state.resultsEndTime.minute() });
-      this.props.getVoteEnd(result.utc().unix());
+      this.props.getResultsViewingEnd(result.utc().unix());
     } 
   }
 
@@ -66,7 +66,7 @@ class VoteDates extends Component {
     }))
     if(this.state.resultsEndDate !== '') {
       result.set({'year': this.state.resultsEndDate.year(), 'month': this.state.resultsEndDate.month(), 'date': this.state.resultsEndDate.date()});
-      this.props.getVoteEnd(result.utc().unix());
+      this.props.getResultsViewingEnd(result.utc().unix());
     } 
   }
 
@@ -118,6 +118,7 @@ class VoteDates extends Component {
             <Col xs={3}>
             <Datetime 
                 inputProps={{id: 'voteTimeEnd'}}
+                dateFormat={false}
                 closeOnSelect={true}
                 onChange={this.getVoteEndTimeHandler}
               />
@@ -135,6 +136,7 @@ class VoteDates extends Component {
                   return current.isAfter(moment().subtract(1, 'day'), 'minute');                 
                 }}
                 timeFormat={false}
+                onChange={this.getResultsEndDateHandler}
               />
               
             </Col>
@@ -143,6 +145,7 @@ class VoteDates extends Component {
                 inputProps={{id: 'resultsTimeEnd'}}
                 closeOnSelect={true}
                 dateFormat={false}
+                onChange={this.getResultsEndTimeHandler}
               />
             </Col>
           </Row>
