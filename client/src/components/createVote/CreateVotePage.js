@@ -25,6 +25,7 @@ class CreateVotePage extends Component {
       //privilegedVoters: []         
     }
     this.getQuestion = this.getQuestion.bind(this);
+    this.getAnswers = this.getAnswers.bind(this);
     this.getVoteEnd = this.getVoteEnd.bind(this);
     this.getResultsViewingEndTime = this.getResultsViewingEndTime.bind(this);
     //this.getPrivilegedVoters = this.getPrivilegedVoters.bind(this);
@@ -38,6 +39,12 @@ class CreateVotePage extends Component {
     const question = e.target.value;
     this.setState(() => ({
       question : question
+    }))
+  }
+
+  getAnswers(answersFromChild) {
+    this.setState(()=>({
+      answers: answersFromChild
     }))
   }
 
@@ -83,6 +90,9 @@ class CreateVotePage extends Component {
     console.log(this.state.question);
     console.log(this.state.category);
     console.log(this.state.answer);
+    console.log('cip');
+    console.log(this.state.answers);
+    console.log('cip');
     console.log(this.state.voteType);
     console.log(this.state.voteEndTime)
     console.log(this.state.resultsViewingEndTime)
@@ -91,10 +101,12 @@ class CreateVotePage extends Component {
   addAnswer({target}) {
     var answer = document.getElementById('answer').value;
     var allAnswers = this.state.answers;
-    allAnswers.push(answer);
-    this.setState(() => ({
-      answers : allAnswers
-    }))
+    if(!allAnswers.includes(answer)) {
+      allAnswers.push(answer);
+      this.setState(() => ({
+        answers : allAnswers
+      }))
+    }    
   }
     
   render() {
@@ -108,16 +120,15 @@ class CreateVotePage extends Component {
         <ControlLabel>Answers</ControlLabel>                            
 
         <FormGroup>
+          <HelpBlock>There must be at least 2 answers.</HelpBlock>
           <InputGroup>            
             <FormControl id="answer" type="text" placeholder="Enter the answer"/>
-
             <InputGroup.Button>
               <Button onClick={this.addAnswer}>Add answer</Button>
             </InputGroup.Button>
           </InputGroup>
-          <HelpBlock>There must be at least 2 answers.</HelpBlock>
         </FormGroup>
-        <AnswersList answers={this.state.answers}/>
+        <AnswersList getAnswers={this.getAnswers} answers={this.state.answers}/>
 
         <VoteDates getVoteEnd={this.getVoteEnd} getResultsViewingEnd={this.getResultsViewingEndTime}/>
         
