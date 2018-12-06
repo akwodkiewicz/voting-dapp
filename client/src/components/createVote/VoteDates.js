@@ -7,14 +7,15 @@ class VoteDates extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      voteEndDate : 0,
-      voteEndTime : 0,      
-      resultsEndDate : 0,
-      resultsEndTime : 0
+      voteEndDate : '',
+      voteEndTime : '',      
+      resultsEndDate : '',
+      resultsEndTime : ''
     }
     this.getVoteEndDateHandler = this.getVoteEndDateHandler.bind(this);
     this.getVoteEndTimeHandler = this.getVoteEndTimeHandler.bind(this);
-
+    this.getResultsEndDateHandler = this.getResultsEndDateHandler.bind(this);
+    this.getResultsEndTimeHandler = this.getResultsEndTimeHandler.bind(this);
   }
 
   getVoteEndDateHandler(e) {
@@ -24,9 +25,9 @@ class VoteDates extends Component {
     this.setState(()=>({
       voteEndDate : result
     }))
-    if(this.state.voteEndTime !== 0) {
+    if(this.state.voteEndTime !== '') {
       result.set({'hour': this.state.voteEndTime.hour(), 'minute': this.state.voteEndTime.minute() });
-      this.props.getVoteEnd(result.unix());
+      this.props.getVoteEnd(result.utc().unix());
     } 
   }
 
@@ -37,12 +38,38 @@ class VoteDates extends Component {
     this.setState(()=>({
       voteEndTime : result
     }))
-    if(this.state.voteEndDate !== 0) {
+    if(this.state.voteEndDate !== '') {
       result.set({'year': this.state.voteEndDate.year(), 'month': this.state.voteEndDate.month(), 'date': this.state.voteEndDate.date()});
-      this.props.getVoteEnd(result.unix());
+      this.props.getVoteEnd(result.utc().unix());
     } 
   }
   
+  getResultsEndDateHandler(e) {
+    let result = moment();
+    result.set({'year': e.year(), 'month': e.month(), 'date': e.date()})
+    
+    this.setState(()=>({
+      resultsEndDate : result
+    }))
+    if(this.state.resultsEndTime !== '') {
+      result.set({'hour': this.state.resultsEndTime.hour(), 'minute': this.state.resultsEndTime.minute() });
+      this.props.getVoteEnd(result.utc().unix());
+    } 
+  }
+
+  getResultsEndTimeHandler(e) {
+    let result= moment();
+    result.set({'hour': e.hour(), 'minute': e.minute()})
+    
+    this.setState(()=>({
+      resultsEndTime : result
+    }))
+    if(this.state.resultsEndDate !== '') {
+      result.set({'year': this.state.resultsEndDate.year(), 'month': this.state.resultsEndDate.month(), 'date': this.state.resultsEndDate.date()});
+      this.props.getVoteEnd(result.utc().unix());
+    } 
+  }
+
   render() {
     return (
       <FormGroup>
@@ -92,11 +119,7 @@ class VoteDates extends Component {
             <Datetime 
                 inputProps={{id: 'voteTimeEnd'}}
                 closeOnSelect={true}
-                dateFormat={false}
                 onChange={this.getVoteEndTimeHandler}
-                isValidDate = {(current) => {
-                  return current.hour() > 11;
-                }}
               />
             </Col>
 

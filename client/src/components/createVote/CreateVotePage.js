@@ -15,19 +15,22 @@ class CreateVotePage extends Component {
 
     this.state = {
       question: '',
+      answers: [],
+      voteEndTime: 0,
+      resultsViewingEndTime: 0,
       categoryPanel: 'existing',
       category: '',
-      answers: [],
       voteType: 'public',   
       // TODO:
       //privilegedVoters: []         
     }
     this.getQuestion = this.getQuestion.bind(this);
+    this.getVoteEnd = this.getVoteEnd.bind(this);
+    //this.getPrivilegedVoters = this.getPrivilegedVoters.bind(this);
     this.addAnswer = this.addAnswer.bind(this);
     this.changeCategoryPanel = this.changeCategoryPanel.bind(this);
     this.handleCreateVote = this.handleCreateVote.bind(this);
     this.getCategory = this.getCategory.bind(this);
-    //this.getPrivilegedVoters = this.getPrivilegedVoters.bind(this);
   }
 
   getQuestion(e) {
@@ -37,7 +40,27 @@ class CreateVotePage extends Component {
     }))
   }
 
-  changeCategoryPanel({target}) {
+  // TODO:
+  // getPrivilegedVoters(privilegedVoters) {
+  //   this.setState(() => ({
+  //     privilegedVoters : privilegedVoters
+  //   }))
+  // }
+
+  getVoteEnd(timeFromChild) {
+    this.setState(()=>({
+      voteEndTime: timeFromChild
+    }))
+  }
+
+  getResultsViewingEndTime(timeFromChild) {
+    this.setState(()=>({
+      resultsViewingEndTime: timeFromChild
+    }))
+  }
+
+
+  changeCategoryPanel() {
     var categoryQuestion = document.getElementById('category-from-list');
     var categoryAnswer = categoryQuestion.checked ? 'existing' : 'new';
 
@@ -46,18 +69,13 @@ class CreateVotePage extends Component {
     }))
   }
 
-  getCategory(category) {
+  getCategory(categoryFromChild) {
     this.setState(() => ({
-      category : category
+      category : categoryFromChild
     }))
   }
 
-  // TODO:
-  // getPrivilegedVoters(privilegedVoters) {
-  //   this.setState(() => ({
-  //     privilegedVoters : privilegedVoters
-  //   }))
-  // }
+  
   
   handleCreateVote() { 
     // TODO: validation   
@@ -65,6 +83,8 @@ class CreateVotePage extends Component {
     console.log(this.state.category);
     console.log(this.state.answer);
     console.log(this.state.voteType);
+    console.log(this.state.voteEndTime)
+    console.log(this.state.resultsViewingEndTime)
   }
   
   addAnswer({target}) {
@@ -98,7 +118,7 @@ class CreateVotePage extends Component {
         </FormGroup>
         <AnswersList answers={this.state.answers}/>
 
-        <VoteDates/>
+        <VoteDates getVoteEnd={this.getVoteEnd} getResultsViewingEnd={this.getResultsViewingEndTime}/>
         
         <FormGroup onChange={this.changeCategoryPanel}>
           <ControlLabel>Category</ControlLabel>
