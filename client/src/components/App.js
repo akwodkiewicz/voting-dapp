@@ -7,7 +7,7 @@ import {
 import HomePage from './home/HomePage';
 import AboutPage from './about/AboutPage';
 import CreateVotePage from  './createVote/CreateVotePage';
-import ListOfVotesPage from './listvotes/ListOfVotesPage';
+//import ListOfVotesPage from './listvotes/ListOfVotesPage';
 import Header from './common/Header';
 
 class App extends Component {

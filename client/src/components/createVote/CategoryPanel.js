@@ -1,7 +1,6 @@
 import React, { Component } from "react";
-import {ControlLabel, FormGroup, FormControl, HelpBlock, Grid, Row, Col }from 'react-bootstrap';
-import * as Datetime from 'react-datetime';
-import moment from "moment";
+import { FormControl }from 'react-bootstrap';
+
 
 class CategoryPanel extends Component {
   constructor(props) {

@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import {ControlLabel, FormControl, FormGroup, Grid, Row, Col, ListGroupItem, ListGroup, Button }from 'react-bootstrap';
+import { ListGroupItem, ListGroup }from 'react-bootstrap';
 
 class AnswersList extends Component {
   constructor(props) {

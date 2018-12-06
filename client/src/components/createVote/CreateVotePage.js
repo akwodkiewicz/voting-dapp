@@ -5,8 +5,7 @@ import VoteDates from './VoteDates';
 import FieldGroup from '../common/FieldGroup';
 import CategoryPanel from "./CategoryPanel";
 import 'react-datetime/css/react-datetime.css';
-import moment from 'moment';
-import { FormGroup, FormControl, ControlLabel, Button, Radio, InputGroup, HelpBlock, Grid, Row, Col } from 'react-bootstrap';
+import { FormGroup, FormControl, ControlLabel, Button, Radio, InputGroup, HelpBlock } from 'react-bootstrap';
 
 
 class CreateVotePage extends Component {

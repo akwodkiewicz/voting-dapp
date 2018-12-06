@@ -1,7 +1,5 @@
 import React, { Component } from "react";
-import {ControlLabel, FormControl, FormGroup, Grid, Row, Col }from 'react-bootstrap';
-import * as Datetime from 'react-datetime';
-import moment from "moment";
+import {ControlLabel, FormControl, FormGroup }from 'react-bootstrap';
 
 class PrivilegedAddresses extends Component {
   constructor(props) {

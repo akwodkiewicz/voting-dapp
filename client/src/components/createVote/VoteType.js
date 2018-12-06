@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import {ControlLabel, FormGroup, Radio, FormControl}from 'react-bootstrap';
+import { ControlLabel, FormGroup, Radio }from 'react-bootstrap';
 import PrivilegedAddresses from './PrivilegedAddresses';
 
 class VoteType extends Component {
