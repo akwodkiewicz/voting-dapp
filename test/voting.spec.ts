@@ -1,9 +1,6 @@
-import Web3 = require("web3");
-import { createCategoryName, createVotingOptions } from "../app/web3helpers";
+import { createCategoryName, createVotingOptions, decodeVotingOption, mineEmptyBlock } from "../app/web3helpers";
 import { CategoryContractInstance, ManagerContractInstance, VotingContractInstance } from "../types/truffle-contracts";
 import { CategoryContract, ManagerContract, VotingContract } from "./consts";
-
-const web3 = new Web3(Web3.givenProvider);
 
 contract("VotingContract", async (accounts) => {
     let managerInstance: ManagerContractInstance;
@@ -128,15 +125,7 @@ contract("VotingContract", async (accounts) => {
                     while (Math.floor(Date.now() / 1000) < votingEndTime);
 
                     // Mine an empty block to bump the latest block timestamp
-                    web3.currentProvider.send(
-                        {
-                            id: 0,
-                            jsonrpc: "2.0",
-                            method: "evm_mine",
-                            params: [],
-                        },
-                        () => undefined
-                    );
+                    await mineEmptyBlock();
                 });
 
                 it("returns correct voting results", async () => {
@@ -150,6 +139,139 @@ contract("VotingContract", async (accounts) => {
                             expect(num).to.equal(0);
                         }
                     });
+                });
+            });
+        });
+    });
+
+    context("In a private voting with 5 UTF-8 options", async () => {
+        let votingContract: VotingContractInstance;
+        let votingEndTime: number;
+        let resultsEndTime: number;
+        const options = ["Ą", "Ź", "🍿", "Ḽơᶉëᶆ", "ひほわれよう"];
+        const question = "Pick your favourite string";
+
+        before(async () => {
+            votingEndTime = Math.floor(Date.now() / 1000) + 23;
+            resultsEndTime = votingEndTime + 21;
+            const createVotingTxResp = await managerInstance.createVotingWithExistingCategory(
+                categoryInstance.address,
+                question,
+                createVotingOptions(options),
+                votingEndTime,
+                resultsEndTime,
+                true,
+                [accounts[0], accounts[1], accounts[2]],
+                { from: accounts[0] }
+            );
+            const logs = createVotingTxResp.logs;
+            expect(logs).length(1);
+            expect(logs[0].event).equals("VotingCreated");
+            const votingAddress: string = logs[0].args.votingAddress;
+            votingContract = await VotingContract.at(votingAddress);
+            expect(votingContract).to.be.not.null.and.not.undefined;
+        });
+
+        describe("#isPrivate", async () => {
+            it("returns true", async () => {
+                const isPrivate = await votingContract.isPrivate();
+                assert(isPrivate);
+            });
+        });
+
+        describe("#numberOfOptions", async () => {
+            it("returns 5", async () => {
+                const numberOfOptions = await votingContract.numberOfOptions();
+                assert(numberOfOptions.toNumber() === 5);
+            });
+        });
+
+        describe("#options", async () => {
+            it("returns every option correctly", async () => {
+                for (let index = 0; index < 5; index++) {
+                    const returnedOption = await votingContract.options(index);
+                    const option = decodeVotingOption(returnedOption);
+                    assert(option === options[index], `Returned: ${option} Expected: ${options[index]}`);
+                }
+            });
+        });
+
+        describe("#hasPermission", async () => {
+            it("returns true for permitted users", async () => {
+                for (let index = 0; index < 3; index++) {
+                    const hasPermission = await votingContract.hasPermission(accounts[index]);
+                    assert(hasPermission);
+                }
+            });
+
+            it("returns false for not permitted users", async () => {
+                for (let index = 3; index < 10; index++) {
+                    const hasPermission = await votingContract.hasPermission(accounts[index]);
+                    assert(!hasPermission);
+                }
+            });
+        });
+
+        describe("#viewContractInfo", async () => {
+            it("returns correct contract info", async () => {
+                const result = await votingContract.viewContractInfo();
+                const rawQuestion = result[0];
+                const rawCategory = result[1];
+                const rawOptions = result[2];
+                const rawVotingEndTime = result[3];
+                const rawResultsEndTime = result[4];
+
+                expect(rawQuestion).equals(question);
+                expect(rawCategory).equals(categoryInstance.address);
+                const decodedOptions = rawOptions.map(decodeVotingOption);
+                expect(decodedOptions).to.deep.equal(options);
+                expect(rawVotingEndTime.toNumber()).equals(votingEndTime);
+                expect(rawResultsEndTime.toNumber()).equals(resultsEndTime);
+            });
+        });
+
+        describe("#vote", async () => {
+            context("when user has permission", async () => {
+                it("allows to vote", async () => {
+                    await votingContract.vote(0, { from: accounts[0] });
+                    await votingContract.vote(0, { from: accounts[1] });
+                    await votingContract.vote(4, { from: accounts[2] });
+                });
+            });
+
+            context("when user doesn't have permission", async () => {
+                it("reverts with the right message", async () => {
+                    try {
+                        await votingContract.vote(4, { from: accounts[3] });
+                        assert(false, "This method was supposed to revert, but it didn't");
+                    } catch (error) {
+                        assert(
+                            error.reason === "You don't have voting permission",
+                            `This method reverted with wrong message: ${error.reason}`
+                        );
+                    }
+                });
+            });
+        });
+
+        describe("#viewVotes", async () => {
+            context("when votingEndTime passed", async () => {
+                before(async () => {
+                    // Wait till votingEndtime
+                    while (Math.floor(Date.now() / 1000) < votingEndTime);
+
+                    //// Mining throws: "Error: Could not connect to your Ethereum client."
+                    //// Moreover, not mining is sufficient...?
+                    // await mineEmptyBlock();
+                });
+
+                it("returns correct voting results", async () => {
+                    const votingResults = await votingContract.viewVotes({ from: accounts[1] });
+                    const votingResultsNumbers = votingResults.map((big) => big.toNumber());
+
+                    expect(votingResultsNumbers[0]).equals(2);
+                    expect(votingResultsNumbers[4]).equals(1);
+                    [1, 2, 3].forEach((num) => expect(votingResultsNumbers[num]).equals(0));
                 });
             });
         });

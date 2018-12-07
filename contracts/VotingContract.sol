@@ -13,7 +13,7 @@ contract VotingContract {
     mapping(address => bool) internal hasVoted;
     uint256[] internal votes;
 
-    modifier hasPermission(address user) {
+    modifier hasVotingPermission(address user) {
         require(!isPrivate || (isPrivate && permissions[user]), "You don't have voting permission");
         _;
     }
@@ -54,7 +54,7 @@ contract VotingContract {
     }
 
     function vote(uint _option) public 
-                                    hasPermission(msg.sender)
+                                    hasVotingPermission(msg.sender)
                                     isInVotingState() {
         require(!hasVoted[msg.sender], "You have already voted");
         votes[_option]++;
@@ -71,8 +71,11 @@ contract VotingContract {
         return votes;
     }
 
-    function viewContractInfo() public view hasPermission(msg.sender) returns(string memory, address, bytes32[] memory, uint256, uint256) {
+    function viewContractInfo() public view returns(string memory, address, bytes32[] memory, uint256, uint256) {
         return (question, category, options, votingEndTime, resultsEndTime);
     }
     
+    function hasPermission(address user) public view returns(bool) {
+        return !isPrivate || permissions[user];
+    }
 }
