@@ -46,7 +46,7 @@
     "start": "cd ./client && react-scripts start",
     "build": "cd ./client && react-scripts build",
     "testr": "cd ./client && react-scripts test",
-    "eject": "cd ./client && react-scripts eject"
+    "eject": "react-scripts eject"
   },
   "repository": {
     "type": "git",
