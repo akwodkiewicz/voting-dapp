@@ -102,8 +102,6 @@ export interface VotingContractInstance extends Truffle.ContractInstance {
         txDetails?: Truffle.TransactionDetails
     ): Promise<[string, string, (string)[], BigNumber, BigNumber]>;
 
-    hasPermission(user: string | BigNumber, txDetails?: Truffle.TransactionDetails): Promise<boolean>;
-
     vote(
         _option: number | BigNumber | string,
         txDetails?: Truffle.TransactionDetails

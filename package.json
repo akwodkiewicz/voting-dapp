@@ -7,7 +7,6 @@
         "test": "test"
     },
     "dependencies": {
-        "util": "^0.11.1",
         "web3": "^1.0.0-beta.36"
     },
     "devDependencies": {
