@@ -1,4 +1,4 @@
-pragma solidity 0.4.24;
+pragma solidity 0.5.1;
 
 import "./VotingContract.sol";
 import "./CategoryContract.sol";
@@ -14,12 +14,12 @@ contract ManagerContract {
     event VotingCreated(address creator, address votingAddress, string question);
 
     function createVotingWithExistingCategory(address _category,
-        string _question,
-        bytes32[] _options,
+        string memory _question,
+        bytes32[] memory _options,
         uint256 _votingEndTime,
         uint256 _resultsEndTime,
         bool _isPrivate,
-        address[] _permissions) public {
+        address[] memory _permissions) public {
 
         require(doesCategoryExist[_category], "Provided addresss does not point to an existing category!");
         CategoryContract cc = CategoryContract(_category);
@@ -28,14 +28,14 @@ contract ManagerContract {
     }
 
     function createVotingWithNewCategory(bytes32 _categoryName,
-        string _question,
-        bytes32[] _options,
+        string memory _question,
+        bytes32[] memory _options,
         uint256 _votingEndTime,
         uint256 _resultsEndTime,
         bool _isPrivate,
-        address[] _permissions) public {
+        address[] memory _permissions) public {
         
-        require(categoryAddress[_categoryName] == 0, "This category name is already used");
+        require(categoryAddress[_categoryName] == address(0), "This category name is already used");
 
         CategoryContract cc = new CategoryContract(_categoryName, address(this)); 
         categoryAddress[_categoryName] = address(cc);

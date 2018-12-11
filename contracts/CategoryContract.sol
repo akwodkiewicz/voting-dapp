@@ -1,4 +1,4 @@
-pragma solidity 0.4.24;
+pragma solidity 0.5.1;
 
 import "./VotingContract.sol";
 
@@ -15,12 +15,12 @@ contract CategoryContract {
     }
     
     function createVotingContract (
-        string _question,
-        bytes32[] _options,
+        string memory _question,
+        bytes32[] memory _options,
         uint256 _votingEndTime,
         uint256 _resultsEndTime,
         bool _isPrivate,
-        address[] _permissions) public returns(address) {
+        address[] memory _permissions) public returns(address) {
         
         require(msg.sender == managerContract, "Only the ManagerContract is authorised to create a new voting");
 

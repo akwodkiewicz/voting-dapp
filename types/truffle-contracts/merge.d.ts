@@ -6,16 +6,12 @@
 import * as TruffleContracts from ".";
 
 declare global {
-  namespace Truffle {
-    interface Artifacts {
-      require(
-        name: "CategoryContract"
-      ): TruffleContracts.CategoryContractContract;
-      require(
-        name: "ManagerContract"
-      ): TruffleContracts.ManagerContractContract;
-      require(name: "Migrations"): TruffleContracts.MigrationsContract;
-      require(name: "VotingContract"): TruffleContracts.VotingContractContract;
+    namespace Truffle {
+        interface Artifacts {
+            require(name: "CategoryContract"): TruffleContracts.CategoryContractContract;
+            require(name: "ManagerContract"): TruffleContracts.ManagerContractContract;
+            require(name: "Migrations"): TruffleContracts.MigrationsContract;
+            require(name: "VotingContract"): TruffleContracts.VotingContractContract;
+        }
     }
-  }
 }
