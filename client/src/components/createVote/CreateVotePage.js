@@ -1,14 +1,5 @@
 import React, { Component } from "react";
-import AnswersList from "./AnswersList";
-import VoteType from './VoteType';
-import VoteDates from './VoteDates';
-import FieldGroup from '../common/FieldGroup';
-import CategoryPanel from "./CategoryPanel";
 import CreateVoteForm from './CreateVoteForm';
-import 'react-datetime/css/react-datetime.css';
-import { FormGroup, FormControl, ControlLabel, Button, Radio, InputGroup, HelpBlock } from 'react-bootstrap';
-import AboutPage from '../about/AboutPage'
-import HomePage from '../home/HomePage'
 import LoadingResult from "./LoadingResult"
 import DisplayResult from './DisplayResult'
 class CreateVotePage extends Component {
@@ -17,26 +8,29 @@ class CreateVotePage extends Component {
 
     this.state = {
       mode: 'form',
-      resultStatus: 'success'       
+      resultStatus: 'success',
+      formData: null 
     }
 
     this.getSubmitData = this.getSubmitData.bind(this)
     this.getTransactionResult = this.getTransactionResult.bind(this)
   }
  
-  getSubmitData() {
+  getSubmitData(formData) {
     // get some data
     
     this.setState(() => ({
-      mode: 'fetching'
+      mode: 'fetching',
+      formData: formData
     }))
 
     
   }
 
   getTransactionResult() {
-    // TODO: change method to awaiting for the response from the blockchain
-    //this.sleep(2000)
+    // TODO: here send the data to blockchain using data from state.formData
+
+    // your code
 
     this.setState(() => ({
       mode: 'success'

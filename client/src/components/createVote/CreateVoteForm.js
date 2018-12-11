@@ -91,17 +91,8 @@ class CreateVoteForm extends Component {
 
   
   
-  handleCreateVote() { 
-    // TODO: validation   
-    console.log(this.state.question);
-    console.log(this.state.answers);
-    console.log(this.state.voteEndTime)
-    console.log(this.state.resultsViewingEndTime)
-    console.log(this.state.category);
-    console.log(this.state.voteType);    
-    console.log(this.state.privilegedVoters);
-
-    this.props.getSubmitData()
+  handleCreateVote() {   
+    this.props.getSubmitData(this.state)
   }
   
   addAnswer({target}) {
