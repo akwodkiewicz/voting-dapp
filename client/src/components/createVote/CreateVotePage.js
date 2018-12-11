@@ -2,6 +2,16 @@ import React, { Component } from "react";
 import CreateVoteForm from './CreateVoteForm';
 import LoadingResult from "./LoadingResult"
 import DisplayResult from './DisplayResult'
+import AnswersList from "./AnswersList";
+import VoteType from "./VoteType";
+import VoteDates from "./VoteDates";
+import FieldGroup from "../common/FieldGroup";
+import CategoryPanel from "./CategoryPanel";
+import "react-datetime/css/react-datetime.css";
+import { FormGroup, FormControl, ControlLabel, Button, Radio, InputGroup, HelpBlock } from "react-bootstrap";
+import ManagerContract from "../../build/ManagerContract.json";
+import TruffleContract from "truffle-contract";
+import Web3 from "web3";
 class CreateVotePage extends Component {
   constructor() {
     super();
@@ -27,11 +37,24 @@ class CreateVotePage extends Component {
     
   }
 
-  getTransactionResult() {
-    // TODO: here send the data to blockchain using data from state.formData
-
-    // your code
-
+  getTransactionResult= async () => {
+    const accounts = await window.ethereum.enable();
+    const web3 = new Web3(window.ethereum);
+    const Contract = TruffleContract(ManagerContract);
+    Contract.setProvider(web3.currentProvider);
+    Contract.defaults({ from: accounts[0] });
+    const instance = await Contract.at("0xe5B6B31563C41d1de6C3a002F891104Fe5ea3171"); // change this address if you need to
+    const result = await instance.createVotingWithNewCategory(
+      web3.utils.fromUtf8(this.state.formData.category),
+      this.state.formData.question,
+      this.state.formData.answers.map((opt) => web3.utils.fromUtf8(opt)),
+      this.state.formData.voteEndTime,
+      this.state.formData.resultsViewingEndTime,
+      this.state.formData.voteType,
+      this.state.formData.privilegedVoters
+    );
+    
+    console.log(result);
     this.setState(() => ({
       mode: 'success'
     }))
