@@ -12,6 +12,55 @@ import HomePage from '../home/HomePage'
 import LoadingResult from "./LoadingResult"
 import DisplayResult from './DisplayResult'
 class CreateVotePage extends Component {
+  constructor() {
+    super();
+
+    this.state = {
+      mode: 'form',
+      resultStatus: 'success'       
+    }
+
+    this.getSubmitData = this.getSubmitData.bind(this)
+    this.getTransactionResult = this.getTransactionResult.bind(this)
+  }
+ 
+  getSubmitData() {
+    // get some data
+    
+    this.setState(() => ({
+      mode: 'fetching'
+    }))
+
+    
+  }
+
+  getTransactionResult() {
+    // TODO: change method to awaiting for the response from the blockchain
+    //this.sleep(2000)
+
+    this.setState(() => ({
+      mode: 'success'
+    }))
+  }
+
+  render() {
+    if(this.state.mode === 'form') {
+      return (
+        <CreateVoteForm getSubmitData={this.getSubmitData} />
+      )
+    }
+    else if(this.state.mode === 'fetching') {
+      return (
+        <LoadingResult getTransactionResult={this.getTransactionResult}/>
+      )
+    }
+    else {
+      return (
+        <DisplayResult status={this.state.resultStatus}/>
+      )
+    }
+    
+  }
   
 }
 
