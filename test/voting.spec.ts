@@ -1,5 +1,5 @@
 import Web3 = require("web3");
-import { createCategoryName, createVotingOptions } from "../app/web3helpers";
+import { createCategoryName, createVotingOptions, decodeVotingOption } from "../app/web3helpers";
 import { CategoryContractInstance, ManagerContractInstance, VotingContractInstance } from "../types/truffle-contracts";
 import { CategoryContract, ManagerContract, VotingContract } from "./consts";
 
@@ -19,15 +19,16 @@ contract("VotingContract", async (accounts) => {
         let votingContract: VotingContractInstance;
         const votingEndTime = Math.floor(Date.now() / 1000) + 23;
         const resultsEndTime = votingEndTime + 21;
-
+        const question = "Pick your favourite l€tt€rs";
+        const options = ["A", "⡎", "ቢ", "ᚻᛖ", "Δ", "؂", "ひらがな", "H", "I", "J"];
         const userOneOption = 4;
         const userTwoOption = 7;
 
         before(async () => {
             const createVotingTxResp = await managerInstance.createVotingWithNewCategory(
                 createCategoryName(categoryName),
-                "Pick your favourite letter",
-                createVotingOptions(["A", "B", "C", "D", "E", "F", "G", "H", "I", "J"]),
+                question,
+                createVotingOptions(options),
                 votingEndTime,
                 resultsEndTime,
                 false,
@@ -151,6 +152,24 @@ contract("VotingContract", async (accounts) => {
                         }
                     });
                 });
+            });
+        });
+
+        describe("#viewContractInfo", async () => {
+            it("returns correct contract info (using UTF-8)", async () => {
+                const result = await votingContract.viewContractInfo();
+                const rawQuestion = result[0];
+                const rawCategory = result[1];
+                const rawOptions = result[2];
+                const rawVotingEndTime = result[3];
+                const rawResultsEndTime = result[4];
+
+                expect(rawQuestion).equals(question);
+                expect(rawCategory).equals(categoryInstance.address);
+                const decodedOptions = rawOptions.map(decodeVotingOption);
+                expect(decodedOptions).to.deep.equal(options);
+                expect(rawVotingEndTime.toNumber()).equals(votingEndTime);
+                expect(rawResultsEndTime.toNumber()).equals(resultsEndTime);
             });
         });
     });
