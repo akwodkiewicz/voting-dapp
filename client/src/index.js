@@ -5,9 +5,9 @@ import { BrowserRouter } from 'react-router-dom'
 //import 'bootstrap/dist/js/bootstrap.bundle.min';
 //import 'bootstrap/dist/css/bootstrap.css';
 
-render((
+render(
     <BrowserRouter>
       <App />
     </BrowserRouter>
-) ,document.getElementById('root')
+ ,document.getElementById('root')
 );
