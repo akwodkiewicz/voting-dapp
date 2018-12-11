@@ -4,5 +4,13 @@
     "semi": true,
     "singleQuote": false,
     "printWidth": 120,
-    "arrowParens": "always"
+    "arrowParens": "always",
+    "overrides": [
+        {
+            "files": ["*.js"],
+            "options": {
+                "tabWidth": 2
+            }
+        }
+    ]
 }
