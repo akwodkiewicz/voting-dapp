@@ -1,23 +1,17 @@
-pragma solidity ^0.4.23;
-pragma experimental ABIEncoderV2;
+pragma solidity 0.4.24;
+
 
 contract VotingContract {
     
-    address manager;
     string public question;
     address public category;
-    string[] public options;
+    bytes32[] public options;
     uint256 public votingEndTime;
     uint256 public resultsEndTime;
     bool public isPrivate;
-    mapping(address => bool) permissions;
-    mapping(address => bool) hasVoted;
-    uint256[] votes;
-    
-    modifier isManager(address user) {
-        require(user == manager);
-        _;
-    }
+    mapping(address => bool) internal permissions;
+    mapping(address => bool) internal hasVoted;
+    uint256[] internal votes;
 
     modifier hasPermission(address user) {
         require(!isPrivate || (isPrivate && permissions[user]), "You don't have voting permission");
@@ -34,19 +28,19 @@ contract VotingContract {
         _;
     }
     
-    constructor (address _manager,
-                string _question,
-                address _category,
-                string[] _options,
-                uint256 _votingEndTime,
-                uint256 _resultsEndTime,
-                bool _isPrivate,
-                address[] _permissions) public {
-        require(_votingEndTime > now, "Voting end time has to be somwhere in the future");
-        require(_votingEndTime < _resultsEndTime, "Voting end time has to be earlier than results end time");
+    // TODO: Do we need some creator requirements?
+    constructor(string _question,
+        address _category,
+        bytes32[] _options,
+        uint256 _votingEndTime,
+        uint256 _resultsEndTime,
+        bool _isPrivate,
+        address[] _permissions) public {
+
+        require(_votingEndTime >= now + 20, "Voting end time has to be somewhere in the future (at least 20s from now)");
+        require(_resultsEndTime >= _votingEndTime + 20, "Results end time has to be later than voting end time (at least 20s)");
         require(_options.length >= 2, "You cannot create a ballot without at least 2 options");
                     
-        manager = _manager;
         question = _question;
         category = _category;
         options = _options;
@@ -67,8 +61,17 @@ contract VotingContract {
         hasVoted[msg.sender] = true;
     }
     
-    function viewVotes() view public returns(uint256[]) {
-        require(manager == msg.sender || (now > votingEndTime && now < resultsEndTime));
+    function numberOfOptions() public view returns(uint) {
+        return options.length;
+    }
+
+    function viewVotes() public view returns(uint256[] memory) {
+        require(now >= votingEndTime && now < resultsEndTime, "You cannot view the votes now");
         return votes;
     }
+
+    function viewContractInfo() public view hasPermission(msg.sender) returns(string, address, bytes32[], uint256, uint256) {
+        return (question, category, options, votingEndTime, resultsEndTime);
+    }
+    
 }
