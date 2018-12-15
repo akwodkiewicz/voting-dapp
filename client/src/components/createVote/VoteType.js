@@ -1,27 +1,21 @@
 import React, { Component } from "react";
-import { ControlLabel, FormGroup, Radio }from 'react-bootstrap';
-import PrivilegedAddresses from './PrivilegedAddresses';
+import { ControlLabel, FormGroup, Radio } from "react-bootstrap";
+import PrivilegedAddresses from "./PrivilegedAddresses";
 
 class VoteType extends Component {
   constructor(props) {
     super(props);
-
     this.state = {
-      voteType: "public",
-      privilegedAddresses: []      
-    }
+      privilegedAddresses: [],
+    };
     this.changeVoteType = this.changeVoteType.bind(this);
     this.getPrivilegedAddresses = this.getPrivilegedAddresses.bind(this);
   }
-  
-  changeVoteType({target}) {
-    var publicVote = document.getElementById('votePublic');
-    var voteType = publicVote.checked ? 'public' : 'private';
 
-    this.setState(() => ({
-      voteType: voteType
-    }))
-    this.props.getVoteType(voteType);
+  changeVoteType() {
+    const publicVote = document.getElementById("votePublic");
+    const voteType = publicVote.checked ? "public" : "private";
+    this.props.setVoteTypeInParent(voteType);
   }
 
   getPrivilegedAddresses(addresses) {
@@ -33,18 +27,18 @@ class VoteType extends Component {
       <React.Fragment>
         <ControlLabel>Vote type</ControlLabel>
         <FormGroup onChange={this.changeVoteType}>
-          <Radio name="radioGroup" defaultChecked id="votePublic" inline>
+          <Radio name="radioGroup" checked={this.props.voteType === "public" ? true : false} id="votePublic" inline>
             Public
           </Radio>
-          <Radio name="radioGroup" inline>
+          <Radio name="radioGroup" checked={this.props.voteType === "private" ? true : false} inline>
             Private
           </Radio>
         </FormGroup>
 
-        <PrivilegedAddresses getPrivilegedAddresses={this.getPrivilegedAddresses} voteType={this.state.voteType} />
+        <PrivilegedAddresses getPrivilegedAddresses={this.getPrivilegedAddresses} voteType={this.props.voteType} />
       </React.Fragment>
     );
-  }    
+  }
 }
 
 export default VoteType;

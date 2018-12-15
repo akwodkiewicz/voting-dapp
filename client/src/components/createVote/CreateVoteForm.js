@@ -21,12 +21,13 @@ class CreateVoteForm extends Component {
       voteType: "public",
       privilegedVoters: [],
     };
+
     this.getQuestion = this.getQuestion.bind(this);
     this.getAnswers = this.getAnswers.bind(this);
     this.getVoteEnd = this.getVoteEnd.bind(this);
     this.getResultsViewingEndTime = this.getResultsViewingEndTime.bind(this);
     this.getCategory = this.getCategory.bind(this);
-    this.getVoteType = this.getVoteType.bind(this);
+    this.setVoteType = this.setVoteType.bind(this);
     this.getPrivilegedVoters = this.getPrivilegedVoters.bind(this);
     this.addAnswer = this.addAnswer.bind(this);
     this.changeCategoryPanel = this.changeCategoryPanel.bind(this);
@@ -81,7 +82,7 @@ class CreateVoteForm extends Component {
     }));
   }
 
-  getVoteType(voteTypeFromChild) {
+  setVoteType(voteTypeFromChild) {
     this.setState(() => ({
       voteType: voteTypeFromChild,
     }));
@@ -156,9 +157,11 @@ class CreateVoteForm extends Component {
         </FormGroup>
 
         <CategoryPanel getCategory={this.getCategory} categoryPanel={this.state.categoryPanel} />
-
-        <VoteType getVoteType={this.getVoteType} getPrivilegedVoters={this.getPrivilegedVoters} />
-
+        <VoteType
+          setVoteTypeInParent={this.setVoteType}
+          getPrivilegedVoters={this.getPrivilegedVoters}
+          voteType={this.state.voteType}
+        />
         <Button onClick={this.handleCreateVote}>Submit</Button>
       </form>
     );
