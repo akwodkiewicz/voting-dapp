@@ -27,8 +27,6 @@ class CreateVoteForm extends Component {
     this.getVoteEnd = this.getVoteEnd.bind(this);
     this.getResultsViewingEndTime = this.getResultsViewingEndTime.bind(this);
     this.getCategory = this.getCategory.bind(this);
-    this.setVoteType = this.setVoteType.bind(this);
-    this.getPrivilegedVoters = this.getPrivilegedVoters.bind(this);
     this.addAnswer = this.addAnswer.bind(this);
     this.changeCategoryPanel = this.changeCategoryPanel.bind(this);
     this.handleCreateVote = this.handleCreateVote.bind(this);
@@ -82,17 +80,17 @@ class CreateVoteForm extends Component {
     }));
   }
 
-  setVoteType(voteTypeFromChild) {
+  setVoteType = (voteTypeFromChild) => {
     this.setState(() => ({
       voteType: voteTypeFromChild,
     }));
-  }
+  };
 
-  getPrivilegedVoters(privilegedVoters) {
+  setPrivilegedVoters = (privilegedVotersFromChild) => {
     this.setState(() => ({
-      privilegedVoters: privilegedVoters,
+      privilegedVoters: privilegedVotersFromChild,
     }));
-  }
+  };
 
   changeCategoryPanel() {
     var categoryQuestion = document.getElementById("category-from-list");
@@ -159,8 +157,9 @@ class CreateVoteForm extends Component {
         <CategoryPanel getCategory={this.getCategory} categoryPanel={this.state.categoryPanel} />
         <VoteType
           setVoteTypeInParent={this.setVoteType}
-          getPrivilegedVoters={this.getPrivilegedVoters}
+          setPrivilegedVotersInParent={this.setPrivilegedVoters}
           voteType={this.state.voteType}
+          privilegedVoters={this.state.privilegedVoters}
         />
         <Button onClick={this.handleCreateVote}>Submit</Button>
       </form>

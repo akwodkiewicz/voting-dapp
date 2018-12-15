@@ -5,22 +5,17 @@ import PrivilegedAddresses from "./PrivilegedAddresses";
 class VoteType extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-      privilegedAddresses: [],
-    };
-    this.changeVoteType = this.changeVoteType.bind(this);
-    this.getPrivilegedAddresses = this.getPrivilegedAddresses.bind(this);
   }
 
-  changeVoteType() {
+  changeVoteType = () => {
     const publicVote = document.getElementById("votePublic");
     const voteType = publicVote.checked ? "public" : "private";
     this.props.setVoteTypeInParent(voteType);
-  }
+  };
 
-  getPrivilegedAddresses(addresses) {
-    this.props.getPrivilegedVoters(addresses);
-  }
+  setPrivilegedVoters = (voters) => {
+    this.props.setPrivilegedVotersInParent(voters);
+  };
 
   render() {
     return (
@@ -35,7 +30,13 @@ class VoteType extends Component {
           </Radio>
         </FormGroup>
 
-        <PrivilegedAddresses getPrivilegedAddresses={this.getPrivilegedAddresses} voteType={this.props.voteType} />
+        <PrivilegedAddresses
+          setPrivilegedAddressesInParent={this.setPrivilegedVoters}
+          voteType={this.props.voteType}
+          textAreaValue={this.props.privilegedVoters.reduce((prevVal, currVal, currIdx) => {
+            return currIdx === 0 ? currVal : prevVal + "\n" + currVal;
+          }, "")}
+        />
       </React.Fragment>
     );
   }
