@@ -51,6 +51,7 @@
         "react-datetime": "^2.16.3",
         "react-dev-utils": "^6.1.1",
         "react-dom": "^16.6.3",
+        "react-loader-spinner": "^2.3.0",
         "react-router": "^4.0.0",
         "react-router-dom": "^4.0.0",
         "resolve": "1.8.1",
