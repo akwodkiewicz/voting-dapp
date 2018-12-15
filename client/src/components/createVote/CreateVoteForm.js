@@ -7,6 +7,10 @@ import CategoryPanel from "./CategoryPanel";
 import "react-datetime/css/react-datetime.css";
 import { FormGroup, FormControl, ControlLabel, Button, Radio, InputGroup, HelpBlock } from "react-bootstrap";
 
+import ManagerContract from "../../build/ManagerContract.json";
+import CategoryContract from "../../build/CategoryContract.json";
+import Web3 from "web3";
+
 class CreateVoteForm extends Component {
   constructor() {
     super();
@@ -26,17 +30,34 @@ class CreateVoteForm extends Component {
     this.getAnswers = this.getAnswers.bind(this);
     this.getVoteEnd = this.getVoteEnd.bind(this);
     this.getResultsViewingEndTime = this.getResultsViewingEndTime.bind(this);
-    this.getCategory = this.getCategory.bind(this);
     this.addAnswer = this.addAnswer.bind(this);
     this.changeCategoryPanel = this.changeCategoryPanel.bind(this);
     this.handleCreateVote = this.handleCreateVote.bind(this);
   }
 
-  componentDidMount() {
+  async componentDidMount() {
+    console.log("form componentDidMount");
+    const accounts = await window.ethereum.enable();
+    const web3 = new Web3(window.ethereum);
+    const managerInstance = new web3.eth.Contract(ManagerContract.abi, "0x457D31982A783280F42e05e22493e47f8592358D", {
+      from: accounts[0],
+    });
+
+    const numberOfCategories = await managerInstance.methods.numberOfCategories().call();
+    let categories = [];
+    for (let index = 0; index < numberOfCategories; index++) {
+      const categoryAddress = await managerInstance.methods.categoryContractsList(index).call();
+      const categoryContract = new web3.eth.Contract(CategoryContract.abi, categoryAddress);
+      const categoryName = web3.utils.toUtf8(await categoryContract.methods.categoryName().call());
+      categories.push(categoryName);
+    }
+    this.setState({
+      categoriesList: categories,
+    });
+
     if (!this.props.formData) {
       return;
     }
-
     this.setState({
       question: this.props.formData.question,
       answers: this.props.formData.answers,
@@ -74,11 +95,11 @@ class CreateVoteForm extends Component {
     }));
   }
 
-  getCategory(categoryFromChild) {
+  setCategory = (categoryFromChild) => {
     this.setState(() => ({
       category: categoryFromChild,
     }));
-  }
+  };
 
   setVoteType = (voteTypeFromChild) => {
     this.setState(() => ({
@@ -153,8 +174,11 @@ class CreateVoteForm extends Component {
             Create new category
           </Radio>
         </FormGroup>
-
-        <CategoryPanel getCategory={this.getCategory} categoryPanel={this.state.categoryPanel} />
+        <CategoryPanel
+          setCategoryInParent={this.setCategory}
+          categoryPanel={this.state.categoryPanel}
+          categoriesList={this.state.categoriesList}
+        />
         <VoteType
           setVoteTypeInParent={this.setVoteType}
           setPrivilegedVotersInParent={this.setPrivilegedVoters}
