@@ -68,7 +68,13 @@ class CreateVotePage extends Component {
 
   render() {
     if (this.state.mode === "form") {
-      return <CreateVoteForm getSubmitData={this.getSubmitData} />;
+      return (
+        <CreateVoteForm
+          getSubmitData={this.getSubmitData}
+          setFormData={this.setFormData}
+          formData={this.state.formData}
+        />
+      );
     } else if (this.state.mode === "fetching") {
       return <LoadingResult getTransactionResult={this.getTransactionResult} />;
     } else if (this.state.mode === "finalized") {

@@ -33,6 +33,23 @@ class CreateVoteForm extends Component {
     this.handleCreateVote = this.handleCreateVote.bind(this);
   }
 
+  componentDidMount() {
+    if (!this.props.formData) {
+      return;
+    }
+
+    this.setState({
+      question: this.props.formData.question,
+      answers: this.props.formData.answers,
+      voteEndTime: this.props.formData.voteEndTime,
+      resultsViewingEndTime: this.props.formData.resultsViewingEndTime,
+      categoryPanel: this.props.formData.categoryPanel,
+      category: this.props.formData.category,
+      voteType: this.props.formData.voteType,
+      privilegedVoters: this.props.formData.privilegedVoters,
+    });
+  }
+
   getQuestion(e) {
     const question = e.target.value;
     this.setState(() => ({
@@ -107,8 +124,9 @@ class CreateVoteForm extends Component {
           id="question"
           type="text"
           label="Question"
-          placeholder="Enter the question for vore"
+          placeholder="Enter the voting question"
           onChange={this.getQuestion}
+          value={this.state.question}
         />
 
         <ControlLabel>Answers</ControlLabel>
