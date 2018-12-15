@@ -1,14 +1,8 @@
 import React, { Component } from "react";
-import CreateVoteForm from './CreateVoteForm';
-import LoadingResult from "./LoadingResult"
-import DisplayResult from './DisplayResult'
-import AnswersList from "./AnswersList";
-import VoteType from "./VoteType";
-import VoteDates from "./VoteDates";
-import FieldGroup from "../common/FieldGroup";
-import CategoryPanel from "./CategoryPanel";
+import CreateVoteForm from "./CreateVoteForm";
+import LoadingResult from "./LoadingResult";
+import DisplayResult from "./DisplayResult";
 import "react-datetime/css/react-datetime.css";
-import { FormGroup, FormControl, ControlLabel, Button, Radio, InputGroup, HelpBlock } from "react-bootstrap";
 import ManagerContract from "../../build/ManagerContract.json";
 import TruffleContract from "truffle-contract";
 import Web3 from "web3";
@@ -17,27 +11,23 @@ class CreateVotePage extends Component {
     super();
 
     this.state = {
-      mode: 'form',
-      resultStatus: 'success',
-      formData: null 
-    }
+      mode: "form",
+      resultStatus: "success",
+      formData: null,
+    };
 
-    this.getSubmitData = this.getSubmitData.bind(this)
-    this.getTransactionResult = this.getTransactionResult.bind(this)
+    this.getSubmitData = this.getSubmitData.bind(this);
+    this.getTransactionResult = this.getTransactionResult.bind(this);
   }
- 
+
   getSubmitData(formData) {
-    // get some data
-    
     this.setState(() => ({
-      mode: 'fetching',
-      formData: formData
-    }))
-
-    
+      mode: "fetching",
+      formData: formData,
+    }));
   }
 
-  getTransactionResult= async () => {
+  getTransactionResult = async () => {
     const accounts = await window.ethereum.enable();
     const web3 = new Web3(window.ethereum);
     const Contract = TruffleContract(ManagerContract);
@@ -53,32 +43,22 @@ class CreateVotePage extends Component {
       this.state.formData.voteType,
       this.state.formData.privilegedVoters
     );
-    
+
     console.log(result);
     this.setState(() => ({
-      mode: 'success'
-    }))
-  }
+      mode: "success",
+    }));
+  };
 
   render() {
-    if(this.state.mode === 'form') {
-      return (
-        <CreateVoteForm getSubmitData={this.getSubmitData} />
-      )
+    if (this.state.mode === "form") {
+      return <CreateVoteForm getSubmitData={this.getSubmitData} />;
+    } else if (this.state.mode === "fetching") {
+      return <LoadingResult getTransactionResult={this.getTransactionResult} />;
+    } else {
+      return <DisplayResult status={this.state.resultStatus} />;
     }
-    else if(this.state.mode === 'fetching') {
-      return (
-        <LoadingResult getTransactionResult={this.getTransactionResult}/>
-      )
-    }
-    else {
-      return (
-        <DisplayResult status={this.state.resultStatus}/>
-      )
-    }
-    
   }
-  
 }
 
-export default CreateVotePage
+export default CreateVotePage;
