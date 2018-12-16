@@ -178,7 +178,12 @@ class CreateVoteForm extends Component {
           getResultsViewingEnd={this.setResultsViewingEndTime}
           voteEndDateTime={this.state.voteEndTime !== 0 ? moment(this.state.voteEndTime, "X") : moment()}
           resultsEndDateTime={
-            this.state.resultsViewingEndTime !== 0 ? moment(this.state.resultsViewingEndTime, "X") : moment()
+            this.state.resultsViewingEndTime !== 0
+              ? moment(this.state.resultsViewingEndTime, "X")
+              : moment()
+                  .add(3, "d")
+                  .set("h", 21)
+                  .set("m", 0)
           }
         />
 
