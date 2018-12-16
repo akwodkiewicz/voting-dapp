@@ -2,7 +2,6 @@ import React, { Component } from "react";
 import AnswersList from "./AnswersList";
 import VoteType from "./VoteType";
 import VoteDates from "./VoteDates";
-import FieldGroup from "../common/FieldGroup";
 import CategoryPanel from "./CategoryPanel";
 import "react-datetime/css/react-datetime.css";
 import { FormGroup, FormControl, ControlLabel, Button, Radio, InputGroup, HelpBlock } from "react-bootstrap";
@@ -26,18 +25,9 @@ class CreateVoteForm extends Component {
       voteType: "public",
       privilegedVoters: [],
     };
-
-    this.getQuestion = this.getQuestion.bind(this);
-    this.getAnswers = this.getAnswers.bind(this);
-    this.getVoteEnd = this.getVoteEnd.bind(this);
-    this.getResultsViewingEndTime = this.getResultsViewingEndTime.bind(this);
-    this.addAnswer = this.addAnswer.bind(this);
-    this.changeCategoryPanel = this.changeCategoryPanel.bind(this);
-    this.handleCreateVote = this.handleCreateVote.bind(this);
   }
 
   async componentDidMount() {
-    console.log("form componentDidMount");
     const accounts = await window.ethereum.enable();
     const web3 = new Web3(window.ethereum);
     const managerInstance = new web3.eth.Contract(ManagerContract.abi, "0x457D31982A783280F42e05e22493e47f8592358D", {
@@ -71,12 +61,12 @@ class CreateVoteForm extends Component {
     });
   }
 
-  getQuestion(e) {
+  setQuestion = (e) => {
     const question = e.target.value;
     this.setState(() => ({
       question: question,
     }));
-  }
+  };
 
   setTypedAnswer = (e) => {
     this.setState(() => ({
@@ -84,23 +74,23 @@ class CreateVoteForm extends Component {
     }));
   };
 
-  getAnswers(answersFromChild) {
+  setAnswers = (answersFromChild) => {
     this.setState(() => ({
       answers: answersFromChild,
     }));
-  }
+  };
 
-  getVoteEnd(timeFromChild) {
+  setVoteEnd = (timeFromChild) => {
     this.setState(() => ({
       voteEndTime: timeFromChild,
     }));
-  }
+  };
 
-  getResultsViewingEndTime(timeFromChild) {
+  setResultsViewingEndTime = (timeFromChild) => {
     this.setState(() => ({
       resultsViewingEndTime: timeFromChild,
     }));
-  }
+  };
 
   setCategory = (categoryFromChild) => {
     this.setState(() => ({
@@ -120,18 +110,18 @@ class CreateVoteForm extends Component {
     }));
   };
 
-  changeCategoryPanel() {
+  changeCategoryPanel = () => {
     var categoryQuestion = document.getElementById("category-from-list");
     var categoryAnswer = categoryQuestion.checked ? "existing" : "new";
 
     this.setState(() => ({
       categoryPanel: categoryAnswer,
     }));
-  }
+  };
 
-  handleCreateVote() {
-    this.props.getSubmitData(this.state);
-  }
+  handleCreateVote = () => {
+    this.props.setSubmitData(this.state);
+  };
 
   addAnswer = () => {
     var answer = document.getElementById("answer").value;
@@ -149,18 +139,18 @@ class CreateVoteForm extends Component {
   render() {
     return (
       <form>
-        <FieldGroup
-          id="question"
-          type="text"
-          label="Question"
-          placeholder="Enter the voting question"
-          onChange={this.getQuestion}
-          value={this.state.question}
-        />
+        <FormGroup controlId="question">
+          <ControlLabel>Question</ControlLabel>
+          <FormControl
+            type="text"
+            placeholder="Enter the voting question"
+            onChange={this.setQuestion}
+            value={this.state.question}
+          />
+        </FormGroup>
 
-        <ControlLabel>Answers</ControlLabel>
-
-        <FormGroup>
+        <FormGroup controlId="answer">
+          <ControlLabel>Answers</ControlLabel>
           <HelpBlock>There must be at least 2 answers.</HelpBlock>
           <InputGroup>
             <FormControl
@@ -174,9 +164,10 @@ class CreateVoteForm extends Component {
             </InputGroup.Button>
           </InputGroup>
         </FormGroup>
-        <AnswersList getAnswers={this.getAnswers} answers={this.state.answers} />
 
-        <VoteDates getVoteEnd={this.getVoteEnd} getResultsViewingEnd={this.getResultsViewingEndTime} />
+        <AnswersList setAnswers={this.setAnswers} answers={this.state.answers} />
+
+        <VoteDates getVoteEnd={this.setVoteEnd} getResultsViewingEnd={this.setResultsViewingEndTime} />
 
         <FormGroup onChange={this.changeCategoryPanel}>
           <ControlLabel>Category</ControlLabel>
@@ -188,17 +179,20 @@ class CreateVoteForm extends Component {
             Create new category
           </Radio>
         </FormGroup>
+
         <CategoryPanel
           setCategoryInParent={this.setCategory}
           categoryPanel={this.state.categoryPanel}
           categoriesList={this.state.categoriesList}
         />
+
         <VoteType
           setVoteTypeInParent={this.setVoteType}
           setPrivilegedVotersInParent={this.setPrivilegedVoters}
           voteType={this.state.voteType}
           privilegedVoters={this.state.privilegedVoters}
         />
+
         <Button onClick={this.handleCreateVote}>Submit</Button>
       </form>
     );

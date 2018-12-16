@@ -6,6 +6,7 @@ import "react-datetime/css/react-datetime.css";
 import ManagerContract from "../../build/ManagerContract.json";
 import TruffleContract from "truffle-contract";
 import Web3 from "web3";
+
 class CreateVotePage extends Component {
   constructor() {
     super();
@@ -15,24 +16,20 @@ class CreateVotePage extends Component {
       resultStatus: "success",
       formData: null,
     };
-
-    this.getSubmitData = this.getSubmitData.bind(this);
-    this.setModeToForm = this.setModeToForm.bind(this);
-    this.getTransactionResult = this.getTransactionResult.bind(this);
   }
 
-  getSubmitData(formData) {
+  setSubmitData = (formData) => {
     this.setState(() => ({
       mode: "fetching",
       formData: formData,
     }));
-  }
+  };
 
-  setModeToForm() {
+  setModeToForm = () => {
     this.setState(() => ({
       mode: "form",
     }));
-  }
+  };
 
   getTransactionResult = async () => {
     const accounts = await window.ethereum.enable();
@@ -70,7 +67,7 @@ class CreateVotePage extends Component {
     if (this.state.mode === "form") {
       return (
         <CreateVoteForm
-          getSubmitData={this.getSubmitData}
+          setSubmitData={this.setSubmitData}
           setFormData={this.setFormData}
           formData={this.state.formData}
         />
