@@ -124,9 +124,9 @@ class CreateVoteForm extends Component {
   };
 
   addAnswer = () => {
-    var answer = document.getElementById("answer").value;
-    var allAnswers = this.state.answers;
-    if (allAnswers.includes(answer)) {
+    const answer = document.getElementById("answer").value;
+    const allAnswers = this.state.answers;
+    if (!answer || !answer.trim() || allAnswers.includes(answer)) {
       return;
     }
     allAnswers.push(answer);
@@ -157,6 +157,11 @@ class CreateVoteForm extends Component {
               type="text"
               placeholder="Enter the answer"
               onChange={this.setTypedAnswer}
+              onKeyPress={(event) => {
+                if (event.key === "Enter") {
+                  this.addAnswer();
+                }
+              }}
               value={this.state.typedAnswer}
             />
             <InputGroup.Button>
