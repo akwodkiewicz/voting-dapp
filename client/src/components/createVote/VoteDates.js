@@ -6,47 +6,18 @@ import moment from "moment";
 class VoteDates extends Component {
   constructor(props) {
     super(props);
-
-    this.state = {
-      voteEndDateTime: moment(),
-      resultsEndDateTime: moment()
-        .add(1, "day")
-        .add(1, "hour"),
-    };
-  }
-
-  componentDidMount() {
-    let newState = {};
-    if (this.props.voteEndDate) {
-      newState.voteEndDate = this.props.voteEndDate;
-    }
-    if (this.props.voteEndTime) {
-      newState.voteEndTime = this.props.voteEndTime;
-    }
-    if (this.props.resultsEndDate) {
-      newState.resultsEndDate = this.props.resultsEndDate;
-    }
-    if (this.props.resultsEndTime) {
-      newState.resultsEndTime = this.props.resultsEndTime;
-    }
-    this.setState(newState);
   }
 
   voteEndDateHandler = (inputMoment) => {
     const newVoteEndDateTime = moment(inputMoment).set({
-      hours: this.state.voteEndDateTime.hours(),
-      minutes: this.state.voteEndDateTime.minutes(),
+      hours: this.props.voteEndDateTime.hours(),
+      minutes: this.props.voteEndDateTime.minutes(),
     });
-    this.setState(() => ({
-      voteEndDateTime: newVoteEndDateTime,
-    }));
 
     // Reset resultsEndDateTime if neccessary
-    if (newVoteEndDateTime.isAfter(this.state.resultsEndDateTime, "minute")) {
+    if (newVoteEndDateTime.isAfter(this.props.resultsEndDateTime, "minute")) {
       const newResultsEndDateTime = moment(newVoteEndDateTime).add(1, "d");
-      this.setState(() => ({
-        resultsEndDateTime: newResultsEndDateTime,
-      }));
+      this.props.getResultsViewingEnd(newResultsEndDateTime.utc().unix());
     }
 
     this.props.getVoteEnd(newVoteEndDateTime.utc().unix());
@@ -54,20 +25,15 @@ class VoteDates extends Component {
 
   voteEndTimeHandler = (inputMoment) => {
     const newVoteEndDateTime = moment(inputMoment).set({
-      year: this.state.voteEndDateTime.year(),
-      month: this.state.voteEndDateTime.month(),
-      day: this.state.voteEndDateTime.day(),
+      year: this.props.voteEndDateTime.year(),
+      month: this.props.voteEndDateTime.month(),
+      day: this.props.voteEndDateTime.day(),
     });
-    this.setState(() => ({
-      voteEndDateTime: newVoteEndDateTime,
-    }));
 
     // Reset resultsEndDateTime if neccessary
-    if (newVoteEndDateTime.isAfter(this.state.resultsEndDateTime, "minute")) {
+    if (newVoteEndDateTime.isAfter(this.props.resultsEndDateTime, "minute")) {
       const newResultsEndDateTime = moment(newVoteEndDateTime).add(1, "h");
-      this.setState(() => ({
-        resultsEndDateTime: newResultsEndDateTime,
-      }));
+      this.props.getResultsViewingEnd(newResultsEndDateTime.utc().unix());
     }
 
     this.props.getVoteEnd(newVoteEndDateTime.utc().unix());
@@ -75,30 +41,24 @@ class VoteDates extends Component {
 
   resultsEndDateHandler = (inputMoment) => {
     const newResultsEndDateTime = moment(inputMoment).set({
-      hours: this.state.resultsEndDateTime.hours(),
-      minutes: this.state.resultsEndDateTime.minutes(),
+      hours: this.props.resultsEndDateTime.hours(),
+      minutes: this.props.resultsEndDateTime.minutes(),
     });
-    this.setState(() => ({
-      resultsEndDateTime: newResultsEndDateTime,
-    }));
+
     this.props.getResultsViewingEnd(newResultsEndDateTime.utc().unix());
   };
 
   resultsEndTimeHandler = (inputMoment) => {
     const newResultsEndDateTime = moment(inputMoment).set({
-      year: this.state.resultsEndDateTime.year(),
-      month: this.state.resultsEndDateTime.month(),
-      day: this.state.resultsEndDateTime.day(),
+      year: this.props.resultsEndDateTime.year(),
+      month: this.props.resultsEndDateTime.month(),
+      day: this.props.resultsEndDateTime.day(),
     });
 
     // Don't allow changing incorrect value
-    if (newResultsEndDateTime.isBefore(this.state.voteEndDateTime, "minute")) {
+    if (newResultsEndDateTime.isBefore(this.props.voteEndDateTime, "minute")) {
       return;
     }
-
-    this.setState(() => ({
-      resultsEndDateTime: newResultsEndDateTime,
-    }));
 
     this.props.getResultsViewingEnd(newResultsEndDateTime.utc().unix());
   };
@@ -134,7 +94,7 @@ class VoteDates extends Component {
                 }}
                 timeFormat={false}
                 onChange={this.voteEndDateHandler}
-                value={this.state.voteEndDateTime}
+                value={this.props.voteEndDateTime}
               />
             </Col>
             <Col xs={3}>
@@ -143,7 +103,7 @@ class VoteDates extends Component {
                 dateFormat={false}
                 closeOnSelect={true}
                 onChange={this.voteEndTimeHandler}
-                value={this.state.voteEndDateTime}
+                value={this.props.voteEndDateTime}
               />
             </Col>
 
@@ -153,14 +113,14 @@ class VoteDates extends Component {
                 closeOnSelect={true}
                 isValidDate={(current) => {
                   current.set({
-                    hour: this.state.resultsEndDateTime.hour(),
-                    minute: this.state.resultsEndDateTime.minute(),
+                    hour: this.props.resultsEndDateTime.hour(),
+                    minute: this.props.resultsEndDateTime.minute(),
                   });
-                  return current.isAfter(this.state.voteEndDateTime, "m");
+                  return current.isAfter(this.props.voteEndDateTime, "m");
                 }}
                 timeFormat={false}
                 onChange={this.resultsEndDateHandler}
-                value={this.state.resultsEndDateTime}
+                value={this.props.resultsEndDateTime}
               />
             </Col>
             <Col xs={3}>
@@ -169,7 +129,7 @@ class VoteDates extends Component {
                 closeOnSelect={true}
                 dateFormat={false}
                 onChange={this.resultsEndTimeHandler}
-                value={this.state.resultsEndDateTime}
+                value={this.props.resultsEndDateTime}
               />
             </Col>
           </Row>

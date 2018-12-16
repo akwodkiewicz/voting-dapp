@@ -5,7 +5,7 @@ import VoteDates from "./VoteDates";
 import CategoryPanel from "./CategoryPanel";
 import "react-datetime/css/react-datetime.css";
 import { FormGroup, FormControl, ControlLabel, Button, Radio, InputGroup, HelpBlock } from "react-bootstrap";
-
+import moment from "moment";
 import ManagerContract from "../../build/ManagerContract.json";
 import CategoryContract from "../../build/CategoryContract.json";
 import Web3 from "web3";
@@ -172,7 +172,14 @@ class CreateVoteForm extends Component {
 
         <AnswersList setAnswers={this.setAnswers} answers={this.state.answers} />
 
-        <VoteDates getVoteEnd={this.setVoteEnd} getResultsViewingEnd={this.setResultsViewingEndTime} />
+        <VoteDates
+          getVoteEnd={this.setVoteEnd}
+          getResultsViewingEnd={this.setResultsViewingEndTime}
+          voteEndDateTime={this.state.voteEndTime !== 0 ? moment(this.state.voteEndTime, "X") : moment()}
+          resultsEndDateTime={
+            this.state.resultsViewingEndTime !== 0 ? moment(this.state.resultsViewingEndTime, "X") : moment()
+          }
+        />
 
         <FormGroup onChange={this.changeCategoryPanel}>
           <ControlLabel>Category</ControlLabel>
