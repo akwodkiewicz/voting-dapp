@@ -17,6 +17,7 @@ class CreateVoteForm extends Component {
 
     this.state = {
       question: "",
+      typedAnswer: "",
       answers: [],
       voteEndTime: 0,
       resultsViewingEndTime: 0,
@@ -77,6 +78,12 @@ class CreateVoteForm extends Component {
     }));
   }
 
+  setTypedAnswer = (e) => {
+    this.setState(() => ({
+      typedAnswer: e.value,
+    }));
+  };
+
   getAnswers(answersFromChild) {
     this.setState(() => ({
       answers: answersFromChild,
@@ -126,16 +133,18 @@ class CreateVoteForm extends Component {
     this.props.getSubmitData(this.state);
   }
 
-  addAnswer({ target }) {
+  addAnswer = () => {
     var answer = document.getElementById("answer").value;
     var allAnswers = this.state.answers;
-    if (!allAnswers.includes(answer)) {
-      allAnswers.push(answer);
-      this.setState(() => ({
-        answers: allAnswers,
-      }));
+    if (allAnswers.includes(answer)) {
+      return;
     }
-  }
+    allAnswers.push(answer);
+    this.setState(() => ({
+      answers: allAnswers,
+      typedAnswer: "",
+    }));
+  };
 
   render() {
     return (
@@ -154,7 +163,12 @@ class CreateVoteForm extends Component {
         <FormGroup>
           <HelpBlock>There must be at least 2 answers.</HelpBlock>
           <InputGroup>
-            <FormControl id="answer" type="text" placeholder="Enter the answer" />
+            <FormControl
+              type="text"
+              placeholder="Enter the answer"
+              onChange={this.setTypedAnswer}
+              value={this.state.typedAnswer}
+            />
             <InputGroup.Button>
               <Button onClick={this.addAnswer}>Add answer</Button>
             </InputGroup.Button>
