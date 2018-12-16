@@ -18,8 +18,16 @@ class CreateVoteForm extends Component {
       question: "",
       typedAnswer: "",
       answers: [],
-      voteEndTime: 0,
-      resultsViewingEndTime: 0,
+      voteEndTime: moment()
+        .add(3, "h")
+        .utc()
+        .unix(),
+      resultsViewingEndTime: moment()
+        .add(3, "d")
+        .set("h", 21)
+        .set("m", 0)
+        .utc()
+        .unix(),
       categoryPanel: "existing",
       category: "",
       voteType: "public",
@@ -35,30 +43,32 @@ class CreateVoteForm extends Component {
     });
 
     const numberOfCategories = await managerInstance.methods.numberOfCategories().call();
-    let categories = [];
-    for (let index = 0; index < numberOfCategories; index++) {
-      const categoryAddress = await managerInstance.methods.categoryContractsList(index).call();
-      const categoryContract = new web3.eth.Contract(CategoryContract.abi, categoryAddress);
-      const categoryName = web3.utils.toUtf8(await categoryContract.methods.categoryName().call());
-      categories.push(categoryName);
+    if (numberOfCategories.length > 0) {
+      let categories = [];
+      for (let index = 0; index < numberOfCategories; index++) {
+        const categoryAddress = await managerInstance.methods.categoryContractsList(index).call();
+        const categoryContract = new web3.eth.Contract(CategoryContract.abi, categoryAddress);
+        const categoryName = web3.utils.toUtf8(await categoryContract.methods.categoryName().call());
+        categories.push(categoryName);
+      }
+      this.setState({
+        categoriesList: categories,
+        category: categories[0],
+      });
     }
-    this.setState({
-      categoriesList: categories,
-    });
 
-    if (!this.props.formData) {
-      return;
+    if (this.props.formData) {
+      this.setState({
+        question: this.props.formData.question,
+        answers: this.props.formData.answers,
+        voteEndTime: this.props.formData.voteEndTime,
+        resultsViewingEndTime: this.props.formData.resultsViewingEndTime,
+        categoryPanel: this.props.formData.categoryPanel,
+        category: this.props.formData.category,
+        voteType: this.props.formData.voteType,
+        privilegedVoters: this.props.formData.privilegedVoters,
+      });
     }
-    this.setState({
-      question: this.props.formData.question,
-      answers: this.props.formData.answers,
-      voteEndTime: this.props.formData.voteEndTime,
-      resultsViewingEndTime: this.props.formData.resultsViewingEndTime,
-      categoryPanel: this.props.formData.categoryPanel,
-      category: this.props.formData.category,
-      voteType: this.props.formData.voteType,
-      privilegedVoters: this.props.formData.privilegedVoters,
-    });
   }
 
   setQuestion = (e) => {
@@ -176,15 +186,8 @@ class CreateVoteForm extends Component {
         <VoteDates
           getVoteEnd={this.setVoteEnd}
           getResultsViewingEnd={this.setResultsViewingEndTime}
-          voteEndDateTime={this.state.voteEndTime !== 0 ? moment(this.state.voteEndTime, "X") : moment()}
-          resultsEndDateTime={
-            this.state.resultsViewingEndTime !== 0
-              ? moment(this.state.resultsViewingEndTime, "X")
-              : moment()
-                  .add(3, "d")
-                  .set("h", 21)
-                  .set("m", 0)
-          }
+          voteEndDateTime={moment(this.state.voteEndTime, "X")}
+          resultsEndDateTime={moment(this.state.resultsViewingEndTime, "X")}
         />
 
         <FormGroup onChange={this.changeCategoryPanel}>
