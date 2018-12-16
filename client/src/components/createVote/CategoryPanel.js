@@ -16,7 +16,12 @@ class CategoryPanel extends Component {
       if (this.props.categoriesList) {
         return (
           <React.Fragment>
-            <FormControl onChange={this.categoryHandler} componentClass="select" placeholder="select">
+            <FormControl
+              onChange={this.categoryHandler}
+              componentClass="select"
+              placeholder="select"
+              value={this.props.categoryName}
+            >
               {this.props.categoriesList.map((category) => {
                 return <option value={category}>{category}</option>;
               })}
@@ -29,7 +34,13 @@ class CategoryPanel extends Component {
     } else {
       return (
         <React.Fragment>
-          <FormControl onChange={this.categoryHandler} id="answer" type="text" placeholder="Enter new category" />
+          <FormControl
+            onChange={this.categoryHandler}
+            id="answer"
+            type="text"
+            placeholder="Enter new category"
+            value={this.props.categoryName}
+          />
         </React.Fragment>
       );
     }

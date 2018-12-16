@@ -116,6 +116,7 @@ class CreateVoteForm extends Component {
 
     this.setState(() => ({
       categoryPanel: categoryAnswer,
+      category: "",
     }));
   };
 
@@ -184,10 +185,10 @@ class CreateVoteForm extends Component {
         <FormGroup onChange={this.changeCategoryPanel}>
           <ControlLabel>Category</ControlLabel>
           <HelpBlock>Select existing category from the list or create a new one.</HelpBlock>
-          <Radio name="categoryGroup" id="category-from-list" defaultChecked inline>
+          <Radio name="categoryGroup" id="category-from-list" checked={this.state.categoryPanel === "existing"} inline>
             Select existing category
           </Radio>
-          <Radio name="categoryGroup" id="category-new" inline>
+          <Radio name="categoryGroup" id="category-new" checked={this.state.categoryPanel === "new"} inline>
             Create new category
           </Radio>
         </FormGroup>
@@ -196,6 +197,7 @@ class CreateVoteForm extends Component {
           setCategoryInParent={this.setCategory}
           categoryPanel={this.state.categoryPanel}
           categoriesList={this.state.categoriesList}
+          categoryName={this.state.category}
         />
 
         <VoteType
