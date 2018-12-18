@@ -1,6 +1,6 @@
 import web3 = require("web3");
-import { createCategoryName, createVotingOptions } from "../app/web3helpers";
 import { CategoryContract, ManagerContract } from "./consts";
+import { createCategoryName, createVotingOptions } from "./web3helpers";
 
 contract("ManagerContract", async (accounts) => {
     const categoryName = "Xyzzy";
