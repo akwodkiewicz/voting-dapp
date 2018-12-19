@@ -89,7 +89,7 @@
     "scripts": {
         "test": "truffle test",
         "test-ganache": "truffle test --network ganache",
-        "generate": "truffle compile && typechain --target truffle './build/**/*.json' && cp -r build/contracts/* client/src/build/",
+        "generate": "truffle compile && typechain --target truffle './build/**/*.json' && mkdir -p client/src/build && cp -r build/contracts/* client/src/build/",
         "prettier:write": "prettier --write \"{,!(node_modules|dist|build|coverage)/**/}*.{js,jsx,ts,tsx,json}\"",
         "tslint": "tslint --project tsconfig.json",
         "start": "node scripts/start.js",
