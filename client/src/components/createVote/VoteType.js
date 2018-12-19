@@ -1,50 +1,45 @@
 import React, { Component } from "react";
-import { ControlLabel, FormGroup, Radio }from 'react-bootstrap';
-import PrivilegedAddresses from './PrivilegedAddresses';
+import { ControlLabel, FormGroup, Radio } from "react-bootstrap";
+import PrivilegedAddresses from "./PrivilegedAddresses";
 
 class VoteType extends Component {
   constructor(props) {
     super(props);
-
-    this.state = {
-      voteType: "public",
-      privilegedAddresses: []      
-    }
-    this.changeVoteType = this.changeVoteType.bind(this);
-    this.getPrivilegedAddresses = this.getPrivilegedAddresses.bind(this);
-  }
-  
-  changeVoteType({target}) {
-    var publicVote = document.getElementById('votePublic');
-    var voteType = publicVote.checked ? 'public' : 'private';
-
-    this.setState(() => ({
-      voteType: voteType
-    }))
-    this.props.getVoteType(voteType);
   }
 
-  getPrivilegedAddresses(addresses) {
-    this.props.getPrivilegedVoters(addresses);
-  }
+  changeVoteType = () => {
+    const publicVote = document.getElementById("votePublic");
+    const voteType = publicVote.checked ? "public" : "private";
+    this.props.setVoteTypeInParent(voteType);
+  };
+
+  setPrivilegedVoters = (voters) => {
+    this.props.setPrivilegedVotersInParent(voters);
+  };
 
   render() {
     return (
       <React.Fragment>
         <ControlLabel>Vote type</ControlLabel>
         <FormGroup onChange={this.changeVoteType}>
-          <Radio name="radioGroup" defaultChecked id="votePublic" inline>
+          <Radio name="radioGroup" checked={this.props.voteType === "public" ? true : false} id="votePublic" inline>
             Public
           </Radio>
-          <Radio name="radioGroup" inline>
+          <Radio name="radioGroup" checked={this.props.voteType === "private" ? true : false} inline>
             Private
           </Radio>
         </FormGroup>
 
-        <PrivilegedAddresses getPrivilegedAddresses={this.getPrivilegedAddresses} voteType={this.state.voteType} />
+        <PrivilegedAddresses
+          setPrivilegedAddressesInParent={this.setPrivilegedVoters}
+          voteType={this.props.voteType}
+          textAreaValue={this.props.privilegedVoters.reduce((prevVal, currVal, currIdx) => {
+            return currIdx === 0 ? currVal : prevVal + "\n" + currVal;
+          }, "")}
+        />
       </React.Fragment>
     );
-  }    
+  }
 }
 
 export default VoteType;

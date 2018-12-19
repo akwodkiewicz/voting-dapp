@@ -4,114 +4,139 @@
 /// <reference types="truffle-typings" />
 import { BigNumber } from "bignumber.js";
 
-export interface CategoryContractContract extends Truffle.Contract<CategoryContractInstance> {
-    "new"(
-        _categoryName: string | BigNumber,
-        _managerContract: string | BigNumber,
-        meta?: Truffle.TransactionDetails
-    ): Promise<CategoryContractInstance>;
+export interface CategoryContractContract
+  extends Truffle.Contract<CategoryContractInstance> {
+  "new"(
+    _categoryName: string | BigNumber,
+    _managerContract: string | BigNumber,
+    meta?: Truffle.TransactionDetails
+  ): Promise<CategoryContractInstance>;
 }
 
-export interface ManagerContractContract extends Truffle.Contract<ManagerContractInstance> {
-    "new"(meta?: Truffle.TransactionDetails): Promise<ManagerContractInstance>;
+export interface ManagerContractContract
+  extends Truffle.Contract<ManagerContractInstance> {
+  "new"(meta?: Truffle.TransactionDetails): Promise<ManagerContractInstance>;
 }
 
-export interface MigrationsContract extends Truffle.Contract<MigrationsInstance> {
-    "new"(meta?: Truffle.TransactionDetails): Promise<MigrationsInstance>;
+export interface MigrationsContract
+  extends Truffle.Contract<MigrationsInstance> {
+  "new"(meta?: Truffle.TransactionDetails): Promise<MigrationsInstance>;
 }
 
-export interface VotingContractContract extends Truffle.Contract<VotingContractInstance> {
-    "new"(
-        _question: string,
-        _category: string | BigNumber,
-        _options: (string | BigNumber)[],
-        _votingEndTime: number | BigNumber | string,
-        _resultsEndTime: number | BigNumber | string,
-        _isPrivate: boolean,
-        _permissions: (string | BigNumber)[],
-        meta?: Truffle.TransactionDetails
-    ): Promise<VotingContractInstance>;
+export interface VotingContractContract
+  extends Truffle.Contract<VotingContractInstance> {
+  "new"(
+    _question: string,
+    _category: string | BigNumber,
+    _options: (string | BigNumber)[],
+    _votingEndTime: number | BigNumber | string,
+    _resultsEndTime: number | BigNumber | string,
+    _isPrivate: boolean,
+    _permissions: (string | BigNumber)[],
+    meta?: Truffle.TransactionDetails
+  ): Promise<VotingContractInstance>;
 }
 
 export interface CategoryContractInstance extends Truffle.ContractInstance {
-    votingContracts(arg0: number | BigNumber | string, txDetails?: Truffle.TransactionDetails): Promise<string>;
+  votingContracts(
+    arg0: number | BigNumber | string,
+    txDetails?: Truffle.TransactionDetails
+  ): Promise<string>;
 
-    createVotingContract(
-        _question: string,
-        _options: (string | BigNumber)[],
-        _votingEndTime: number | BigNumber | string,
-        _resultsEndTime: number | BigNumber | string,
-        _isPrivate: boolean,
-        _permissions: (string | BigNumber)[],
-        txDetails?: Truffle.TransactionDetails
-    ): Promise<Truffle.TransactionResponse>;
+  createVotingContract(
+    _question: string,
+    _options: (string | BigNumber)[],
+    _votingEndTime: number | BigNumber | string,
+    _resultsEndTime: number | BigNumber | string,
+    _isPrivate: boolean,
+    _permissions: (string | BigNumber)[],
+    txDetails?: Truffle.TransactionDetails
+  ): Promise<Truffle.TransactionResponse>;
 
-    categoryName(txDetails?: Truffle.TransactionDetails): Promise<string>;
-    numberOfContracts(txDetails?: Truffle.TransactionDetails): Promise<BigNumber>;
+  categoryName(txDetails?: Truffle.TransactionDetails): Promise<string>;
+  numberOfContracts(txDetails?: Truffle.TransactionDetails): Promise<BigNumber>;
 }
 
 export interface ManagerContractInstance extends Truffle.ContractInstance {
-    doesCategoryExist(arg0: string | BigNumber, txDetails?: Truffle.TransactionDetails): Promise<boolean>;
+  doesCategoryExist(
+    arg0: string | BigNumber,
+    txDetails?: Truffle.TransactionDetails
+  ): Promise<boolean>;
 
-    categoryAddress(arg0: string | BigNumber, txDetails?: Truffle.TransactionDetails): Promise<string>;
+  categoryAddress(
+    arg0: string | BigNumber,
+    txDetails?: Truffle.TransactionDetails
+  ): Promise<string>;
 
-    categoryContractsList(arg0: number | BigNumber | string, txDetails?: Truffle.TransactionDetails): Promise<string>;
+  categoryContractsList(
+    arg0: number | BigNumber | string,
+    txDetails?: Truffle.TransactionDetails
+  ): Promise<string>;
 
-    createVotingWithExistingCategory(
-        _category: string | BigNumber,
-        _question: string,
-        _options: (string | BigNumber)[],
-        _votingEndTime: number | BigNumber | string,
-        _resultsEndTime: number | BigNumber | string,
-        _isPrivate: boolean,
-        _permissions: (string | BigNumber)[],
-        txDetails?: Truffle.TransactionDetails
-    ): Promise<Truffle.TransactionResponse>;
+  createVotingWithExistingCategory(
+    _category: string | BigNumber,
+    _question: string,
+    _options: (string | BigNumber)[],
+    _votingEndTime: number | BigNumber | string,
+    _resultsEndTime: number | BigNumber | string,
+    _isPrivate: boolean,
+    _permissions: (string | BigNumber)[],
+    txDetails?: Truffle.TransactionDetails
+  ): Promise<Truffle.TransactionResponse>;
 
-    createVotingWithNewCategory(
-        _categoryName: string | BigNumber,
-        _question: string,
-        _options: (string | BigNumber)[],
-        _votingEndTime: number | BigNumber | string,
-        _resultsEndTime: number | BigNumber | string,
-        _isPrivate: boolean,
-        _permissions: (string | BigNumber)[],
-        txDetails?: Truffle.TransactionDetails
-    ): Promise<Truffle.TransactionResponse>;
+  createVotingWithNewCategory(
+    _categoryName: string | BigNumber,
+    _question: string,
+    _options: (string | BigNumber)[],
+    _votingEndTime: number | BigNumber | string,
+    _resultsEndTime: number | BigNumber | string,
+    _isPrivate: boolean,
+    _permissions: (string | BigNumber)[],
+    txDetails?: Truffle.TransactionDetails
+  ): Promise<Truffle.TransactionResponse>;
+
+  numberOfCategories(
+    txDetails?: Truffle.TransactionDetails
+  ): Promise<BigNumber>;
 }
 
 export interface MigrationsInstance extends Truffle.ContractInstance {
-    setCompleted(
-        completed: number | BigNumber | string,
-        txDetails?: Truffle.TransactionDetails
-    ): Promise<Truffle.TransactionResponse>;
+  setCompleted(
+    completed: number | BigNumber | string,
+    txDetails?: Truffle.TransactionDetails
+  ): Promise<Truffle.TransactionResponse>;
 
-    upgrade(
-        new_address: string | BigNumber,
-        txDetails?: Truffle.TransactionDetails
-    ): Promise<Truffle.TransactionResponse>;
+  upgrade(
+    new_address: string | BigNumber,
+    txDetails?: Truffle.TransactionDetails
+  ): Promise<Truffle.TransactionResponse>;
 
-    last_completed_migration(txDetails?: Truffle.TransactionDetails): Promise<BigNumber>;
-    owner(txDetails?: Truffle.TransactionDetails): Promise<string>;
+  last_completed_migration(
+    txDetails?: Truffle.TransactionDetails
+  ): Promise<BigNumber>;
+  owner(txDetails?: Truffle.TransactionDetails): Promise<string>;
 }
 
 export interface VotingContractInstance extends Truffle.ContractInstance {
-    options(arg0: number | BigNumber | string, txDetails?: Truffle.TransactionDetails): Promise<string>;
+  options(
+    arg0: number | BigNumber | string,
+    txDetails?: Truffle.TransactionDetails
+  ): Promise<string>;
 
-    viewContractInfo(
-        txDetails?: Truffle.TransactionDetails
-    ): Promise<[string, string, (string)[], BigNumber, BigNumber]>;
+  viewContractInfo(
+    txDetails?: Truffle.TransactionDetails
+  ): Promise<[string, string, (string)[], BigNumber, BigNumber]>;
 
-    vote(
-        _option: number | BigNumber | string,
-        txDetails?: Truffle.TransactionDetails
-    ): Promise<Truffle.TransactionResponse>;
+  vote(
+    _option: number | BigNumber | string,
+    txDetails?: Truffle.TransactionDetails
+  ): Promise<Truffle.TransactionResponse>;
 
-    votingEndTime(txDetails?: Truffle.TransactionDetails): Promise<BigNumber>;
-    question(txDetails?: Truffle.TransactionDetails): Promise<string>;
-    resultsEndTime(txDetails?: Truffle.TransactionDetails): Promise<BigNumber>;
-    category(txDetails?: Truffle.TransactionDetails): Promise<string>;
-    isPrivate(txDetails?: Truffle.TransactionDetails): Promise<boolean>;
-    numberOfOptions(txDetails?: Truffle.TransactionDetails): Promise<BigNumber>;
-    viewVotes(txDetails?: Truffle.TransactionDetails): Promise<(BigNumber)[]>;
+  votingEndTime(txDetails?: Truffle.TransactionDetails): Promise<BigNumber>;
+  question(txDetails?: Truffle.TransactionDetails): Promise<string>;
+  resultsEndTime(txDetails?: Truffle.TransactionDetails): Promise<BigNumber>;
+  category(txDetails?: Truffle.TransactionDetails): Promise<string>;
+  isPrivate(txDetails?: Truffle.TransactionDetails): Promise<boolean>;
+  numberOfOptions(txDetails?: Truffle.TransactionDetails): Promise<BigNumber>;
+  viewVotes(txDetails?: Truffle.TransactionDetails): Promise<(BigNumber)[]>;
 }

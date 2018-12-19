@@ -46,4 +46,8 @@ contract ManagerContract {
         address vcAddress = cc.createVotingContract(_question, _options, _votingEndTime, _resultsEndTime, _isPrivate, _permissions);
         emit VotingCreated(msg.sender, vcAddress, _question);
     }
+
+    function numberOfCategories() public view returns(uint) {
+        return categoryContractsList.length;
+    }
 }

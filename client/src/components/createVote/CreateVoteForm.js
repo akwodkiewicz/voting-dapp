@@ -2,10 +2,13 @@ import React, { Component } from "react";
 import AnswersList from "./AnswersList";
 import VoteType from "./VoteType";
 import VoteDates from "./VoteDates";
-import FieldGroup from "../common/FieldGroup";
 import CategoryPanel from "./CategoryPanel";
 import "react-datetime/css/react-datetime.css";
 import { FormGroup, FormControl, ControlLabel, Button, Radio, InputGroup, HelpBlock } from "react-bootstrap";
+import moment from "moment";
+import ManagerContract from "../../build/ManagerContract.json";
+import CategoryContract from "../../build/CategoryContract.json";
+import Web3 from "web3";
 
 class CreateVoteForm extends Component {
   constructor() {
@@ -13,133 +16,204 @@ class CreateVoteForm extends Component {
 
     this.state = {
       question: "",
+      typedAnswer: "",
       answers: [],
-      voteEndTime: 0,
-      resultsViewingEndTime: 0,
+      voteEndTime: moment()
+        .add(3, "h")
+        .utc()
+        .unix(),
+      resultsViewingEndTime: moment()
+        .add(3, "d")
+        .set("h", 21)
+        .set("m", 0)
+        .utc()
+        .unix(),
       categoryPanel: "existing",
       category: "",
       voteType: "public",
       privilegedVoters: [],
     };
-    this.getQuestion = this.getQuestion.bind(this);
-    this.getAnswers = this.getAnswers.bind(this);
-    this.getVoteEnd = this.getVoteEnd.bind(this);
-    this.getResultsViewingEndTime = this.getResultsViewingEndTime.bind(this);
-    this.getCategory = this.getCategory.bind(this);
-    this.getVoteType = this.getVoteType.bind(this);
-    this.getPrivilegedVoters = this.getPrivilegedVoters.bind(this);
-    this.addAnswer = this.addAnswer.bind(this);
-    this.changeCategoryPanel = this.changeCategoryPanel.bind(this);
-    this.handleCreateVote = this.handleCreateVote.bind(this);
   }
 
-  getQuestion(e) {
+  async componentDidMount() {
+    const accounts = await window.ethereum.enable();
+    const web3 = new Web3(window.ethereum);
+    const managerInstance = new web3.eth.Contract(ManagerContract.abi, "0x457D31982A783280F42e05e22493e47f8592358D", {
+      from: accounts[0],
+    });
+
+    const numberOfCategories = await managerInstance.methods.numberOfCategories().call();
+    if (numberOfCategories.length > 0) {
+      let categories = [];
+      for (let index = 0; index < numberOfCategories; index++) {
+        const categoryAddress = await managerInstance.methods.categoryContractsList(index).call();
+        const categoryContract = new web3.eth.Contract(CategoryContract.abi, categoryAddress);
+        const categoryName = web3.utils.toUtf8(await categoryContract.methods.categoryName().call());
+        categories.push(categoryName);
+      }
+      this.setState({
+        categoriesList: categories,
+        category: categories[0],
+      });
+    }
+
+    if (this.props.formData) {
+      this.setState({
+        question: this.props.formData.question,
+        answers: this.props.formData.answers,
+        voteEndTime: this.props.formData.voteEndTime,
+        resultsViewingEndTime: this.props.formData.resultsViewingEndTime,
+        categoryPanel: this.props.formData.categoryPanel,
+        category: this.props.formData.category,
+        voteType: this.props.formData.voteType,
+        privilegedVoters: this.props.formData.privilegedVoters,
+      });
+    }
+  }
+
+  setQuestion = (e) => {
     const question = e.target.value;
     this.setState(() => ({
       question: question,
     }));
-  }
+  };
 
-  getAnswers(answersFromChild) {
+  setTypedAnswer = (e) => {
+    this.setState(() => ({
+      typedAnswer: e.value,
+    }));
+  };
+
+  setAnswers = (answersFromChild) => {
     this.setState(() => ({
       answers: answersFromChild,
     }));
-  }
+  };
 
-  getVoteEnd(timeFromChild) {
+  setVoteEnd = (timeFromChild) => {
     this.setState(() => ({
       voteEndTime: timeFromChild,
     }));
-  }
+  };
 
-  getResultsViewingEndTime(timeFromChild) {
+  setResultsViewingEndTime = (timeFromChild) => {
     this.setState(() => ({
       resultsViewingEndTime: timeFromChild,
     }));
-  }
+  };
 
-  getCategory(categoryFromChild) {
+  setCategory = (categoryFromChild) => {
     this.setState(() => ({
       category: categoryFromChild,
     }));
-  }
+  };
 
-  getVoteType(voteTypeFromChild) {
+  setVoteType = (voteTypeFromChild) => {
     this.setState(() => ({
       voteType: voteTypeFromChild,
     }));
-  }
+  };
 
-  getPrivilegedVoters(privilegedVoters) {
+  setPrivilegedVoters = (privilegedVotersFromChild) => {
     this.setState(() => ({
-      privilegedVoters: privilegedVoters,
+      privilegedVoters: privilegedVotersFromChild,
     }));
-  }
+  };
 
-  changeCategoryPanel() {
+  changeCategoryPanel = () => {
     var categoryQuestion = document.getElementById("category-from-list");
     var categoryAnswer = categoryQuestion.checked ? "existing" : "new";
 
     this.setState(() => ({
       categoryPanel: categoryAnswer,
+      category: "",
     }));
-  }
+  };
 
-  handleCreateVote() {
-    this.props.getSubmitData(this.state);
-  }
+  handleCreateVote = () => {
+    this.props.setSubmitData(this.state);
+  };
 
-  addAnswer({ target }) {
-    var answer = document.getElementById("answer").value;
-    var allAnswers = this.state.answers;
-    if (!allAnswers.includes(answer)) {
-      allAnswers.push(answer);
-      this.setState(() => ({
-        answers: allAnswers,
-      }));
+  addAnswer = () => {
+    const answer = document.getElementById("answer").value;
+    const allAnswers = this.state.answers;
+    if (!answer || !answer.trim() || allAnswers.includes(answer)) {
+      return;
     }
-  }
+    allAnswers.push(answer);
+    this.setState(() => ({
+      answers: allAnswers,
+      typedAnswer: "",
+    }));
+  };
 
   render() {
     return (
       <form>
-        <FieldGroup
-          id="question"
-          type="text"
-          label="Question"
-          placeholder="Enter the question for vore"
-          onChange={this.getQuestion}
-        />
+        <FormGroup controlId="question">
+          <ControlLabel>Question</ControlLabel>
+          <FormControl
+            type="text"
+            placeholder="Enter the voting question"
+            onChange={this.setQuestion}
+            value={this.state.question}
+          />
+        </FormGroup>
 
-        <ControlLabel>Answers</ControlLabel>
-
-        <FormGroup>
+        <FormGroup controlId="answer">
+          <ControlLabel>Answers</ControlLabel>
           <HelpBlock>There must be at least 2 answers.</HelpBlock>
           <InputGroup>
-            <FormControl id="answer" type="text" placeholder="Enter the answer" />
+            <FormControl
+              type="text"
+              placeholder="Enter the answer"
+              onChange={this.setTypedAnswer}
+              onKeyPress={(event) => {
+                if (event.key === "Enter") {
+                  this.addAnswer();
+                }
+              }}
+              value={this.state.typedAnswer}
+            />
             <InputGroup.Button>
               <Button onClick={this.addAnswer}>Add answer</Button>
             </InputGroup.Button>
           </InputGroup>
         </FormGroup>
-        <AnswersList getAnswers={this.getAnswers} answers={this.state.answers} />
 
-        <VoteDates getVoteEnd={this.getVoteEnd} getResultsViewingEnd={this.getResultsViewingEndTime} />
+        <AnswersList setAnswers={this.setAnswers} answers={this.state.answers} />
+
+        <VoteDates
+          getVoteEnd={this.setVoteEnd}
+          getResultsViewingEnd={this.setResultsViewingEndTime}
+          voteEndDateTime={moment(this.state.voteEndTime, "X")}
+          resultsEndDateTime={moment(this.state.resultsViewingEndTime, "X")}
+        />
 
         <FormGroup onChange={this.changeCategoryPanel}>
           <ControlLabel>Category</ControlLabel>
           <HelpBlock>Select existing category from the list or create a new one.</HelpBlock>
-          <Radio name="categoryGroup" id="category-from-list" defaultChecked inline>
+          <Radio name="categoryGroup" id="category-from-list" checked={this.state.categoryPanel === "existing"} inline>
             Select existing category
           </Radio>
-          <Radio name="categoryGroup" id="category-new" inline>
+          <Radio name="categoryGroup" id="category-new" checked={this.state.categoryPanel === "new"} inline>
             Create new category
           </Radio>
         </FormGroup>
 
-        <CategoryPanel getCategory={this.getCategory} categoryPanel={this.state.categoryPanel} />
+        <CategoryPanel
+          setCategoryInParent={this.setCategory}
+          categoryPanel={this.state.categoryPanel}
+          categoriesList={this.state.categoriesList}
+          categoryName={this.state.category}
+        />
 
-        <VoteType getVoteType={this.getVoteType} getPrivilegedVoters={this.getPrivilegedVoters} />
+        <VoteType
+          setVoteTypeInParent={this.setVoteType}
+          setPrivilegedVotersInParent={this.setPrivilegedVoters}
+          voteType={this.state.voteType}
+          privilegedVoters={this.state.privilegedVoters}
+        />
 
         <Button onClick={this.handleCreateVote}>Submit</Button>
       </form>

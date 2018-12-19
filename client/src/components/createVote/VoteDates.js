@@ -1,74 +1,67 @@
 import React, { Component } from "react";
-import {ControlLabel, FormGroup, Grid, Row, Col }from 'react-bootstrap';
-import * as Datetime from 'react-datetime';
+import { ControlLabel, FormGroup, Grid, Row, Col } from "react-bootstrap";
+import * as Datetime from "react-datetime";
 import moment from "moment";
 
 class VoteDates extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-      voteEndDate : '',
-      voteEndTime : '',      
-      resultsEndDate : '',
-      resultsEndTime : ''
+  }
+
+  voteEndDateHandler = (inputMoment) => {
+    const newVoteEndDateTime = moment(inputMoment).set({
+      hours: this.props.voteEndDateTime.hours(),
+      minutes: this.props.voteEndDateTime.minutes(),
+    });
+
+    // Reset resultsEndDateTime if neccessary
+    if (newVoteEndDateTime.isAfter(this.props.resultsEndDateTime, "minute")) {
+      const newResultsEndDateTime = moment(newVoteEndDateTime).add(1, "d");
+      this.props.getResultsViewingEnd(newResultsEndDateTime.utc().unix());
     }
-    this.getVoteEndDateHandler = this.getVoteEndDateHandler.bind(this);
-    this.getVoteEndTimeHandler = this.getVoteEndTimeHandler.bind(this);
-    this.getResultsEndDateHandler = this.getResultsEndDateHandler.bind(this);
-    this.getResultsEndTimeHandler = this.getResultsEndTimeHandler.bind(this);
-  }
 
-  getVoteEndDateHandler(e) {
-    let result = moment();
-    result.set({'year': e.year(), 'month': e.month(), 'date': e.date()})
-    
-    this.setState(()=>({
-      voteEndDate : result
-    }))
-    if(this.state.voteEndTime !== '') {
-      result.set({'hour': this.state.voteEndTime.hour(), 'minute': this.state.voteEndTime.minute() });
-      this.props.getVoteEnd(result.utc().unix());
-    } 
-  }
+    this.props.getVoteEnd(newVoteEndDateTime.utc().unix());
+  };
 
-  getVoteEndTimeHandler(e) {
-    let result= moment();
-    result.set({'hour': e.hour(), 'minute': e.minute()})
-    
-    this.setState(()=>({
-      voteEndTime : result
-    }))
-    if(this.state.voteEndDate !== '') {
-      result.set({'year': this.state.voteEndDate.year(), 'month': this.state.voteEndDate.month(), 'date': this.state.voteEndDate.date()});
-      this.props.getVoteEnd(result.utc().unix());
-    } 
-  }
-  
-  getResultsEndDateHandler(e) {
-    let result = moment();
-    result.set({'year': e.year(), 'month': e.month(), 'date': e.date()})
-    
-    this.setState(()=>({
-      resultsEndDate : result
-    }))
-    if(this.state.resultsEndTime !== '') {
-      result.set({'hour': this.state.resultsEndTime.hour(), 'minute': this.state.resultsEndTime.minute() });
-      this.props.getResultsViewingEnd(result.utc().unix());
-    } 
-  }
+  voteEndTimeHandler = (inputMoment) => {
+    const newVoteEndDateTime = moment(inputMoment).set({
+      year: this.props.voteEndDateTime.year(),
+      month: this.props.voteEndDateTime.month(),
+      day: this.props.voteEndDateTime.day(),
+    });
 
-  getResultsEndTimeHandler(e) {
-    let result= moment();
-    result.set({'hour': e.hour(), 'minute': e.minute()})
-    
-    this.setState(()=>({
-      resultsEndTime : result
-    }))
-    if(this.state.resultsEndDate !== '') {
-      result.set({'year': this.state.resultsEndDate.year(), 'month': this.state.resultsEndDate.month(), 'date': this.state.resultsEndDate.date()});
-      this.props.getResultsViewingEnd(result.utc().unix());
-    } 
-  }
+    // Reset resultsEndDateTime if neccessary
+    if (newVoteEndDateTime.isAfter(this.props.resultsEndDateTime, "minute")) {
+      const newResultsEndDateTime = moment(newVoteEndDateTime).add(1, "h");
+      this.props.getResultsViewingEnd(newResultsEndDateTime.utc().unix());
+    }
+
+    this.props.getVoteEnd(newVoteEndDateTime.utc().unix());
+  };
+
+  resultsEndDateHandler = (inputMoment) => {
+    const newResultsEndDateTime = moment(inputMoment).set({
+      hours: this.props.resultsEndDateTime.hours(),
+      minutes: this.props.resultsEndDateTime.minutes(),
+    });
+
+    this.props.getResultsViewingEnd(newResultsEndDateTime.utc().unix());
+  };
+
+  resultsEndTimeHandler = (inputMoment) => {
+    const newResultsEndDateTime = moment(inputMoment).set({
+      year: this.props.resultsEndDateTime.year(),
+      month: this.props.resultsEndDateTime.month(),
+      day: this.props.resultsEndDateTime.day(),
+    });
+
+    // Don't allow changing incorrect value
+    if (newResultsEndDateTime.isBefore(this.props.voteEndDateTime, "minute")) {
+      return;
+    }
+
+    this.props.getResultsViewingEnd(newResultsEndDateTime.utc().unix());
+  };
 
   render() {
     return (
@@ -83,75 +76,66 @@ class VoteDates extends Component {
             </Col>
           </Row>
           <Row>
-            <Col xs={3}>
-              Date
-            </Col>
+            <Col xs={3}>Date</Col>
 
-            <Col xs={3}>
-              Time
-            </Col>
+            <Col xs={3}>Time</Col>
 
-            <Col xs={3}>
-              Date
-            </Col>
+            <Col xs={3}>Date</Col>
 
-            <Col xs={3}>
-              Time
-            </Col>
+            <Col xs={3}>Time</Col>
           </Row>
           <Row className="showGrid">
-            <Col xs={3}> 
-              <Datetime 
-                inputProps={{id: 'voteDateEnd'}}
+            <Col xs={3}>
+              <Datetime
+                inputProps={{ id: "voteDateEnd" }}
                 closeOnSelect={true}
-                isValidDate = {(current) => {   
-                  let resultsPeriodEnd = document.getElementById('resultsPeriodEnd');
-                  if(resultsPeriodEnd != null && resultsPeriodEnd.value !== "") {
-                    return moment(resultsPeriodEnd.value).isAfter(current.add(1, 'minute'), 'minute') && current.isAfter(moment().subtract(1, 'day'), 'minute');
-                  }
-                  return current.isAfter(moment().subtract(1, 'day'), 'minute');                 
-                }} 
+                isValidDate={(current) => {
+                  return current.isAfter(moment().subtract(1, "day"), "minute");
+                }}
                 timeFormat={false}
-                onChange={this.getVoteEndDateHandler}
+                onChange={this.voteEndDateHandler}
+                value={this.props.voteEndDateTime}
               />
             </Col>
             <Col xs={3}>
-            <Datetime 
-                inputProps={{id: 'voteTimeEnd'}}
+              <Datetime
+                inputProps={{ id: "voteTimeEnd" }}
                 dateFormat={false}
                 closeOnSelect={true}
-                onChange={this.getVoteEndTimeHandler}
+                onChange={this.voteEndTimeHandler}
+                value={this.props.voteEndDateTime}
               />
             </Col>
 
-            <Col xs={3}> 
-              <Datetime 
-                inputProps={{id: 'resultsDateEnd'}}
+            <Col xs={3}>
+              <Datetime
+                inputProps={{ id: "resultsDateEnd" }}
                 closeOnSelect={true}
-                isValidDate = {(current) => {   
-                  let votePeriodEnd = document.getElementById('votePeriodEnd');
-                  if(votePeriodEnd != null && votePeriodEnd.value !== "") {
-                    return current.isAfter(moment(votePeriodEnd.value).add(1, 'minute'), 'minute') && current.isAfter(moment().subtract(1, 'day'), 'minute');
-                  }
-                  return current.isAfter(moment().subtract(1, 'day'), 'minute');                 
+                isValidDate={(current) => {
+                  current.set({
+                    hour: this.props.resultsEndDateTime.hour(),
+                    minute: this.props.resultsEndDateTime.minute(),
+                  });
+                  return current.isAfter(this.props.voteEndDateTime, "m");
                 }}
                 timeFormat={false}
-                onChange={this.getResultsEndDateHandler}
+                onChange={this.resultsEndDateHandler}
+                value={this.props.resultsEndDateTime}
               />
-              
             </Col>
             <Col xs={3}>
-            <Datetime 
-                inputProps={{id: 'resultsTimeEnd'}}
+              <Datetime
+                inputProps={{ id: "resultsTimeEnd" }}
                 closeOnSelect={true}
                 dateFormat={false}
-                onChange={this.getResultsEndTimeHandler}
+                onChange={this.resultsEndTimeHandler}
+                value={this.props.resultsEndDateTime}
               />
             </Col>
           </Row>
         </Grid>
-        </FormGroup>
-    )
+      </FormGroup>
+    );
   }
 }
 
