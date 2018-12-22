@@ -6,13 +6,12 @@ import CategoryPanel from "./CategoryPanel";
 import "react-datetime/css/react-datetime.css";
 import { FormGroup, FormControl, ControlLabel, Button, Radio, InputGroup, HelpBlock } from "react-bootstrap";
 import moment from "moment";
-import ManagerContract from "../../build/ManagerContract.json";
 import CategoryContract from "../../build/CategoryContract.json";
-import Web3 from "web3";
+import BlockchainData from "../common/BlockchainData";
 
 class CreateVoteForm extends Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
 
     this.state = {
       question: "",
@@ -29,33 +28,60 @@ class CreateVoteForm extends Component {
         .utc()
         .unix(),
       categoryPanel: "existing",
-      category: "",
+      chosenCategory: null,
+      categoriesList: [],
+      isCategoriesListFetched: false,
       voteType: "public",
       privilegedVoters: [],
     };
   }
 
-  async componentDidMount() {
-    const accounts = await window.ethereum.enable();
-    const web3 = new Web3(window.ethereum);
-    const managerInstance = new web3.eth.Contract(ManagerContract.abi, "0x457D31982A783280F42e05e22493e47f8592358D", {
-      from: accounts[0],
-    });
+  componentDidMount = async () => {
+    if (this.props.blockchainData) {
+      this.fetchCategories();
+    }
+    if (this.props.formData) {
+      this.setState({
+        question: this.props.formData.question,
+        answers: this.props.formData.answers,
+        voteEndTime: this.props.formData.voteEndTime,
+        resultsViewingEndTime: this.props.formData.resultsViewingEndTime,
+        categoryPanel: this.props.formData.categoryPanel,
+        chosenCategory: this.props.formData.chosenCategory,
+        voteType: this.props.formData.voteType,
+        privilegedVoters: this.props.formData.privilegedVoters,
+      });
+    }
+  };
 
+  componentDidUpdate = async (prevProps) => {
+    // If blockchainData was initialized after this component had mounted
+    if (!this.state.isCategoriesListFetched && this.props.blockchainData) {
+      this.fetchCategories();
+    }
+  };
+
+  fetchCategories = async () => {
+    /** @type BlockchainData */
+    const blockchainData = this.props.blockchainData;
+    const web3 = blockchainData.web3;
+    const managerInstance = blockchainData.manager;
+
+    let categories = [];
     const numberOfCategories = await managerInstance.methods.numberOfCategories().call();
     if (numberOfCategories.length > 0) {
-      let categories = [];
       for (let index = 0; index < numberOfCategories; index++) {
         const categoryAddress = await managerInstance.methods.categoryContractsList(index).call();
         const categoryContract = new web3.eth.Contract(CategoryContract.abi, categoryAddress);
         const categoryName = web3.utils.toUtf8(await categoryContract.methods.categoryName().call());
-        categories.push(categoryName);
+        categories.push({ name: categoryName, address: categoryAddress });
       }
-      this.setState({
-        categoriesList: categories,
-        category: categories[0],
-      });
     }
+    this.setState({
+      categoriesList: categories,
+      chosenCategory: categories.length > 0 ? categories[0].address : null,
+      isCategoriesListFetched: true,
+    });
 
     if (this.props.formData) {
       this.setState({
@@ -64,12 +90,12 @@ class CreateVoteForm extends Component {
         voteEndTime: this.props.formData.voteEndTime,
         resultsViewingEndTime: this.props.formData.resultsViewingEndTime,
         categoryPanel: this.props.formData.categoryPanel,
-        category: this.props.formData.category,
+        chosenCategory: this.props.formData.chosenCategory,
         voteType: this.props.formData.voteType,
         privilegedVoters: this.props.formData.privilegedVoters,
       });
     }
-  }
+  };
 
   setQuestion = (e) => {
     const question = e.target.value;
@@ -104,7 +130,7 @@ class CreateVoteForm extends Component {
 
   setCategory = (categoryFromChild) => {
     this.setState(() => ({
-      category: categoryFromChild,
+      chosenCategory: categoryFromChild,
     }));
   };
 
@@ -121,12 +147,14 @@ class CreateVoteForm extends Component {
   };
 
   changeCategoryPanel = () => {
-    var categoryQuestion = document.getElementById("category-from-list");
-    var categoryAnswer = categoryQuestion.checked ? "existing" : "new";
+    var existingCategoryButton = document.getElementById("category-from-list");
+    var categoryType = existingCategoryButton.checked ? "existing" : "new";
+    let chosenCategory =
+      categoryType === "existing" && this.state.categoriesList.length > 0 ? this.state.categoriesList[0].address : null;
 
     this.setState(() => ({
-      categoryPanel: categoryAnswer,
-      category: "",
+      categoryPanel: categoryType,
+      chosenCategory: chosenCategory,
     }));
   };
 
@@ -205,7 +233,7 @@ class CreateVoteForm extends Component {
           setCategoryInParent={this.setCategory}
           categoryPanel={this.state.categoryPanel}
           categoriesList={this.state.categoriesList}
-          categoryName={this.state.category}
+          chosenCategory={this.state.chosenCategory}
         />
 
         <VoteType

@@ -3,9 +3,7 @@ import CreateVoteForm from "./CreateVoteForm";
 import LoadingResult from "./LoadingResult";
 import DisplayResult from "./DisplayResult";
 import "react-datetime/css/react-datetime.css";
-import ManagerContract from "../../build/ManagerContract.json";
-import TruffleContract from "truffle-contract";
-import Web3 from "web3";
+import BlockchainData from "../common/BlockchainData";
 
 class CreateVotePage extends Component {
   constructor() {
@@ -32,27 +30,44 @@ class CreateVotePage extends Component {
   };
 
   getTransactionResult = async () => {
-    const accounts = await window.ethereum.enable();
-    const web3 = new Web3(window.ethereum);
-    const Contract = TruffleContract(ManagerContract);
-    Contract.setProvider(web3.currentProvider);
-    Contract.defaults({ from: accounts[0] });
-    const instance = await Contract.at("0x457D31982A783280F42e05e22493e47f8592358D"); // change this address if you need to
+    /** @type BlockchainData */
+    const blockchainData = this.props.blockchainData;
+    const web3 = blockchainData.web3;
+    const manager = blockchainData.manager;
     try {
-      const result = await instance.createVotingWithNewCategory(
-        web3.utils.fromUtf8(this.state.formData.category),
-        this.state.formData.question,
-        this.state.formData.answers.map((opt) => web3.utils.fromUtf8(opt)),
-        this.state.formData.voteEndTime,
-        this.state.formData.resultsViewingEndTime,
-        this.state.formData.voteType,
-        this.state.formData.privilegedVoters
-      );
-      console.log(result);
+      let txResponse;
+      if (this.state.formData.categoryPanel === "new") {
+        txResponse = await manager.methods
+          .createVotingWithNewCategory(
+            web3.utils.fromUtf8(this.state.formData.chosenCategory),
+            this.state.formData.question,
+            this.state.formData.answers.map((opt) => web3.utils.fromUtf8(opt)),
+            this.state.formData.voteEndTime,
+            this.state.formData.resultsViewingEndTime,
+            this.state.formData.voteType,
+            this.state.formData.privilegedVoters
+          )
+          .send();
+      } else {
+        txResponse = await manager.methods
+          .createVotingWithExistingCategory(
+            this.state.formData.chosenCategory,
+            this.state.formData.question,
+            this.state.formData.answers.map((opt) => web3.utils.fromUtf8(opt)),
+            this.state.formData.voteEndTime,
+            this.state.formData.resultsViewingEndTime,
+            this.state.formData.voteType,
+            this.state.formData.privilegedVoters
+          )
+          .send();
+      }
+
+      console.log(txResponse);
       this.setState(() => ({
         resultStatus: "success",
       }));
-    } catch {
+    } catch (e) {
+      console.error(e);
       this.setState(() => ({
         resultStatus: "failed",
       }));
@@ -70,6 +85,7 @@ class CreateVotePage extends Component {
           setSubmitData={this.setSubmitData}
           setFormData={this.setFormData}
           formData={this.state.formData}
+          blockchainData={this.props.blockchainData}
         />
       );
     } else if (this.state.mode === "fetching") {

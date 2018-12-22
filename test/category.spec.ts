@@ -1,7 +1,7 @@
 import web3 = require("web3");
-import { createCategoryName, createVotingOptions } from "../app/web3helpers";
 import { CategoryContractInstance, ManagerContractInstance } from "../types/truffle-contracts";
 import { CategoryContract, ManagerContract, VotingContract } from "./consts";
+import { createCategoryName, createVotingOptions } from "./web3helpers";
 
 contract("CategoryContract", async (accounts) => {
     let managerInstance: ManagerContractInstance;
