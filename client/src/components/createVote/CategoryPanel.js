@@ -6,8 +6,8 @@ class CategoryPanel extends Component {
     super(props);
   }
 
-  categoryHandler = (categoryName) => {
-    this.props.setCategoryInParent(categoryName.target.value);
+  categoryHandler = (chosenCategory) => {
+    this.props.setCategoryInParent(chosenCategory.target.value);
   };
 
   render() {
@@ -20,10 +20,10 @@ class CategoryPanel extends Component {
               onChange={this.categoryHandler}
               componentClass="select"
               placeholder="select"
-              value={this.props.categoryName}
+              value={this.props.chosenCategory}
             >
               {this.props.categoriesList.map((category) => {
-                return <option value={category}>{category}</option>;
+                return <option value={category.address}>{category.name}</option>;
               })}
             </FormControl>
           </React.Fragment>
@@ -39,7 +39,7 @@ class CategoryPanel extends Component {
             id="answer"
             type="text"
             placeholder="Enter new category"
-            value={this.props.categoryName}
+            value={this.props.chosenCategory}
           />
         </React.Fragment>
       );

@@ -35,18 +35,34 @@ class CreateVotePage extends Component {
     const web3 = blockchainData.web3;
     const manager = blockchainData.manager;
     try {
-      const result = await manager.methods
-        .createVotingWithNewCategory(
-          web3.utils.fromUtf8(this.state.formData.category),
-          this.state.formData.question,
-          this.state.formData.answers.map((opt) => web3.utils.fromUtf8(opt)),
-          this.state.formData.voteEndTime,
-          this.state.formData.resultsViewingEndTime,
-          this.state.formData.voteType,
-          this.state.formData.privilegedVoters
-        )
-        .send();
-      console.log(result);
+      let txResponse;
+      if (this.state.formData.categoryPanel === "new") {
+        txResponse = await manager.methods
+          .createVotingWithNewCategory(
+            web3.utils.fromUtf8(this.state.formData.chosenCategory),
+            this.state.formData.question,
+            this.state.formData.answers.map((opt) => web3.utils.fromUtf8(opt)),
+            this.state.formData.voteEndTime,
+            this.state.formData.resultsViewingEndTime,
+            this.state.formData.voteType,
+            this.state.formData.privilegedVoters
+          )
+          .send();
+      } else {
+        txResponse = await manager.methods
+          .createVotingWithExistingCategory(
+            this.state.formData.chosenCategory,
+            this.state.formData.question,
+            this.state.formData.answers.map((opt) => web3.utils.fromUtf8(opt)),
+            this.state.formData.voteEndTime,
+            this.state.formData.resultsViewingEndTime,
+            this.state.formData.voteType,
+            this.state.formData.privilegedVoters
+          )
+          .send();
+      }
+
+      console.log(txResponse);
       this.setState(() => ({
         resultStatus: "success",
       }));

@@ -28,7 +28,7 @@ class CreateVoteForm extends Component {
         .utc()
         .unix(),
       categoryPanel: "existing",
-      category: "",
+      chosenCategory: null,
       categoriesList: [],
       isCategoriesListFetched: false,
       voteType: "public",
@@ -47,7 +47,7 @@ class CreateVoteForm extends Component {
         voteEndTime: this.props.formData.voteEndTime,
         resultsViewingEndTime: this.props.formData.resultsViewingEndTime,
         categoryPanel: this.props.formData.categoryPanel,
-        category: this.props.formData.category,
+        chosenCategory: this.props.formData.chosenCategory,
         voteType: this.props.formData.voteType,
         privilegedVoters: this.props.formData.privilegedVoters,
       });
@@ -74,12 +74,12 @@ class CreateVoteForm extends Component {
         const categoryAddress = await managerInstance.methods.categoryContractsList(index).call();
         const categoryContract = new web3.eth.Contract(CategoryContract.abi, categoryAddress);
         const categoryName = web3.utils.toUtf8(await categoryContract.methods.categoryName().call());
-        categories.push(categoryName);
+        categories.push({ name: categoryName, address: categoryAddress });
       }
     }
     this.setState({
       categoriesList: categories,
-      category: categories.length > 0 ? categories[0] : "",
+      chosenCategory: categories.length > 0 ? categories[0].address : null,
       isCategoriesListFetched: true,
     });
 
@@ -90,7 +90,7 @@ class CreateVoteForm extends Component {
         voteEndTime: this.props.formData.voteEndTime,
         resultsViewingEndTime: this.props.formData.resultsViewingEndTime,
         categoryPanel: this.props.formData.categoryPanel,
-        category: this.props.formData.category,
+        chosenCategory: this.props.formData.chosenCategory,
         voteType: this.props.formData.voteType,
         privilegedVoters: this.props.formData.privilegedVoters,
       });
@@ -130,7 +130,7 @@ class CreateVoteForm extends Component {
 
   setCategory = (categoryFromChild) => {
     this.setState(() => ({
-      category: categoryFromChild,
+      chosenCategory: categoryFromChild,
     }));
   };
 
@@ -147,12 +147,14 @@ class CreateVoteForm extends Component {
   };
 
   changeCategoryPanel = () => {
-    var categoryQuestion = document.getElementById("category-from-list");
-    var categoryAnswer = categoryQuestion.checked ? "existing" : "new";
+    var existingCategoryButton = document.getElementById("category-from-list");
+    var categoryType = existingCategoryButton.checked ? "existing" : "new";
+    let chosenCategory =
+      categoryType === "existing" && this.state.categoriesList.length > 0 ? this.state.categoriesList[0].address : null;
 
     this.setState(() => ({
-      categoryPanel: categoryAnswer,
-      category: "",
+      categoryPanel: categoryType,
+      chosenCategory: chosenCategory,
     }));
   };
 
@@ -231,7 +233,7 @@ class CreateVoteForm extends Component {
           setCategoryInParent={this.setCategory}
           categoryPanel={this.state.categoryPanel}
           categoriesList={this.state.categoriesList}
-          categoryName={this.state.category}
+          chosenCategory={this.state.chosenCategory}
         />
 
         <VoteType
