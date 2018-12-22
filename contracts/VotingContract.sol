@@ -71,7 +71,7 @@ contract VotingContract {
         return votes;
     }
 
-    function viewContractInfo() public view hasPermission(msg.sender) returns(string memory, address, bytes32[] memory, uint256, uint256) {
+    function viewContractInfo() public view returns(string memory, address, bytes32[] memory, uint256, uint256) {
         return (question, category, options, votingEndTime, resultsEndTime);
     }
     
