@@ -14,18 +14,21 @@
 require("ts-node").register();
 
 module.exports = {
-    networks: {
-        ganache: {
-            host: "127.0.0.1",
-            port: 7545,
-            network_id: "*", // Match any network id
-        },
+  networks: {
+    ganache: {
+      host: "127.0.0.1",
+      port: 7545,
+      network_id: "*", // Match any network id
     },
+  },
+  compilers: {
     solc: {
-        optimizer: {
-            enabled: true,
-            runs: 200,
-        },
+      version: "0.5.1",
+      optimizer: {
+        enabled: true,
+        runs: 200,
+      },
     },
-    test_file_extension_regexp: /.*\.ts$/,
+  },
+  test_file_extension_regexp: /.*\.ts$/,
 };
