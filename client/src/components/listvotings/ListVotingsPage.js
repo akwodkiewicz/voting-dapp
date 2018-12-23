@@ -1,6 +1,8 @@
 import React, { Component } from "react";
 import { ListGroupItem, ListGroup, Row, Col, Grid } from "react-bootstrap";
 
+import CategoryList from "./CategoryList";
+
 const votings = [
   ["Is this question rendering properly?", "How about this one?"],
   ["These questions are totally different!", "See?", "I guess it's technically not even a question?"],
@@ -10,37 +12,18 @@ class ListVotingsPage extends Component {
   constructor() {
     super();
     this.state = {
-      chosenCategory: null,
+      chosenCategoryIndex: null,
       chosenVoting: null,
-      categories: [
-        {
-          name: "First",
-          active: false,
-        },
-        {
-          name: "Second",
-          active: false,
-        },
-      ],
+      categories: [],
     };
   }
 
-  handleCategoryClick = (event) => {
-    const chosenCategory = event.target.innerText;
-    let newCategoriesArray = [...this.state.categories];
-    let chosenCategoryIndex;
-    for (let i = 0; i < newCategoriesArray.length; i++) {
-      if (newCategoriesArray[i].name === chosenCategory) {
-        newCategoriesArray[i].active = true;
-        chosenCategoryIndex = i;
-      } else {
-        newCategoriesArray[i].active = false;
-      }
-    }
-    this.setState({
-      chosenCategory: { name: event.target.innerText, index: chosenCategoryIndex },
-      categories: newCategoriesArray,
-    });
+  setCategories = (categoriesFromChild) => {
+    this.setState({ categories: categoriesFromChild });
+  };
+
+  handleCategoryClick = (categoryIndexFromChild) => {
+    this.setState({ chosenCategoryIndex: categoryIndexFromChild });
   };
 
   handleVotingClick = (event) => {
@@ -55,23 +38,20 @@ class ListVotingsPage extends Component {
       <Grid>
         <Row>
           <Col sm={3}>
-            <h2>Categories</h2>
-            <ListGroup>
-              {this.state.categories.map((cat, index) => {
-                return (
-                  <ListGroupItem onClick={this.handleCategoryClick} className={cat.active ? "active" : null}>
-                    {cat.name}
-                  </ListGroupItem>
-                );
-              })}
-            </ListGroup>
+            <CategoryList
+              blockchainData={this.props.blockchainData}
+              categories={this.state.categories}
+              chosenCategoryIndex={this.state.chosenCategoryIndex}
+              setCategoriesInParent={this.setCategories}
+              setChosenCategoryInParent={this.handleCategoryClick}
+            />
           </Col>
 
           {this.state.chosenCategory ? (
             <Col sm={5}>
               <h2>Votings inside {this.state.chosenCategory.name}</h2>
               <ListGroup>
-                {votings[this.state.chosenCategory.index].map((name, index) => {
+                {votings[this.state.chosenCategoryIndex].map((name, index) => {
                   return <ListGroupItem onClick={this.handleVotingClick}>{name}</ListGroupItem>;
                 })}
               </ListGroup>
