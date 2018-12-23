@@ -8,7 +8,7 @@ const Header = () => {
       {" | "}
       <Link to="/createvote">Create vote</Link>
       {" | "}
-      <Link to="/listvotes">List of votes</Link>
+      <Link to="/listvotings">List votings</Link>
       {" | "}
       <Link to="/about">About</Link>
     </nav>

@@ -7,6 +7,7 @@ import Header from "./common/Header";
 import { BlockchainData } from "./common/types";
 import CreateVotePage from "./createVote/CreateVotePage";
 import HomePage from "./home/HomePage";
+import ListVotingsPage from "./listvotings/ListVotingsPage";
 import Web3 from "web3"; //tslint:disable-line
 
 interface IAppState {
@@ -106,7 +107,7 @@ export default class App extends Component<any, IAppState> {
             <div>
               <Route exact path="/" component={HomePage} />
               <Route path="/createvote" render={() => <CreateVotePage blockchainData={this.state.blockchainData} />} />
-              {/* <Route path="/listvotes" component={ListOfVotesPage}/> */}
+              <Route path="/listvotings" component={ListVotingsPage} />
               <Route path="/about" component={AboutPage} />
             </div>
           </div>
