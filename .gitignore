@@ -2,6 +2,9 @@
 build/*
 client/src/contracts/*
 
+# Compiled TS
+client/build/*
+
 # Logs
 logs
 *.log

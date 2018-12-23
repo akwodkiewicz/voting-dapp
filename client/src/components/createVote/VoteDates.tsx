@@ -1,14 +1,22 @@
-import React, { Component } from "react";
-import { ControlLabel, FormGroup, Grid, Row, Col } from "react-bootstrap";
+import * as moment from "moment";
+import { Component } from "react";
+import { Col, ControlLabel, FormGroup, Grid, Row } from "react-bootstrap";
 import * as Datetime from "react-datetime";
-import moment from "moment";
 
-class VoteDates extends Component {
+interface IVoteDatesProps {
+  voteEndDateTime: moment.Moment;
+  resultsEndDateTime: moment.Moment;
+  getResultsViewingEnd: (arg: number) => void;
+  getVoteEnd: (arg: number) => void;
+}
+
+// tslint:disable:object-literal-sort-keys
+class VoteDates extends Component<IVoteDatesProps> {
   constructor(props) {
     super(props);
   }
 
-  voteEndDateHandler = (inputMoment) => {
+  public voteEndDateHandler = (inputMoment) => {
     const newVoteEndDateTime = moment(inputMoment).set({
       hours: this.props.voteEndDateTime.hours(),
       minutes: this.props.voteEndDateTime.minutes(),
@@ -22,8 +30,7 @@ class VoteDates extends Component {
 
     this.props.getVoteEnd(newVoteEndDateTime.utc().unix());
   };
-
-  voteEndTimeHandler = (inputMoment) => {
+  public voteEndTimeHandler = (inputMoment) => {
     const newVoteEndDateTime = moment(inputMoment).set({
       year: this.props.voteEndDateTime.year(),
       month: this.props.voteEndDateTime.month(),
@@ -39,7 +46,7 @@ class VoteDates extends Component {
     this.props.getVoteEnd(newVoteEndDateTime.utc().unix());
   };
 
-  resultsEndDateHandler = (inputMoment) => {
+  public resultsEndDateHandler = (inputMoment) => {
     const newResultsEndDateTime = moment(inputMoment).set({
       hours: this.props.resultsEndDateTime.hours(),
       minutes: this.props.resultsEndDateTime.minutes(),
@@ -48,7 +55,7 @@ class VoteDates extends Component {
     this.props.getResultsViewingEnd(newResultsEndDateTime.utc().unix());
   };
 
-  resultsEndTimeHandler = (inputMoment) => {
+  public resultsEndTimeHandler = (inputMoment) => {
     const newResultsEndDateTime = moment(inputMoment).set({
       year: this.props.resultsEndDateTime.year(),
       month: this.props.resultsEndDateTime.month(),
@@ -63,7 +70,7 @@ class VoteDates extends Component {
     this.props.getResultsViewingEnd(newResultsEndDateTime.utc().unix());
   };
 
-  render() {
+  public render() {
     return (
       <FormGroup>
         <Grid>

@@ -1,18 +1,25 @@
-import React, { Component } from "react";
+import { Component, FormEvent } from "react";
 import { ControlLabel, FormControl, FormGroup } from "react-bootstrap";
+import { VoteType } from "./VoteTypePanel";
 
-class PrivilegedAddresses extends Component {
+interface IPrivilegedAddressesProps {
+  voteType: VoteType;
+  textAreaValue: string;
+  setPrivilegedAddressesInParent: (arg: string[]) => void;
+}
+
+class PrivilegedAddresses extends Component<IPrivilegedAddressesProps> {
   constructor(props) {
     super(props);
   }
 
-  saveAddresses = (e) => {
-    const addressesArray = e.target.value.split("\n");
+  public saveAddresses = (e: FormEvent<FormControl & HTMLInputElement>) => {
+    const addressesArray = e.currentTarget.value.split("\n");
     // TODO: validate each address
     this.props.setPrivilegedAddressesInParent(addressesArray);
   };
 
-  render() {
+  public render() {
     if (this.props.voteType === "private") {
       return (
         <FormGroup>

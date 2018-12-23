@@ -1,9 +1,9 @@
-import React, {Component} from 'react';
- 
+import { Component } from "react";
+
 class AboutPage extends Component {
-  render() {
+  public render() {
     return (
-      <div>        
+      <div>
         <h1>About</h1>
         <p>Ethereum is nice</p>
       </div>

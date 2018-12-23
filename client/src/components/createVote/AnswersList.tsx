@@ -1,25 +1,30 @@
-import React, { Component } from "react";
-import { ListGroupItem, ListGroup } from "react-bootstrap";
+import { Component, SyntheticEvent } from "react";
+import { ListGroup, ListGroupItem } from "react-bootstrap";
 
-class AnswersList extends Component {
+interface IAnswersListProps {
+  answers: string[];
+  setAnswers: (arg: string[]) => void;
+}
+
+class AnswersList extends Component<IAnswersListProps> {
   constructor(props) {
     super(props);
   }
 
-  deleteListItem = (e) => {
+  public deleteListItem = (e: React.MouseEvent<ListGroupItem & HTMLInputElement>) => {
     const allAnswers = this.props.answers;
-    const index = allAnswers.indexOf(e.target.innerText);
+    const index = allAnswers.indexOf(e.currentTarget.innerText);
     if (index > -1) {
       allAnswers.splice(index, 1);
     }
     this.setAnswersHandler(allAnswers);
   };
 
-  setAnswersHandler = (answers) => {
+  public setAnswersHandler = (answers) => {
     this.props.setAnswers(answers);
   };
 
-  render() {
+  public render() {
     return (
       <ListGroup key={"answers"}>
         {this.props.answers.map((answer) => (
