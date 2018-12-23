@@ -6,7 +6,7 @@ import CategoryPanel from "./CategoryPanel";
 import "react-datetime/css/react-datetime.css";
 import { FormGroup, FormControl, ControlLabel, Button, Radio, InputGroup, HelpBlock } from "react-bootstrap";
 import moment from "moment";
-import CategoryContract from "../../build/CategoryContract.json";
+import CategoryContract from "../../contracts/CategoryContract.json";
 import BlockchainData from "../common/BlockchainData";
 
 class CreateVoteForm extends Component {

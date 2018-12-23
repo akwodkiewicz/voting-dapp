@@ -8,7 +8,7 @@ import CreateVotePage from "./createVote/CreateVotePage";
 //import ListOfVotesPage from './listvotes/ListOfVotesPage';
 import Header from "./common/Header";
 import BlockchainData from "./common/BlockchainData";
-import ManagerContract from "../build/contracts/ManagerContract.json";
+import ManagerContract from "../contracts/ManagerContract.json";
 
 class App extends Component {
   constructor(props) {
