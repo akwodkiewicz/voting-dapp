@@ -1,4 +1,4 @@
-import { Component, SyntheticEvent } from "react";
+import React, { Component } from "react";
 import { ListGroup, ListGroupItem } from "react-bootstrap";
 
 interface IAnswersListProps {
@@ -6,7 +6,7 @@ interface IAnswersListProps {
   setAnswers: (arg: string[]) => void;
 }
 
-class AnswersList extends Component<IAnswersListProps> {
+export default class AnswersList extends Component<IAnswersListProps> {
   constructor(props) {
     super(props);
   }
@@ -36,5 +36,3 @@ class AnswersList extends Component<IAnswersListProps> {
     );
   }
 }
-
-export default AnswersList;

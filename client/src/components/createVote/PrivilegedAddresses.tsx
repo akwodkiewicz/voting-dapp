@@ -1,4 +1,4 @@
-import { Component, FormEvent } from "react";
+import React, { Component, FormEvent } from "react";
 import { ControlLabel, FormControl, FormGroup } from "react-bootstrap";
 import { VoteType } from "./VoteTypePanel";
 
@@ -8,7 +8,7 @@ interface IPrivilegedAddressesProps {
   setPrivilegedAddressesInParent: (arg: string[]) => void;
 }
 
-class PrivilegedAddresses extends Component<IPrivilegedAddressesProps> {
+export default class PrivilegedAddresses extends Component<IPrivilegedAddressesProps> {
   constructor(props) {
     super(props);
   }
@@ -35,5 +35,3 @@ class PrivilegedAddresses extends Component<IPrivilegedAddressesProps> {
     } else return null;
   }
 }
-
-export default PrivilegedAddresses;

@@ -1,6 +1,5 @@
-import { Component } from "react";
+import React, { Component } from "react";
 import { BrowserRouter as Router, Route } from "react-router-dom";
-import Web3 = require("web3");
 
 import * as ManagerContract from "../contracts/ManagerContract.json";
 import AboutPage from "./about/AboutPage";
@@ -8,6 +7,7 @@ import Header from "./common/Header";
 import { BlockchainData } from "./common/types";
 import CreateVotePage from "./createVote/CreateVotePage";
 import HomePage from "./home/HomePage";
+import Web3 from "web3"; //tslint:disable-line
 
 interface IAppState {
   blockchainData: BlockchainData;
@@ -15,7 +15,7 @@ interface IAppState {
   waitingForAccess: boolean;
 }
 
-class App extends Component<any, IAppState> {
+export default class App extends Component<any, IAppState> {
   constructor(props: any) {
     super(props);
     this.state = {
@@ -115,5 +115,3 @@ class App extends Component<any, IAppState> {
     }
   }
 }
-
-export default App;

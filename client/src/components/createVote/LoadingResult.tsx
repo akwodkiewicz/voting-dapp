@@ -1,11 +1,11 @@
-import { Component, Fragment } from "react";
+import React, { Component, Fragment } from "react";
 import Loader from "react-loader-spinner";
 
 interface ILoadingResultProps {
   getTransactionResult: () => void;
 }
 
-class LoadingResult extends Component<ILoadingResultProps> {
+export default class LoadingResult extends Component<ILoadingResultProps> {
   public componentDidMount = async () => {
     await this.sleep(2000);
 
@@ -25,5 +25,3 @@ class LoadingResult extends Component<ILoadingResultProps> {
     );
   }
 }
-
-export default LoadingResult;

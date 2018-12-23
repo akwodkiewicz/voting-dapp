@@ -1,7 +1,7 @@
-import { Component } from "react";
-// import "react-datetime/css/react-datetime.css";
-import { BlockchainData } from "../common/types";
-import CreateVoteForm, { VoteFormData } from "./CreateVoteForm";
+import React, { Component } from "react";
+import "react-datetime/css/react-datetime.css"; // tslint:disable-line
+import { BlockchainData, VoteFormData } from "../common/types";
+import CreateVoteForm from "./CreateVoteForm";
 import DisplayResult from "./DisplayResult";
 import LoadingResult from "./LoadingResult";
 
@@ -11,7 +11,7 @@ enum PageMode {
   Finalized = "finalized",
 }
 
-enum ResultStatus {
+export enum ResultStatus {
   Success = "success",
   Failure = "failure",
 }
@@ -25,7 +25,7 @@ interface ICreateVotePageState {
   resultStatus: ResultStatus;
 }
 
-class CreateVotePage extends Component<ICreateVotePageProps, ICreateVotePageState> {
+export default class CreateVotePage extends Component<ICreateVotePageProps, ICreateVotePageState> {
   constructor(props) {
     super(props);
 
@@ -108,11 +108,8 @@ class CreateVotePage extends Component<ICreateVotePageProps, ICreateVotePageStat
       );
     } else if (this.state.mode === "fetching") {
       return <LoadingResult getTransactionResult={this.getTransactionResult} />;
-    } else if (this.state.mode === "finalized") {
+    } else {
       return <DisplayResult status={this.state.resultStatus} onClick={this.setModeToForm} />;
     }
   }
 }
-
-export default CreateVotePage;
-export { ResultStatus };

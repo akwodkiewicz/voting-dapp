@@ -1,4 +1,4 @@
-import { Component } from "react";
+import React, { Component } from "react";
 import { ResultStatus } from "./CreateVotePage";
 
 interface IDisplayResultProps {
@@ -6,11 +6,11 @@ interface IDisplayResultProps {
   onClick: () => void;
 }
 
-class DisplayResult extends Component<IDisplayResultProps> {
+export default class DisplayResult extends Component<IDisplayResultProps> {
   public render() {
     if (this.props.status === ResultStatus.Success) {
       return <h1>Congrats m8</h1>;
-    } else if (this.props.status === ResultStatus.Failure) {
+    } else {
       return (
         <div>
           <h1>Operation cancelled!</h1>
@@ -21,5 +21,3 @@ class DisplayResult extends Component<IDisplayResultProps> {
     }
   }
 }
-
-export default DisplayResult;

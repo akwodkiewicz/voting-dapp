@@ -1,13 +1,8 @@
-import { Component, Fragment } from "react";
+import React, { Component, Fragment } from "react";
 import { FormControl } from "react-bootstrap";
-import { ContractAddress } from "../common/types";
+import { Category, ContractAddress } from "../common/types";
 
-type Category = {
-  address: ContractAddress;
-  name: string;
-};
-
-enum CategoryPanelType {
+export enum CategoryPanelType {
   Existing = "existing",
   New = "new",
 }
@@ -19,7 +14,7 @@ interface ICategoryPanelProps {
   setCategoryInParent: (arg: string) => void;
 }
 
-class CategoryPanel extends Component<ICategoryPanelProps> {
+export default class CategoryPanel extends Component<ICategoryPanelProps> {
   constructor(props) {
     super(props);
   }
@@ -64,6 +59,3 @@ class CategoryPanel extends Component<ICategoryPanelProps> {
     }
   }
 }
-
-export default CategoryPanel;
-export { CategoryPanelType, Category };

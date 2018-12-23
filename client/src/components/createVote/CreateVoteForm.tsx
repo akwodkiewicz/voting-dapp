@@ -1,25 +1,13 @@
-import * as moment from "moment";
-import { Component } from "react";
+import moment from "moment";
+import React, { Component } from "react";
 import { Button, ControlLabel, FormControl, FormGroup, HelpBlock, InputGroup, Radio } from "react-bootstrap";
-// import "react-datetime/css/react-datetime.css";
+import "react-datetime/css/react-datetime.css"; //tslint:disable-line
 import * as CategoryContract from "../../contracts/CategoryContract.json";
-import { BlockchainData, ContractAddress } from "../common/types";
+import { BlockchainData, Category, ContractAddress, VoteFormData } from "../common/types";
 import AnswersList from "./AnswersList";
-import CategoryPanel, { Category, CategoryPanelType } from "./CategoryPanel";
+import CategoryPanel, { CategoryPanelType } from "./CategoryPanel";
 import VoteDates from "./VoteDates";
 import VoteTypePanel, { Voter, VoteType } from "./VoteTypePanel";
-
-// tslint:disable-next-line:interface-name
-interface VoteFormData {
-  question: string;
-  answers: string[];
-  voteEndTime: number;
-  resultsViewingEndTime: number;
-  categoryPanel: CategoryPanelType;
-  chosenCategory: string | ContractAddress;
-  voteType: VoteType;
-  privilegedVoters: Voter[];
-}
 
 interface ICreateVoteFormProps {
   formData: VoteFormData;
@@ -41,7 +29,7 @@ interface ICreateVoteFormState {
   voteType: VoteType;
 }
 
-class CreateVoteForm extends Component<ICreateVoteFormProps, ICreateVoteFormState> {
+export default class CreateVoteForm extends Component<ICreateVoteFormProps, ICreateVoteFormState> {
   constructor(props) {
     super(props);
 
@@ -86,7 +74,7 @@ class CreateVoteForm extends Component<ICreateVoteFormProps, ICreateVoteFormStat
     }
   };
 
-  public componentDidUpdate = async (prevProps) => {
+  public componentDidUpdate = async () => {
     // If blockchainData was initialized after this component had mounted
     if (!this.state.isCategoriesListFetched && this.props.blockchainData) {
       this.fetchCategories();
@@ -199,7 +187,7 @@ class CreateVoteForm extends Component<ICreateVoteFormProps, ICreateVoteFormStat
   public addAnswer = () => {
     const answer = (document.getElementById("answer") as HTMLInputElement).value;
     const allAnswers = this.state.answers;
-    if (!answer || !answer.trim() || allAnswers.includes(answer)) {
+    if (!answer || !answer.trim() || allAnswers.find((a) => a === answer)) {
       return;
     }
     allAnswers.push(answer);
@@ -282,6 +270,3 @@ class CreateVoteForm extends Component<ICreateVoteFormProps, ICreateVoteFormStat
     );
   }
 }
-
-export default CreateVoteForm;
-export { VoteFormData };

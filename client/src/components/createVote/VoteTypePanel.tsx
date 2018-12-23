@@ -1,11 +1,11 @@
-import { Component, Fragment } from "react";
+import React, { Component, Fragment } from "react";
 
 import { ControlLabel, FormGroup, Radio } from "react-bootstrap";
 import PrivilegedAddresses from "./PrivilegedAddresses";
 
-type Voter = string;
+export type Voter = string;
 
-enum VoteType {
+export enum VoteType {
   Public = "public",
   Private = "private",
 }
@@ -17,7 +17,7 @@ interface IVoteTypeProps {
   setPrivilegedVotersInParent: (arg: Voter[]) => void;
 }
 
-class VoteTypePanel extends Component<IVoteTypeProps> {
+export default class VoteTypePanel extends Component<IVoteTypeProps> {
   constructor(props: Readonly<IVoteTypeProps>) {
     super(props);
   }
@@ -61,6 +61,3 @@ class VoteTypePanel extends Component<IVoteTypeProps> {
     );
   }
 }
-
-export default VoteTypePanel;
-export { Voter, VoteType };

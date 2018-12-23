@@ -1,7 +1,7 @@
-import * as moment from "moment";
-import { Component } from "react";
+import moment from "moment";
+import React, { Component } from "react";
 import { Col, ControlLabel, FormGroup, Grid, Row } from "react-bootstrap";
-import * as Datetime from "react-datetime";
+import Datetime from "react-datetime";
 
 interface IVoteDatesProps {
   voteEndDateTime: moment.Moment;
@@ -11,7 +11,7 @@ interface IVoteDatesProps {
 }
 
 // tslint:disable:object-literal-sort-keys
-class VoteDates extends Component<IVoteDatesProps> {
+export default class VoteDates extends Component<IVoteDatesProps> {
   constructor(props) {
     super(props);
   }
@@ -145,5 +145,3 @@ class VoteDates extends Component<IVoteDatesProps> {
     );
   }
 }
-
-export default VoteDates;

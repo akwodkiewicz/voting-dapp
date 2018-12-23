@@ -61,7 +61,6 @@
         "truffle-contract": "^4.0.0-beta.1",
         "url-loader": "1.1.1",
         "web3": "^1.0.0-beta.36",
-        "webpack": "4.19.1",
         "webpack-dev-server": "3.1.9",
         "webpack-manifest-plugin": "2.0.4",
         "workbox-webpack-plugin": "3.6.3"
@@ -76,6 +75,7 @@
         "@types/react-dom": "^16.0.11",
         "@types/react-router-dom": "^4.3.1",
         "@types/web3": "^1.0.14",
+        "awesome-typescript-loader": "^5.2.1",
         "babel-plugin-static-fs": "^1.1.0",
         "chai": "^4.2.0",
         "husky": "^1.2.0",
@@ -85,7 +85,9 @@
         "tslint": "^5.11.0",
         "tslint-config-prettier": "^1.17.0",
         "typechain": "^0.3.8",
-        "typescript": "^3.2.2"
+        "typescript": "^3.2.2",
+        "webpack": "^4.19.1",
+        "webpack-cli": "^3.1.2"
     },
     "eslintConfig": {
         "extends": "react-app"
@@ -98,7 +100,7 @@
         "prettier:write": "prettier --write \"{,!(node_modules|dist|build|coverage)/**/}*.{js,jsx,ts,tsx,json}\"",
         "tslint": "tslint --project tsconfig.json",
         "start": "node scripts/start.js",
-        "build": "tsc",
+        "build": "node scripts/build.js",
         "testr": "node scripts/test.js"
     },
     "repository": {
