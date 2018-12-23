@@ -1,6 +1,7 @@
 import React, { Component } from "react";
-import { ListGroupItem, ListGroup, Row, Col, Grid } from "react-bootstrap";
+import { Col, Grid, ListGroup, ListGroupItem, Row } from "react-bootstrap";
 
+import { BlockchainData, Category } from "../common/types";
 import CategoryList from "./CategoryList";
 
 const votings = [
@@ -8,32 +9,42 @@ const votings = [
   ["These questions are totally different!", "See?", "I guess it's technically not even a question?"],
 ];
 
-class ListVotingsPage extends Component {
-  constructor() {
-    super();
+interface IListVotingsPageProps {
+  blockchainData: BlockchainData;
+}
+
+interface IListVotingsPageState {
+  categories: Category[];
+  chosenCategoryIndex: number;
+  chosenVoting: string;
+}
+
+export default class ListVotingsPage extends Component<IListVotingsPageProps, IListVotingsPageState> {
+  constructor(props) {
+    super(props);
     this.state = {
+      categories: [],
       chosenCategoryIndex: null,
       chosenVoting: null,
-      categories: [],
     };
   }
 
-  setCategories = (categoriesFromChild) => {
+  public setCategories = (categoriesFromChild) => {
     this.setState({ categories: categoriesFromChild });
   };
 
-  handleCategoryClick = (categoryIndexFromChild) => {
+  public handleCategoryClick = (categoryIndexFromChild) => {
     this.setState({ chosenCategoryIndex: categoryIndexFromChild });
   };
 
-  handleVotingClick = (event) => {
+  public handleVotingClick = (event) => {
     console.log(event.target.innerText);
     this.setState({
       chosenVoting: event.target.innerText,
     });
   };
 
-  render() {
+  public render() {
     return (
       <Grid>
         <Row>
@@ -47,14 +58,18 @@ class ListVotingsPage extends Component {
             />
           </Col>
 
-          {this.state.chosenCategory ? (
+          {this.state.chosenCategoryIndex != null ? (
             <Col sm={5}>
-              <h2>Votings inside {this.state.chosenCategory.name}</h2>
-              <ListGroup>
-                {votings[this.state.chosenCategoryIndex].map((name, index) => {
-                  return <ListGroupItem onClick={this.handleVotingClick}>{name}</ListGroupItem>;
-                })}
-              </ListGroup>
+              <h2>Votings inside {this.state.categories[this.state.chosenCategoryIndex].name}</h2>
+              {votings[this.state.chosenCategoryIndex].length > 0 ? (
+                <ListGroup>
+                  {votings[this.state.chosenCategoryIndex].map((name) => {
+                    return <ListGroupItem onClick={this.handleVotingClick}>{name}</ListGroupItem>;
+                  })}
+                </ListGroup>
+              ) : (
+                <h4>No votings in this category... Weird, huh?</h4>
+              )}
             </Col>
           ) : null}
 
@@ -68,5 +83,3 @@ class ListVotingsPage extends Component {
     );
   }
 }
-
-export default ListVotingsPage;

@@ -1,33 +1,45 @@
 import React, { Component } from "react";
+import { ListGroup, ListGroupItem } from "react-bootstrap";
 import { fetchCategories } from "../../utils/eth";
-import { ListGroupItem, ListGroup } from "react-bootstrap";
+import { BlockchainData, Category } from "../common/types";
 
-class CategoryList extends Component {
-  constructor() {
-    super();
+interface ICategoryListProps {
+  blockchainData: BlockchainData;
+  categories: Category[];
+  chosenCategoryIndex: number;
+  setChosenCategoryInParent: (arg: number) => void;
+  setCategoriesInParent: (arg: Category[]) => void;
+}
+interface ICategoryListState {
+  areCategoriesFetched: boolean;
+}
+
+export default class CategoryList extends Component<ICategoryListProps, ICategoryListState> {
+  constructor(props) {
+    super(props);
     this.state = {
       areCategoriesFetched: false,
     };
   }
 
-  componentDidMount = async () => {
+  public componentDidMount = async () => {
     if (this.props.blockchainData) {
       const categories = await fetchCategories(this.props.blockchainData);
-      this.props.setCategoriesInParent(categories, null);
+      this.props.setCategoriesInParent(categories);
       this.setState({ areCategoriesFetched: true });
     }
   };
 
-  componentDidUpdate = async (prevProps) => {
+  public componentDidUpdate = async () => {
     // If blockchainData was initialized after this component had mounted
     if (!this.state.areCategoriesFetched && this.props.blockchainData) {
       const categories = await fetchCategories(this.props.blockchainData);
-      this.props.setCategoriesInParent(categories, null);
+      this.props.setCategoriesInParent(categories);
       this.setState({ areCategoriesFetched: true });
     }
   };
 
-  handleOnClick = (event) => {
+  public handleOnClick = (event) => {
     const chosenCategoryName = event.target.innerText;
 
     let chosenCategoryIndex;
@@ -39,7 +51,7 @@ class CategoryList extends Component {
     this.props.setChosenCategoryInParent(chosenCategoryIndex);
   };
 
-  render() {
+  public render() {
     return (
       <React.Fragment>
         <h2>Categories</h2>
@@ -49,7 +61,7 @@ class CategoryList extends Component {
               return (
                 <ListGroupItem
                   onClick={this.handleOnClick}
-                  {...(index == this.props.chosenCategoryIndex ? { active: true } : null)}
+                  {...(index === this.props.chosenCategoryIndex ? { active: true } : null)}
                 >
                   {cat.name}
                 </ListGroupItem>
@@ -63,5 +75,3 @@ class CategoryList extends Component {
     );
   }
 }
-
-export default CategoryList;
