@@ -1,5 +1,5 @@
-import React, { Component } from "react";
-import { Col, ListGroup, ListGroupItem } from "react-bootstrap";
+import React, { Component, Fragment } from "react";
+import { ListGroup, ListGroupItem } from "react-bootstrap";
 import { fetchVotings } from "../../utils/eth";
 import { BlockchainData, Category, Voting } from "../common/types";
 
@@ -45,7 +45,8 @@ export default class VotingList extends Component<IVotingListProps, IVotingListS
   };
 
   public handleVotingClick = (event: React.MouseEvent<ListGroupItem & HTMLInputElement>) => {
-    const question = event.currentTarget.value;
+    const question = event.currentTarget.innerText;
+
     let chosenVotingIndex: number;
     this.props.votings.forEach((voting, index) => {
       if (voting.question === question) {
@@ -57,8 +58,8 @@ export default class VotingList extends Component<IVotingListProps, IVotingListS
 
   public render() {
     return (
-      <Col sm={5}>
-        <h2>Votings inside {this.props.category.name}</h2>
+      <Fragment>
+        <h2>Votings</h2>
         <ListGroup>
           {this.props.votings.map((voting) => {
             return (
@@ -68,7 +69,7 @@ export default class VotingList extends Component<IVotingListProps, IVotingListS
             );
           })}
         </ListGroup>
-      </Col>
+      </Fragment>
     );
   }
 }

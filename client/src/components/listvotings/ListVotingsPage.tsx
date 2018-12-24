@@ -36,7 +36,7 @@ export default class ListVotingsPage extends Component<IListVotingsPageProps, IL
   };
 
   public handleCategoryClick = (categoryIndexFromChild: number) => {
-    this.setState({ chosenCategoryIndex: categoryIndexFromChild });
+    this.setState({ chosenCategoryIndex: categoryIndexFromChild, chosenVotingIndex: null });
   };
 
   public handleVotingClick = (votingIndexFromChild: number) => {
@@ -72,7 +72,10 @@ export default class ListVotingsPage extends Component<IListVotingsPageProps, IL
 
           <Col sm={4}>
             {this.state.chosenVotingIndex != null ? (
-              <h3>{this.state.votings[this.state.chosenVotingIndex].question}</h3>
+              <div>
+                <h4>{this.state.votings[this.state.chosenVotingIndex].question}</h4>
+                <h5>Address: {this.state.votings[this.state.chosenVotingIndex].contract._address}</h5>
+              </div>
             ) : null}
           </Col>
         </Row>
