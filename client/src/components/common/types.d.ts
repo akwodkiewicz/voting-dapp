@@ -33,3 +33,12 @@ export declare interface VoteFormData {
     voteType: VoteType;
     privilegedVoters: Voter[];
 }
+
+export type VotingInfo = {
+    question: string;
+    category: ContractAddress;
+    answers: string[];
+    votingEndTime: number;
+    resultsEndTime: number;
+    isPrivate: boolean;
+};

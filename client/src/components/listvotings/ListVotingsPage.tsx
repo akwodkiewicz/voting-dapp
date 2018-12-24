@@ -3,6 +3,7 @@ import { Col, Grid, Row } from "react-bootstrap";
 
 import { BlockchainData, Category, Voting } from "../common/types";
 import CategoryList from "./CategoryList";
+import VotingInfoPanel from "./VotingInfoPanel";
 import VotingList from "./VotingList";
 
 interface IListVotingsPageProps {
@@ -72,10 +73,10 @@ export default class ListVotingsPage extends Component<IListVotingsPageProps, IL
 
           <Col sm={4}>
             {this.state.chosenVotingIndex != null ? (
-              <div>
-                <h4>{this.state.votings[this.state.chosenVotingIndex].question}</h4>
-                <h5>Address: {this.state.votings[this.state.chosenVotingIndex].contract._address}</h5>
-              </div>
+              <VotingInfoPanel
+                voting={this.state.votings[this.state.chosenVotingIndex]}
+                blockchainData={this.props.blockchainData}
+              />
             ) : null}
           </Col>
         </Row>

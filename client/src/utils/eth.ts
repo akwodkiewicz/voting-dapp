@@ -1,4 +1,4 @@
-import { BlockchainData, Category, Voting } from "../components/common/types.js";
+import { BlockchainData, Category, Voting, VotingInfo } from "../components/common/types.js";
 import CategoryAbi from "../contracts/CategoryContract.json";
 import VotingAbi from "../contracts/VotingContract.json";
 import { CategoryContract } from "../typed-contracts/CategoryContract";
@@ -35,4 +35,22 @@ export const fetchVotings = async (blockchainData: BlockchainData, category: Cat
         votings.push({ contract: votingInstance, question });
     }
     return votings;
+};
+
+// tslint:disable:object-literal-sort-keys
+export const downloadVotingInfo = async (
+    blockchainData: BlockchainData,
+    voting: VotingContract
+): Promise<VotingInfo> => {
+    const web3 = blockchainData.web3;
+    const resp = await voting.methods.viewContractInfo().call();
+
+    return {
+        question: resp[0],
+        category: resp[1],
+        answers: resp[2].map((raw) => web3.utils.hexToUtf8(raw)),
+        votingEndTime: parseInt(resp[3], 10),
+        resultsEndTime: parseInt(resp[4], 10),
+        isPrivate: await voting.methods.isPrivate().call(),
+    };
 };
