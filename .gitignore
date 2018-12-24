@@ -2,6 +2,7 @@
 build/*
 client/src/contracts/*
 client/src/typed-contracts/*
+types/*
 
 # Compiled TS
 client/build/*

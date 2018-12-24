@@ -15,7 +15,10 @@
         "noEmit": true,
         "jsx": "react",
         "resolveJsonModule": true,
-        "allowSyntheticDefaultImports": true
+        "allowSyntheticDefaultImports": true,
+        "typeRoots": ["./node_modules/@types", "./types"],
+        "types": ["node", "truffle-contracts"]
     },
-    "include": ["./client/src/**/*"]
+    "include": ["./client/src/**/*", "./test/**/*.ts"],
+    "exclude": ["node_modules"]
 }
