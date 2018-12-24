@@ -1,6 +1,7 @@
 # Contract ABIs
 build/*
 client/src/contracts/*
+client/src/typed-contracts/*
 
 # Compiled TS
 client/build/*

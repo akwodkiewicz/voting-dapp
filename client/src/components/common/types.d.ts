@@ -1,12 +1,13 @@
 import Web3 = require("web3");
-import Contract from "web3/eth/contract"; // tslint:disable-line
+import { ManagerContract } from "../../typed-contracts/ManagerContract";
+import { VotingContract } from "../../typed-contracts/VotingContract";
 import { CategoryPanelType } from "../createVote/CategoryPanel";
 import { Voter, VoteType } from "../createVote/VoteTypePanel";
 
 export declare type ContractAddress = string;
 
 export declare type BlockchainData = {
-    manager: Contract;
+    manager: ManagerContract;
     accounts: string[];
     web3: Web3;
 };
@@ -14,6 +15,11 @@ export declare type BlockchainData = {
 export declare type Category = {
     address: ContractAddress;
     name: string;
+};
+
+export declare type Voting = {
+    contract: VotingContract;
+    question: string;
 };
 
 // tslint:disable-next-line:interface-name

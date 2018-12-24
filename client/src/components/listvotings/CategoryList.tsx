@@ -61,6 +61,7 @@ export default class CategoryList extends Component<ICategoryListProps, ICategor
               return (
                 <ListGroupItem
                   onClick={this.handleOnClick}
+                  key={cat.address}
                   {...(index === this.props.chosenCategoryIndex ? { active: true } : null)}
                 >
                   {cat.name}

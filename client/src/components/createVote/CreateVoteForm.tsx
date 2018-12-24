@@ -88,15 +88,14 @@ export default class CreateVoteForm extends Component<ICreateVoteFormProps, ICre
     const managerInstance = blockchainData.manager;
 
     const categories = [];
-    const numberOfCategories = await managerInstance.methods.numberOfCategories().call();
-    if (numberOfCategories.length > 0) {
-      for (let index = 0; index < numberOfCategories; index++) {
-        const categoryAddress = await managerInstance.methods.categoryContractsList(index).call();
-        const categoryContract = new web3.eth.Contract(CategoryContract.abi, categoryAddress);
-        const categoryName = web3.utils.toUtf8(await categoryContract.methods.categoryName().call());
-        categories.push({ name: categoryName, address: categoryAddress });
-      }
+    const numberOfCategories = parseInt(await managerInstance.methods.numberOfCategories().call(), 10);
+    for (let index = 0; index < numberOfCategories; index++) {
+      const categoryAddress = await managerInstance.methods.categoryContractsList(index).call();
+      const categoryContract = new web3.eth.Contract(CategoryContract.abi, categoryAddress);
+      const categoryName = web3.utils.toUtf8(await categoryContract.methods.categoryName().call());
+      categories.push({ name: categoryName, address: categoryAddress });
     }
+
     this.setState({
       categoriesList: categories,
       chosenCategory: categories.length > 0 ? categories[0].address : null,

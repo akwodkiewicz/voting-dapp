@@ -1,13 +1,9 @@
 import React, { Component } from "react";
-import { Col, Grid, ListGroup, ListGroupItem, Row } from "react-bootstrap";
+import { Col, Grid, Row } from "react-bootstrap";
 
-import { BlockchainData, Category } from "../common/types";
+import { BlockchainData, Category, Voting } from "../common/types";
 import CategoryList from "./CategoryList";
-
-const votings = [
-  ["Is this question rendering properly?", "How about this one?"],
-  ["These questions are totally different!", "See?", "I guess it's technically not even a question?"],
-];
+import VotingList from "./VotingList";
 
 interface IListVotingsPageProps {
   blockchainData: BlockchainData;
@@ -16,7 +12,8 @@ interface IListVotingsPageProps {
 interface IListVotingsPageState {
   categories: Category[];
   chosenCategoryIndex: number;
-  chosenVoting: string;
+  votings: Voting[];
+  chosenVotingIndex: number;
 }
 
 export default class ListVotingsPage extends Component<IListVotingsPageProps, IListVotingsPageState> {
@@ -25,23 +22,25 @@ export default class ListVotingsPage extends Component<IListVotingsPageProps, IL
     this.state = {
       categories: [],
       chosenCategoryIndex: null,
-      chosenVoting: null,
+      chosenVotingIndex: null,
+      votings: [],
     };
   }
 
-  public setCategories = (categoriesFromChild) => {
+  public setCategories = (categoriesFromChild: Category[]) => {
     this.setState({ categories: categoriesFromChild });
   };
 
-  public handleCategoryClick = (categoryIndexFromChild) => {
+  public setVotings = (votingsFromChild: Voting[]) => {
+    this.setState({ votings: votingsFromChild });
+  };
+
+  public handleCategoryClick = (categoryIndexFromChild: number) => {
     this.setState({ chosenCategoryIndex: categoryIndexFromChild });
   };
 
-  public handleVotingClick = (event) => {
-    console.log(event.target.innerText);
-    this.setState({
-      chosenVoting: event.target.innerText,
-    });
+  public handleVotingClick = (votingIndexFromChild: number) => {
+    this.setState({ chosenVotingIndex: votingIndexFromChild });
   };
 
   public render() {
@@ -58,26 +57,24 @@ export default class ListVotingsPage extends Component<IListVotingsPageProps, IL
             />
           </Col>
 
-          {this.state.chosenCategoryIndex != null ? (
-            <Col sm={5}>
-              <h2>Votings inside {this.state.categories[this.state.chosenCategoryIndex].name}</h2>
-              {votings[this.state.chosenCategoryIndex].length > 0 ? (
-                <ListGroup>
-                  {votings[this.state.chosenCategoryIndex].map((name) => {
-                    return <ListGroupItem onClick={this.handleVotingClick}>{name}</ListGroupItem>;
-                  })}
-                </ListGroup>
-              ) : (
-                <h4>No votings in this category... Weird, huh?</h4>
-              )}
-            </Col>
-          ) : null}
+          <Col sm={5}>
+            {this.state.chosenCategoryIndex != null ? (
+              <VotingList
+                category={this.state.categories[this.state.chosenCategoryIndex]}
+                votings={this.state.votings}
+                chosenVotingIndex={this.state.chosenVotingIndex}
+                setVotingsInParent={this.setVotings}
+                setChosenVotingIndexInParent={this.handleVotingClick}
+                blockchainData={this.props.blockchainData}
+              />
+            ) : null}
+          </Col>
 
-          {this.state.chosenVoting ? (
-            <Col sm={4}>
-              <h3>{this.state.chosenVoting}</h3>
-            </Col>
-          ) : null}
+          <Col sm={4}>
+            {this.state.chosenVotingIndex != null ? (
+              <h3>{this.state.votings[this.state.chosenVotingIndex].question}</h3>
+            ) : null}
+          </Col>
         </Row>
       </Grid>
     );

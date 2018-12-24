@@ -1,6 +1,6 @@
 {
     "compilerOptions": {
-        "module": "commonjs", // set for web3
+        "module": "commonjs",
         "target": "es5",
         "lib": ["es2015", "dom"],
         "moduleResolution": "node",
@@ -15,10 +15,7 @@
         "noEmit": true,
         "jsx": "react",
         "resolveJsonModule": true,
-        "allowSyntheticDefaultImports": true,
-        "rootDir": "./client/src",
-        "outDir": "./client/build"
+        "allowSyntheticDefaultImports": true
     },
-    "include": ["./client/src/**/*", "./types/**/*"]
-    // "exclude": ["node_modules", "example", "build"]
+    "include": ["./client/src/**/*"]
 }
