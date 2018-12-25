@@ -1,6 +1,6 @@
 import moment from "moment";
 import React, { Component } from "react";
-import { ListGroup, ListGroupItem, Panel, ToggleButton, ToggleButtonGroup } from "react-bootstrap";
+import { Glyphicon, ListGroup, ListGroupItem, Panel, ToggleButton, ToggleButtonGroup } from "react-bootstrap";
 import { fetchVotings } from "../../utils/eth";
 import { BlockchainData, Category, Voting } from "../common/types";
 import { PrivacySetting } from "./PrivacyButtons";
@@ -107,6 +107,13 @@ export default class VotingList extends Component<IVotingListProps, IVotingListS
                     {...(index === this.props.chosenVotingIndex ? { active: true } : null)}
                   >
                     {voting.info.question}
+                    {voting.info.isPrivate ? (
+                      voting.info.isPrivileged ? (
+                        <Glyphicon glyph="lock" className="pull-right" />
+                      ) : (
+                        <Glyphicon glyph="ban-circle" className="pull-right" />
+                      )
+                    ) : null}
                   </ListGroupItem>
                 );
               })}

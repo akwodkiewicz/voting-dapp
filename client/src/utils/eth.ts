@@ -43,6 +43,7 @@ export const fetchVotings = async (blockchainData: BlockchainData, category: Cat
             votingEndTime: parseInt(resp[3], 10),
             resultsEndTime: parseInt(resp[4], 10),
             isPrivate: null,
+            isPrivileged: null,
         };
 
         let testPassed: boolean;
@@ -64,7 +65,9 @@ export const fetchVotings = async (blockchainData: BlockchainData, category: Cat
         }
 
         info.isPrivate = await votingInstance.methods.isPrivate().call();
-
+        if (info.isPrivate) {
+            info.isPrivileged = await votingInstance.methods.isPrivileged(blockchainData.accounts[0]).call();
+        }
         votings.push({
             contract: votingInstance,
             info,
