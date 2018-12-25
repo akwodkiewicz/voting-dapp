@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { ListGroup, ListGroupItem } from "react-bootstrap";
+import { ListGroup, ListGroupItem, Panel } from "react-bootstrap";
 import { fetchCategories } from "../../utils/eth";
 import { BlockchainData, Category } from "../common/types";
 
@@ -39,29 +39,29 @@ export default class CategoryList extends Component<ICategoryListProps, ICategor
     }
   };
 
-  public handleOnClick = (event) => {
-    const chosenCategoryName = event.target.innerText;
+  public handleOnClick = (event: React.MouseEvent<ListGroupItem & HTMLInputElement>) => {
+    const chosenCategoryName = event.currentTarget.innerText;
 
-    let chosenCategoryIndex;
-    for (let i = 0; i < this.props.categories.length; i++) {
-      if (this.props.categories[i].name === chosenCategoryName) {
-        chosenCategoryIndex = i;
+    let chosenCategoryIndex: number;
+    this.props.categories.forEach((category, index) => {
+      if (category.name === chosenCategoryName) {
+        chosenCategoryIndex = index;
       }
-    }
+    });
     this.props.setChosenCategoryInParent(chosenCategoryIndex);
   };
 
   public render() {
     return (
-      <React.Fragment>
-        <h2>Categories</h2>
+      <Panel>
+        <Panel.Heading>Categories</Panel.Heading>
         {this.state.areCategoriesFetched ? (
           <ListGroup>
             {this.props.categories.map((cat, index) => {
               return (
                 <ListGroupItem
-                  onClick={this.handleOnClick}
                   key={cat.address}
+                  onClick={this.handleOnClick}
                   {...(index === this.props.chosenCategoryIndex ? { active: true } : null)}
                 >
                   {cat.name}
@@ -70,9 +70,9 @@ export default class CategoryList extends Component<ICategoryListProps, ICategor
             })}
           </ListGroup>
         ) : (
-          <h3>Fetching data from blockchain...</h3>
+          <Panel.Body>Fetching data from blockchain...</Panel.Body>
         )}
-      </React.Fragment>
+      </Panel>
     );
   }
 }

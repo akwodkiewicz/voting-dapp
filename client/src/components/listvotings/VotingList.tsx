@@ -1,5 +1,5 @@
-import React, { Component, Fragment } from "react";
-import { ListGroup, ListGroupItem } from "react-bootstrap";
+import React, { Component } from "react";
+import { ListGroup, ListGroupItem, Panel, ToggleButton, ToggleButtonGroup } from "react-bootstrap";
 import { fetchVotings } from "../../utils/eth";
 import { BlockchainData, Category, Voting } from "../common/types";
 
@@ -17,6 +17,13 @@ interface IVotingListState {
 }
 
 export default class VotingList extends Component<IVotingListProps, IVotingListState> {
+  // https://stackoverflow.com/a/20548578
+  private vCenter = {
+    display: "inline-block",
+    float: "none" as "none", // https://stackoverflow.com/a/48087031
+    "vertical-align": "middle",
+  };
+
   constructor(params) {
     super(params);
 
@@ -58,18 +65,33 @@ export default class VotingList extends Component<IVotingListProps, IVotingListS
 
   public render() {
     return (
-      <Fragment>
-        <h2>Votings</h2>
-        <ListGroup>
-          {this.props.votings.map((voting) => {
-            return (
-              <ListGroupItem key={voting.contract._address} onClick={this.handleVotingClick}>
-                {voting.question}
-              </ListGroupItem>
-            );
-          })}
-        </ListGroup>
-      </Fragment>
+      <Panel>
+        <Panel.Heading className="clearfix">
+          <ToggleButtonGroup name="options" type="radio" bsSize="small" className="pull-right" style={this.vCenter}>
+            <ToggleButton value="all">All</ToggleButton>
+            <ToggleButton value="public">Public</ToggleButton>
+            <ToggleButton value="private">Private</ToggleButton>
+          </ToggleButtonGroup>
+          <h4 style={this.vCenter}>Votings</h4>
+        </Panel.Heading>
+        {this.state.areVotingsFetched ? (
+          <ListGroup>
+            {this.props.votings.map((voting, index) => {
+              return (
+                <ListGroupItem
+                  key={voting.contract._address}
+                  onClick={this.handleVotingClick}
+                  {...(index === this.props.chosenVotingIndex ? { active: true } : null)}
+                >
+                  {voting.question}
+                </ListGroupItem>
+              );
+            })}
+          </ListGroup>
+        ) : (
+          <Panel.Body>Fetching data from blockchain...</Panel.Body>
+        )}
+      </Panel>
     );
   }
 }

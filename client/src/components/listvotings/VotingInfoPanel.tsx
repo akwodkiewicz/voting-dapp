@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { Panel } from "react-bootstrap";
 import { downloadVotingInfo } from "../../utils/eth";
 import { BlockchainData, Voting, VotingInfo } from "../common/types";
 interface IVotingInfoPanelProps {
@@ -44,7 +45,7 @@ export default class VotingInfoPanel extends Component<IVotingInfoPanelProps, IV
       return <h1>Fetching data from blockchain...</h1>;
     } else {
       return (
-        <div>
+        <Panel>
           <h1>{this.state.votingInfo.question}</h1>
           <h2>Options:</h2>
           <ul>
@@ -53,7 +54,7 @@ export default class VotingInfoPanel extends Component<IVotingInfoPanelProps, IV
             })}
           </ul>
           <h2>{this.state.votingInfo.isPrivate ? "Private" : "Public"}</h2>
-        </div>
+        </Panel>
       );
     }
   }

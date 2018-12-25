@@ -49,6 +49,30 @@ export default class ListVotingsPage extends Component<IListVotingsPageProps, IL
       <Grid>
         <Row>
           <Col sm={3}>
+            <h4>1. Pick a category</h4>
+          </Col>
+
+          <Col sm={6}>
+            {/* {this.state.chosenCategoryIndex != null ? (
+              <Row>
+                <Col sm={4} style={this.vCenter}>
+                  <h4>2. Pick a voting</h4>
+                </Col>
+                <Col sm={6} style={this.vCenter}>
+                  <ButtonToolbar>
+                    <ToggleButtonGroup name="options" type="radio" bsSize="small" justified>
+                      <ToggleButton value="all">All</ToggleButton>
+                      <ToggleButton value="public">Public</ToggleButton>
+                      <ToggleButton value="private">Private</ToggleButton>
+                    </ToggleButtonGroup>
+                  </ButtonToolbar>
+                </Col>
+              </Row>
+            ) : null} */}
+          </Col>
+        </Row>
+        <Row>
+          <Col sm={3}>
             <CategoryList
               blockchainData={this.props.blockchainData}
               categories={this.state.categories}
