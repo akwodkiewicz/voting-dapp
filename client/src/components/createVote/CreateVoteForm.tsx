@@ -3,7 +3,7 @@ import React, { Component } from "react";
 import { Button, ControlLabel, FormControl, FormGroup, HelpBlock, InputGroup, Radio } from "react-bootstrap";
 import "react-datetime/css/react-datetime.css"; //tslint:disable-line
 import * as CategoryContract from "../../contracts/CategoryContract.json";
-import { BlockchainData, Category, ContractAddress, VoteFormData } from "../common/types";
+import { BlockchainData, Category, ContractAddress, VoteFormData } from "../../utils/types";
 import AnswersList from "./AnswersList";
 import CategoryPanel, { CategoryPanelType } from "./CategoryPanel";
 import VoteDates from "./VoteDates";

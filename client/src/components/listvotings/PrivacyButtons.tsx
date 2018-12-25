@@ -1,18 +1,5 @@
-import React, { Component, Fragment } from "react";
-import {
-  ButtonGroup,
-  Dropdown,
-  DropdownButton,
-  ListGroup,
-  ListGroupItem,
-  MenuItem,
-  Panel,
-  SelectCallback,
-  ToggleButton,
-  ToggleButtonGroup,
-} from "react-bootstrap";
-import { fetchCategories } from "../../utils/eth";
-import { BlockchainData, Category } from "../common/types";
+import React, { Component } from "react";
+import { ToggleButton, ToggleButtonGroup } from "react-bootstrap";
 
 export enum PrivacySetting {
   All = "all",

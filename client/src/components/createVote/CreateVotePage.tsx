@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import "react-datetime/css/react-datetime.css"; // tslint:disable-line
-import { BlockchainData, VoteFormData } from "../common/types";
+import { BlockchainData, VoteFormData } from "../../utils/types";
 import CreateVoteForm from "./CreateVoteForm";
 import DisplayResult from "./DisplayResult";
 import LoadingResult from "./LoadingResult";

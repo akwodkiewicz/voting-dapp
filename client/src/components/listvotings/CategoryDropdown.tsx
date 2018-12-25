@@ -1,7 +1,8 @@
 import React, { Component, Fragment } from "react";
-import { Dropdown, DropdownButton, ListGroup, ListGroupItem, MenuItem, Panel, SelectCallback } from "react-bootstrap";
+import { DropdownButton, MenuItem } from "react-bootstrap";
+
 import { fetchCategories } from "../../utils/eth";
-import { BlockchainData, Category } from "../common/types";
+import { BlockchainData, Category } from "../../utils/types";
 
 interface ICategoryListProps {
   blockchainData: BlockchainData;
@@ -10,6 +11,7 @@ interface ICategoryListProps {
   setChosenCategoryInParent: (arg: number) => void;
   setCategoriesInParent: (arg: Category[]) => void;
 }
+
 interface ICategoryListState {
   areCategoriesFetched: boolean;
   buttonTitle: string;
@@ -43,12 +45,6 @@ export default class CategoryDropdown extends Component<ICategoryListProps, ICat
 
   public handleOnClick = (chosenCategoryName: string) => {
     this.setState({ buttonTitle: chosenCategoryName });
-
-    // if (chosenCategoryName === "All") {
-    //   this.props.setChosenCategoryInParent(-1);
-    //   return;
-    // }
-
     let chosenCategoryIndex: number;
     this.props.categories.forEach((category, index) => {
       if (category.name === chosenCategoryName) {
@@ -63,10 +59,6 @@ export default class CategoryDropdown extends Component<ICategoryListProps, ICat
       <Fragment>
         {this.state.areCategoriesFetched ? (
           <DropdownButton id="categories" title={this.state.buttonTitle} bsStyle="default">
-            {/* <MenuItem eventKey="All" onSelect={() => this.handleOnClick("All")}>
-              All
-            </MenuItem>
-            <MenuItem divider /> */}
             {this.props.categories.map((cat, index) => {
               return (
                 <MenuItem

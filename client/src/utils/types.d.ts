@@ -1,30 +1,30 @@
 import Web3 = require("web3");
-import { ManagerContract } from "../../typed-contracts/ManagerContract";
-import { VotingContract } from "../../typed-contracts/VotingContract";
-import { CategoryPanelType } from "../createVote/CategoryPanel";
-import { Voter, VoteType } from "../createVote/VoteTypePanel";
-import { PrivacySetting } from "../listvotings/PrivacyButtons";
+import { CategoryPanelType } from "../components/createVote/CategoryPanel";
+import { Voter, VoteType } from "../components/createVote/VoteTypePanel";
+import { PrivacySetting } from "../components/listvotings/PrivacyButtons";
+import { ManagerContract } from "../typed-contracts/ManagerContract";
+import { VotingContract } from "../typed-contracts/VotingContract";
 
-export declare type ContractAddress = string;
+export type ContractAddress = string;
 
-export declare type BlockchainData = {
+export type BlockchainData = {
     manager: ManagerContract;
     accounts: string[];
     web3: Web3;
 };
 
-export declare type Category = {
+export type Category = {
     address: ContractAddress;
     name: string;
 };
 
-export declare type Voting = {
+export type Voting = {
     contract: VotingContract;
     info: VotingInfo;
 };
 
 // tslint:disable-next-line:interface-name
-export declare interface VoteFormData {
+export interface VoteFormData {
     question: string;
     answers: string[];
     voteEndTime: number;

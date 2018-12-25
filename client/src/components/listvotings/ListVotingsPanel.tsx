@@ -1,7 +1,7 @@
 import React, { Component, Fragment } from "react";
-import { ButtonToolbar, Col, Grid, Row } from "react-bootstrap";
+import { ButtonToolbar, Col, Row } from "react-bootstrap";
 
-import { BlockchainData, Category, Voting } from "../common/types";
+import { BlockchainData, Category, ContractAddress, Voting } from "../../utils/types";
 import CategoryDropdown from "./CategoryDropdown";
 import PrivacyButtons, { PrivacySetting } from "./PrivacyButtons";
 import VotingInfoPanel from "./VotingInfoPanel";
@@ -17,7 +17,7 @@ interface IListVotingsPanelState {
   categories: Category[];
   chosenCategoryIndex: number;
   votings: Voting[];
-  chosenVotingIndex: number;
+  chosenVotingAddress: ContractAddress;
   chosenPrivacySetting: PrivacySetting;
 }
 
@@ -28,7 +28,7 @@ export default class ListVotingsPanel extends Component<IListVotingsPanelProps, 
       categories: [],
       chosenCategoryIndex: null,
       chosenPrivacySetting: PrivacySetting.All,
-      chosenVotingIndex: null,
+      chosenVotingAddress: null,
       votings: [],
     };
   }
@@ -38,7 +38,7 @@ export default class ListVotingsPanel extends Component<IListVotingsPanelProps, 
   };
 
   public setPrivacySetting = (privacySettingFromChild: PrivacySetting) => {
-    this.setState({ chosenPrivacySetting: privacySettingFromChild });
+    this.setState({ chosenPrivacySetting: privacySettingFromChild, chosenVotingAddress: null });
   };
 
   public setVotings = (votingsFromChild: Voting[]) => {
@@ -46,11 +46,11 @@ export default class ListVotingsPanel extends Component<IListVotingsPanelProps, 
   };
 
   public handleCategoryClick = (categoryIndexFromChild: number) => {
-    this.setState({ chosenCategoryIndex: categoryIndexFromChild, chosenVotingIndex: null });
+    this.setState({ chosenCategoryIndex: categoryIndexFromChild, chosenVotingAddress: null });
   };
 
-  public handleVotingClick = (votingIndexFromChild: number) => {
-    this.setState({ chosenVotingIndex: votingIndexFromChild });
+  public handleVotingClick = (votingAddressFromChild: ContractAddress) => {
+    this.setState({ chosenVotingAddress: votingAddressFromChild });
   };
 
   public render() {
@@ -81,9 +81,9 @@ export default class ListVotingsPanel extends Component<IListVotingsPanelProps, 
               <VotingList
                 category={this.state.categories[this.state.chosenCategoryIndex]}
                 votings={this.state.votings}
-                chosenVotingIndex={this.state.chosenVotingIndex}
+                chosenVotingAddress={this.state.chosenVotingAddress}
                 setVotingsInParent={this.setVotings}
-                setChosenVotingIndexInParent={this.handleVotingClick}
+                setChosenVotingAddressInParent={this.handleVotingClick}
                 blockchainData={this.props.blockchainData}
                 privacySetting={this.state.chosenPrivacySetting}
                 votingState={this.props.votingState}
@@ -93,9 +93,11 @@ export default class ListVotingsPanel extends Component<IListVotingsPanelProps, 
         </Row>
         <Row>
           <Col md={12}>
-            {this.state.chosenVotingIndex != null ? (
+            {this.state.chosenVotingAddress != null ? (
               <VotingInfoPanel
-                voting={this.state.votings[this.state.chosenVotingIndex]}
+                voting={this.state.votings.find(
+                  (voting) => voting.contract._address === this.state.chosenVotingAddress
+                )}
                 blockchainData={this.props.blockchainData}
               />
             ) : null}

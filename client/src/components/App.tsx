@@ -1,15 +1,15 @@
 import React, { Component } from "react";
 import { BrowserRouter as Router, Route } from "react-router-dom";
+import Web3 from "web3";
 
 import ManagerAbi from "../contracts/ManagerContract.json";
+import { ManagerContract } from "../typed-contracts/ManagerContract";
+import { BlockchainData } from "../utils/types.js";
 import AboutPage from "./about/AboutPage";
 import Header from "./common/Header";
-import { BlockchainData } from "./common/types";
 import CreateVotePage from "./createVote/CreateVotePage";
 import HomePage from "./home/HomePage";
 import ListVotingsPage from "./listvotings/ListVotingsPage";
-import Web3 from "web3"; //tslint:disable-line
-import { ManagerContract } from "../typed-contracts/ManagerContract";
 
 interface IAppState {
   blockchainData: BlockchainData;
@@ -40,7 +40,7 @@ export default class App extends Component<any, IAppState> {
       const web3 = new Web3(window["ethereum"]);
       const instance = new web3.eth.Contract(
         ManagerAbi.abi,
-        "0x457D31982A783280F42e05e22493e47f8592358D"
+        "0x859a5e36B49A54AEe354a441b0E73E65B55Aee7e"
       ) as ManagerContract;
       instance.setProvider(web3.currentProvider);
       instance.options.from = accounts[0];

@@ -1,12 +1,12 @@
 import moment from "moment";
-import { BlockchainData, Category, Voting, VotingInfo } from "../components/common/types.js";
-import { PrivacySetting } from "../components/listvotings/PrivacyButtons.js";
+
 import { VotingState } from "../components/listvotings/VotingList";
 import CategoryAbi from "../contracts/CategoryContract.json";
 import VotingAbi from "../contracts/VotingContract.json";
 import { CategoryContract } from "../typed-contracts/CategoryContract";
 import { ManagerContract } from "../typed-contracts/ManagerContract";
 import { VotingContract } from "../typed-contracts/VotingContract";
+import { BlockchainData, Category, Voting, VotingInfo } from "./types";
 
 export const fetchCategories = async (blockchainData: BlockchainData) => {
     const web3 = blockchainData.web3;
