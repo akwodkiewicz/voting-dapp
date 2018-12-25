@@ -20,8 +20,7 @@ export declare type Category = {
 
 export declare type Voting = {
     contract: VotingContract;
-    question: string;
-    isPrivate: boolean;
+    info: VotingInfo;
 };
 
 // tslint:disable-next-line:interface-name
@@ -38,7 +37,7 @@ export declare interface VoteFormData {
 
 export type VotingInfo = {
     question: string;
-    category: ContractAddress;
+    categoryAddress: ContractAddress;
     answers: string[];
     votingEndTime: number;
     resultsEndTime: number;

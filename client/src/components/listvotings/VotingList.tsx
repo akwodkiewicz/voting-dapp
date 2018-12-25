@@ -1,8 +1,15 @@
+import moment from "moment";
 import React, { Component } from "react";
 import { ListGroup, ListGroupItem, Panel, ToggleButton, ToggleButtonGroup } from "react-bootstrap";
 import { fetchVotings } from "../../utils/eth";
 import { BlockchainData, Category, Voting } from "../common/types";
 import { PrivacySetting } from "./PrivacyButtons";
+
+export enum VotingState {
+  Active = "active",
+  Passive = "passive",
+  Disabled = "disabled",
+}
 
 interface IVotingListProps {
   blockchainData: BlockchainData;
@@ -10,6 +17,7 @@ interface IVotingListProps {
   category: Category;
   votings: Voting[];
   privacySetting: PrivacySetting;
+  votingState: VotingState;
   setVotingsInParent: (arg: Voting[]) => void;
   setChosenVotingIndexInParent: (arg: number) => void;
 }
@@ -36,7 +44,7 @@ export default class VotingList extends Component<IVotingListProps, IVotingListS
 
   public componentDidMount = async () => {
     if (this.props.blockchainData) {
-      const votings = await fetchVotings(this.props.blockchainData, this.props.category);
+      const votings = await fetchVotings(this.props.blockchainData, this.props.category, this.props.votingState);
       this.props.setVotingsInParent(votings);
       this.setState({ areVotingsFetched: true });
     }
@@ -47,7 +55,7 @@ export default class VotingList extends Component<IVotingListProps, IVotingListS
       this.setState({ areVotingsFetched: false });
     }
     if (!this.state.areVotingsFetched && this.props.blockchainData) {
-      const votings = await fetchVotings(this.props.blockchainData, this.props.category);
+      const votings = await fetchVotings(this.props.blockchainData, this.props.category, this.props.votingState);
       this.props.setVotingsInParent(votings);
       this.setState({ areVotingsFetched: true });
     }
@@ -58,7 +66,7 @@ export default class VotingList extends Component<IVotingListProps, IVotingListS
 
     let chosenVotingIndex: number;
     this.props.votings.forEach((voting, index) => {
-      if (voting.question === question) {
+      if (voting.info.question === question) {
         chosenVotingIndex = index;
       }
     });
@@ -76,10 +84,20 @@ export default class VotingList extends Component<IVotingListProps, IVotingListS
             {this.props.votings
               .filter((voting) => {
                 if (this.props.privacySetting === PrivacySetting.Private) {
-                  return voting.isPrivate;
+                  return voting.info.isPrivate;
                 } else if (this.props.privacySetting === PrivacySetting.Public) {
-                  return !voting.isPrivate;
+                  return !voting.info.isPrivate;
                 } else return true;
+              })
+              .filter((voting) => {
+                const now = moment()
+                  .utc()
+                  .unix();
+                if (this.props.votingState === VotingState.Active) {
+                  return now <= voting.info.votingEndTime;
+                } else if (this.props.votingState === VotingState.Passive) {
+                  return voting.info.votingEndTime < now && now <= voting.info.resultsEndTime;
+                } else return false;
               })
               .map((voting, index) => {
                 return (
@@ -88,7 +106,7 @@ export default class VotingList extends Component<IVotingListProps, IVotingListS
                     onClick={this.handleVotingClick}
                     {...(index === this.props.chosenVotingIndex ? { active: true } : null)}
                   >
-                    {voting.question}
+                    {voting.info.question}
                   </ListGroupItem>
                 );
               })}

@@ -6,7 +6,7 @@ import CategoryDropdown from "./CategoryDropdown";
 import ListVotingsPanel from "./ListVotingsPanel";
 import PrivacyButtons, { PrivacySetting } from "./PrivacyButtons";
 import VotingInfoPanel from "./VotingInfoPanel";
-import VotingList from "./VotingList";
+import VotingList, { VotingState } from "./VotingList";
 
 interface IListVotingsPageProps {
   blockchainData: BlockchainData;
@@ -52,19 +52,19 @@ export default class ListVotingsPage extends Component<IListVotingsPageProps, IL
     return (
       <Grid>
         <Row>
-          <Col md={6} className="text-center">
-            <h3>Active Votings</h3>
-          </Col>
-          <Col md={6} className="text-center">
-            <h3>Finished Votings</h3>
-          </Col>
-        </Row>
-        <Row>
           <Col md={6}>
-            <ListVotingsPanel blockchainData={this.props.blockchainData} />
+            <ListVotingsPanel
+              blockchainData={this.props.blockchainData}
+              title="Active Votings"
+              votingState={VotingState.Active}
+            />
           </Col>
           <Col md={6}>
-            <ListVotingsPanel blockchainData={this.props.blockchainData} />
+            <ListVotingsPanel
+              blockchainData={this.props.blockchainData}
+              title="Finished Votings"
+              votingState={VotingState.Passive}
+            />
           </Col>
         </Row>
       </Grid>

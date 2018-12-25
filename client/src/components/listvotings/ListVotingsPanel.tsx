@@ -5,10 +5,12 @@ import { BlockchainData, Category, Voting } from "../common/types";
 import CategoryDropdown from "./CategoryDropdown";
 import PrivacyButtons, { PrivacySetting } from "./PrivacyButtons";
 import VotingInfoPanel from "./VotingInfoPanel";
-import VotingList from "./VotingList";
+import VotingList, { VotingState } from "./VotingList";
 
 interface IListVotingsPanelProps {
   blockchainData: BlockchainData;
+  votingState: VotingState;
+  title: string;
 }
 
 interface IListVotingsPanelState {
@@ -54,6 +56,9 @@ export default class ListVotingsPanel extends Component<IListVotingsPanelProps, 
   public render() {
     return (
       <Fragment>
+        <Row className="text-center">
+          <h3>{this.props.title}</h3>
+        </Row>
         <Row>
           {/* https://github.com/react-bootstrap/react-bootstrap/issues/1928#issuecomment-331509515 */}
           <ButtonToolbar style={{ display: "flex", justifyContent: "center" }}>
@@ -81,6 +86,7 @@ export default class ListVotingsPanel extends Component<IListVotingsPanelProps, 
                 setChosenVotingIndexInParent={this.handleVotingClick}
                 blockchainData={this.props.blockchainData}
                 privacySetting={this.state.chosenPrivacySetting}
+                votingState={this.props.votingState}
               />
             ) : null}
           </Col>
