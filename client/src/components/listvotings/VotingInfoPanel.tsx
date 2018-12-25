@@ -50,7 +50,7 @@ export default class VotingInfoPanel extends Component<IVotingInfoPanelProps, IV
           <h2>Options:</h2>
           <ul>
             {this.state.votingInfo.answers.map((ans) => {
-              return <li>{ans}</li>;
+              return <li key={ans}>{ans}</li>;
             })}
           </ul>
           <h2>{this.state.votingInfo.isPrivate ? "Private" : "Public"}</h2>

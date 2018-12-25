@@ -1,5 +1,5 @@
-import React, { Component } from "react";
-import { ListGroup, ListGroupItem, Panel } from "react-bootstrap";
+import React, { Component, Fragment } from "react";
+import { Dropdown, DropdownButton, ListGroup, ListGroupItem, MenuItem, Panel, SelectCallback } from "react-bootstrap";
 import { fetchCategories } from "../../utils/eth";
 import { BlockchainData, Category } from "../common/types";
 
@@ -12,13 +12,15 @@ interface ICategoryListProps {
 }
 interface ICategoryListState {
   areCategoriesFetched: boolean;
+  buttonTitle: string;
 }
 
-export default class CategoryList extends Component<ICategoryListProps, ICategoryListState> {
+export default class CategoryDropdown extends Component<ICategoryListProps, ICategoryListState> {
   constructor(props) {
     super(props);
     this.state = {
       areCategoriesFetched: false,
+      buttonTitle: "Category",
     };
   }
 
@@ -39,8 +41,13 @@ export default class CategoryList extends Component<ICategoryListProps, ICategor
     }
   };
 
-  public handleOnClick = (event: React.MouseEvent<ListGroupItem & HTMLInputElement>) => {
-    const chosenCategoryName = event.currentTarget.innerText;
+  public handleOnClick = (chosenCategoryName: string) => {
+    this.setState({ buttonTitle: chosenCategoryName });
+
+    // if (chosenCategoryName === "All") {
+    //   this.props.setChosenCategoryInParent(-1);
+    //   return;
+    // }
 
     let chosenCategoryIndex: number;
     this.props.categories.forEach((category, index) => {
@@ -53,26 +60,30 @@ export default class CategoryList extends Component<ICategoryListProps, ICategor
 
   public render() {
     return (
-      <Panel>
-        <Panel.Heading>Categories</Panel.Heading>
+      <Fragment>
         {this.state.areCategoriesFetched ? (
-          <ListGroup>
+          <DropdownButton id="categories" title={this.state.buttonTitle} bsStyle="default">
+            {/* <MenuItem eventKey="All" onSelect={() => this.handleOnClick("All")}>
+              All
+            </MenuItem>
+            <MenuItem divider /> */}
             {this.props.categories.map((cat, index) => {
               return (
-                <ListGroupItem
-                  key={cat.address}
-                  onClick={this.handleOnClick}
+                <MenuItem
+                  key={cat.name}
+                  eventKey={cat.name}
+                  onSelect={() => this.handleOnClick(cat.name)}
                   {...(index === this.props.chosenCategoryIndex ? { active: true } : null)}
                 >
                   {cat.name}
-                </ListGroupItem>
+                </MenuItem>
               );
             })}
-          </ListGroup>
+          </DropdownButton>
         ) : (
-          <Panel.Body>Fetching data from blockchain...</Panel.Body>
+          <h2>Fetching data from blockchain...</h2>
         )}
-      </Panel>
+      </Fragment>
     );
   }
 }

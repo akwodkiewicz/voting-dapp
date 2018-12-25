@@ -2,12 +2,14 @@ import React, { Component } from "react";
 import { ListGroup, ListGroupItem, Panel, ToggleButton, ToggleButtonGroup } from "react-bootstrap";
 import { fetchVotings } from "../../utils/eth";
 import { BlockchainData, Category, Voting } from "../common/types";
+import { PrivacySetting } from "./PrivacyButtons";
 
 interface IVotingListProps {
   blockchainData: BlockchainData;
   chosenVotingIndex: number;
   category: Category;
   votings: Voting[];
+  privacySetting: PrivacySetting;
   setVotingsInParent: (arg: Voting[]) => void;
   setChosenVotingIndexInParent: (arg: number) => void;
 }
@@ -66,27 +68,30 @@ export default class VotingList extends Component<IVotingListProps, IVotingListS
   public render() {
     return (
       <Panel>
-        <Panel.Heading className="clearfix">
-          <ToggleButtonGroup name="options" type="radio" bsSize="small" className="pull-right" style={this.vCenter}>
-            <ToggleButton value="all">All</ToggleButton>
-            <ToggleButton value="public">Public</ToggleButton>
-            <ToggleButton value="private">Private</ToggleButton>
-          </ToggleButtonGroup>
-          <h4 style={this.vCenter}>Votings</h4>
+        <Panel.Heading>
+          <Panel.Title>Votings</Panel.Title>
         </Panel.Heading>
         {this.state.areVotingsFetched ? (
           <ListGroup>
-            {this.props.votings.map((voting, index) => {
-              return (
-                <ListGroupItem
-                  key={voting.contract._address}
-                  onClick={this.handleVotingClick}
-                  {...(index === this.props.chosenVotingIndex ? { active: true } : null)}
-                >
-                  {voting.question}
-                </ListGroupItem>
-              );
-            })}
+            {this.props.votings
+              .filter((voting) => {
+                if (this.props.privacySetting === PrivacySetting.Private) {
+                  return voting.isPrivate;
+                } else if (this.props.privacySetting === PrivacySetting.Public) {
+                  return !voting.isPrivate;
+                } else return true;
+              })
+              .map((voting, index) => {
+                return (
+                  <ListGroupItem
+                    key={voting.contract._address}
+                    onClick={this.handleVotingClick}
+                    {...(index === this.props.chosenVotingIndex ? { active: true } : null)}
+                  >
+                    {voting.question}
+                  </ListGroupItem>
+                );
+              })}
           </ListGroup>
         ) : (
           <Panel.Body>Fetching data from blockchain...</Panel.Body>

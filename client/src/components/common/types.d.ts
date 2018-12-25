@@ -3,6 +3,7 @@ import { ManagerContract } from "../../typed-contracts/ManagerContract";
 import { VotingContract } from "../../typed-contracts/VotingContract";
 import { CategoryPanelType } from "../createVote/CategoryPanel";
 import { Voter, VoteType } from "../createVote/VoteTypePanel";
+import { PrivacySetting } from "../listvotings/PrivacyButtons";
 
 export declare type ContractAddress = string;
 
@@ -20,6 +21,7 @@ export declare type Category = {
 export declare type Voting = {
     contract: VotingContract;
     question: string;
+    isPrivate: boolean;
 };
 
 // tslint:disable-next-line:interface-name

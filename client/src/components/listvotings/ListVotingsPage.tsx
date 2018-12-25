@@ -2,7 +2,9 @@ import React, { Component } from "react";
 import { Col, Grid, Row } from "react-bootstrap";
 
 import { BlockchainData, Category, Voting } from "../common/types";
-import CategoryList from "./CategoryList";
+import CategoryDropdown from "./CategoryDropdown";
+import ListVotingsPanel from "./ListVotingsPanel";
+import PrivacyButtons, { PrivacySetting } from "./PrivacyButtons";
 import VotingInfoPanel from "./VotingInfoPanel";
 import VotingList from "./VotingList";
 
@@ -15,6 +17,7 @@ interface IListVotingsPageState {
   chosenCategoryIndex: number;
   votings: Voting[];
   chosenVotingIndex: number;
+  chosenPrivacySetting: PrivacySetting;
 }
 
 export default class ListVotingsPage extends Component<IListVotingsPageProps, IListVotingsPageState> {
@@ -23,6 +26,7 @@ export default class ListVotingsPage extends Component<IListVotingsPageProps, IL
     this.state = {
       categories: [],
       chosenCategoryIndex: null,
+      chosenPrivacySetting: PrivacySetting.All,
       chosenVotingIndex: null,
       votings: [],
     };
@@ -48,60 +52,19 @@ export default class ListVotingsPage extends Component<IListVotingsPageProps, IL
     return (
       <Grid>
         <Row>
-          <Col sm={3}>
-            <h4>1. Pick a category</h4>
+          <Col md={6} className="text-center">
+            <h3>Active Votings</h3>
           </Col>
-
-          <Col sm={6}>
-            {/* {this.state.chosenCategoryIndex != null ? (
-              <Row>
-                <Col sm={4} style={this.vCenter}>
-                  <h4>2. Pick a voting</h4>
-                </Col>
-                <Col sm={6} style={this.vCenter}>
-                  <ButtonToolbar>
-                    <ToggleButtonGroup name="options" type="radio" bsSize="small" justified>
-                      <ToggleButton value="all">All</ToggleButton>
-                      <ToggleButton value="public">Public</ToggleButton>
-                      <ToggleButton value="private">Private</ToggleButton>
-                    </ToggleButtonGroup>
-                  </ButtonToolbar>
-                </Col>
-              </Row>
-            ) : null} */}
+          <Col md={6} className="text-center">
+            <h3>Finished Votings</h3>
           </Col>
         </Row>
         <Row>
-          <Col sm={3}>
-            <CategoryList
-              blockchainData={this.props.blockchainData}
-              categories={this.state.categories}
-              chosenCategoryIndex={this.state.chosenCategoryIndex}
-              setCategoriesInParent={this.setCategories}
-              setChosenCategoryInParent={this.handleCategoryClick}
-            />
+          <Col md={6}>
+            <ListVotingsPanel blockchainData={this.props.blockchainData} />
           </Col>
-
-          <Col sm={5}>
-            {this.state.chosenCategoryIndex != null ? (
-              <VotingList
-                category={this.state.categories[this.state.chosenCategoryIndex]}
-                votings={this.state.votings}
-                chosenVotingIndex={this.state.chosenVotingIndex}
-                setVotingsInParent={this.setVotings}
-                setChosenVotingIndexInParent={this.handleVotingClick}
-                blockchainData={this.props.blockchainData}
-              />
-            ) : null}
-          </Col>
-
-          <Col sm={4}>
-            {this.state.chosenVotingIndex != null ? (
-              <VotingInfoPanel
-                voting={this.state.votings[this.state.chosenVotingIndex]}
-                blockchainData={this.props.blockchainData}
-              />
-            ) : null}
+          <Col md={6}>
+            <ListVotingsPanel blockchainData={this.props.blockchainData} />
           </Col>
         </Row>
       </Grid>

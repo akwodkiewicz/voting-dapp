@@ -1,4 +1,5 @@
 import { BlockchainData, Category, Voting, VotingInfo } from "../components/common/types.js";
+import { PrivacySetting } from "../components/listvotings/PrivacyButtons.js";
 import CategoryAbi from "../contracts/CategoryContract.json";
 import VotingAbi from "../contracts/VotingContract.json";
 import { CategoryContract } from "../typed-contracts/CategoryContract";
@@ -32,7 +33,8 @@ export const fetchVotings = async (blockchainData: BlockchainData, category: Cat
         const votingAddress = await categoryInstance.methods.votingContracts(index).call();
         const votingInstance = new web3.eth.Contract(VotingAbi.abi, votingAddress) as VotingContract;
         const question = await votingInstance.methods.question().call();
-        votings.push({ contract: votingInstance, question });
+        const isPrivate = await votingInstance.methods.isPrivate().call();
+        votings.push({ contract: votingInstance, question, isPrivate });
     }
     return votings;
 };
