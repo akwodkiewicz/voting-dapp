@@ -2,7 +2,7 @@ import React, { Component, Fragment } from "react";
 import { ButtonToolbar, Col, Row } from "react-bootstrap";
 
 import { BlockchainData, Category, ContractAddress, Voting } from "../../utils/types";
-import VotePanel from "../vote/VotePanel";
+import VoteModal from "../vote/VoteModal";
 import CategoryDropdown from "./CategoryDropdown";
 import PrivacyButtons, { PrivacySetting } from "./PrivacyButtons";
 import VotingList, { VotingState } from "./VotingList";
@@ -21,6 +21,7 @@ interface IListVotingsPanelState {
   chosenPrivacySetting: PrivacySetting;
   chosenAnswer: number;
   isDataRefreshRequested: boolean;
+  showVoteModal: boolean;
 }
 
 export default class ListVotingsPanel extends Component<IListVotingsPanelProps, IListVotingsPanelState> {
@@ -33,6 +34,7 @@ export default class ListVotingsPanel extends Component<IListVotingsPanelProps, 
       chosenPrivacySetting: PrivacySetting.All,
       chosenVotingAddress: null,
       isDataRefreshRequested: false,
+      showVoteModal: false,
       votings: [],
     };
   }
@@ -54,7 +56,7 @@ export default class ListVotingsPanel extends Component<IListVotingsPanelProps, 
   };
 
   public handleVotingClick = (votingAddressFromChild: ContractAddress) => {
-    this.setState({ chosenVotingAddress: votingAddressFromChild });
+    this.setState({ chosenVotingAddress: votingAddressFromChild, showVoteModal: true });
   };
 
   public handleAnswerClick = (answerIndexFromChild: number) => {
@@ -108,7 +110,7 @@ export default class ListVotingsPanel extends Component<IListVotingsPanelProps, 
         <Row>
           <Col md={12}>
             {this.state.chosenVotingAddress != null ? (
-              <VotePanel
+              <VoteModal
                 voting={this.state.votings.find(
                   (voting) => voting.contract._address === this.state.chosenVotingAddress
                 )}
@@ -116,6 +118,8 @@ export default class ListVotingsPanel extends Component<IListVotingsPanelProps, 
                 chosenAnswer={this.state.chosenAnswer}
                 setChosenAnswerInParent={this.handleAnswerClick}
                 requestDataRefresh={() => this.setState({ isDataRefreshRequested: true })}
+                show={this.state.showVoteModal}
+                handleOnHide={() => this.setState({ showVoteModal: false })}
               />
             ) : null}
           </Col>
