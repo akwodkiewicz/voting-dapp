@@ -2,9 +2,9 @@ import React, { Component, Fragment } from "react";
 import { ButtonToolbar, Col, Row } from "react-bootstrap";
 
 import { BlockchainData, Category, ContractAddress, Voting } from "../../utils/types";
+import VotePanel from "../vote/VotePanel";
 import CategoryDropdown from "./CategoryDropdown";
 import PrivacyButtons, { PrivacySetting } from "./PrivacyButtons";
-import VotingInfoPanel from "./VotingInfoPanel";
 import VotingList, { VotingState } from "./VotingList";
 
 interface IListVotingsPanelProps {
@@ -19,6 +19,7 @@ interface IListVotingsPanelState {
   votings: Voting[];
   chosenVotingAddress: ContractAddress;
   chosenPrivacySetting: PrivacySetting;
+  chosenAnswer: number;
 }
 
 export default class ListVotingsPanel extends Component<IListVotingsPanelProps, IListVotingsPanelState> {
@@ -26,6 +27,7 @@ export default class ListVotingsPanel extends Component<IListVotingsPanelProps, 
     super(props);
     this.state = {
       categories: [],
+      chosenAnswer: null,
       chosenCategoryIndex: null,
       chosenPrivacySetting: PrivacySetting.All,
       chosenVotingAddress: null,
@@ -51,6 +53,10 @@ export default class ListVotingsPanel extends Component<IListVotingsPanelProps, 
 
   public handleVotingClick = (votingAddressFromChild: ContractAddress) => {
     this.setState({ chosenVotingAddress: votingAddressFromChild });
+  };
+
+  public handleAnswerClick = (answerIndexFromChild: number) => {
+    this.setState({ chosenAnswer: answerIndexFromChild });
   };
 
   public render() {
@@ -94,11 +100,13 @@ export default class ListVotingsPanel extends Component<IListVotingsPanelProps, 
         <Row>
           <Col md={12}>
             {this.state.chosenVotingAddress != null ? (
-              <VotingInfoPanel
+              <VotePanel
                 voting={this.state.votings.find(
                   (voting) => voting.contract._address === this.state.chosenVotingAddress
                 )}
                 blockchainData={this.props.blockchainData}
+                chosenAnswer={this.state.chosenAnswer}
+                setChosenAnswerInParent={this.handleAnswerClick}
               />
             ) : null}
           </Col>

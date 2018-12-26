@@ -75,3 +75,9 @@ export const fetchVotings = async (blockchainData: BlockchainData, category: Cat
     }
     return votings;
 };
+
+export const submitVote = async (blockchainData: BlockchainData, voting: Voting, answerIndex: number) => {
+    const votingInstance = voting.contract;
+    votingInstance.options.from = blockchainData.accounts[0];
+    await votingInstance.methods.vote(answerIndex).send();
+};
