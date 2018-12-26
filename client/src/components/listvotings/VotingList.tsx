@@ -19,6 +19,8 @@ interface IVotingListProps {
   votings: Voting[];
   privacySetting: PrivacySetting;
   votingState: VotingState;
+  isDataRefreshRequested: boolean;
+  dataRefreshRequestHandled: () => void;
   setVotingsInParent: (arg: Voting[]) => void;
   setChosenVotingAddressInParent: (arg: ContractAddress) => void;
 }
@@ -62,9 +64,7 @@ export default class VotingList extends Component<IVotingListProps, IVotingListS
 
   public componentDidMount = async () => {
     if (this.props.blockchainData) {
-      const votings = await fetchVotings(this.props.blockchainData, this.props.category, this.props.votingState);
-      this.props.setVotingsInParent(votings);
-      this.setState({ areVotingsFetched: true });
+      this.fetchVotingsAndSetState();
     }
   };
 
@@ -72,22 +72,13 @@ export default class VotingList extends Component<IVotingListProps, IVotingListS
     if (prevProps.category !== this.props.category) {
       this.setState({ areVotingsFetched: false });
     }
-    if (!this.state.areVotingsFetched && this.props.blockchainData) {
-      const votings = await fetchVotings(this.props.blockchainData, this.props.category, this.props.votingState);
-      this.props.setVotingsInParent(votings);
-      this.setState({ areVotingsFetched: true });
+    if (this.props.isDataRefreshRequested && this.props.blockchainData) {
+      this.fetchVotingsAndSetState();
+      this.props.dataRefreshRequestHandled();
     }
-  };
-
-  public handleVotingClick = (event: React.MouseEvent<ListGroupItem & HTMLInputElement>) => {
-    const question = event.currentTarget.innerText;
-    let chosenVotingIndex: number;
-    this.props.votings.forEach((voting, index) => {
-      if (voting.info.question === question) {
-        chosenVotingIndex = index;
-      }
-    });
-    this.props.setChosenVotingAddressInParent(this.props.votings[chosenVotingIndex].contract._address);
+    if (!this.state.areVotingsFetched && this.props.blockchainData) {
+      this.fetchVotingsAndSetState();
+    }
   };
 
   public render() {
@@ -102,6 +93,7 @@ export default class VotingList extends Component<IVotingListProps, IVotingListS
                     <ListGroupItem
                       key={voting.contract._address}
                       onClick={this.handleVotingClick}
+                      {...(voting.info.hasUserVoted ? { bsStyle: "success" } : null)}
                       {...(voting.contract._address === this.props.chosenVotingAddress ? { active: true } : null)}
                     >
                       {voting.info.question}
@@ -115,6 +107,7 @@ export default class VotingList extends Component<IVotingListProps, IVotingListS
                     <ListGroupItem
                       key={voting.contract._address}
                       onClick={this.handleVotingClick}
+                      bsStyle="danger"
                       {...(voting.contract._address === this.props.chosenVotingAddress ? { active: true } : null)}
                     >
                       {voting.info.question}
@@ -128,6 +121,7 @@ export default class VotingList extends Component<IVotingListProps, IVotingListS
                     <ListGroupItem
                       key={voting.contract._address}
                       onClick={this.handleVotingClick}
+                      {...(voting.info.hasUserVoted ? { bsStyle: "success" } : null)}
                       {...(voting.contract._address === this.props.chosenVotingAddress ? { active: true } : null)}
                     >
                       {voting.info.question}
@@ -144,6 +138,23 @@ export default class VotingList extends Component<IVotingListProps, IVotingListS
       </Panel>
     );
   }
+
+  private handleVotingClick = (event: React.MouseEvent<ListGroupItem & HTMLInputElement>) => {
+    const question = event.currentTarget.innerText;
+    let chosenVotingIndex: number;
+    this.props.votings.forEach((voting, index) => {
+      if (voting.info.question === question) {
+        chosenVotingIndex = index;
+      }
+    });
+    this.props.setChosenVotingAddressInParent(this.props.votings[chosenVotingIndex].contract._address);
+  };
+
+  private fetchVotingsAndSetState = async () => {
+    const votings = await fetchVotings(this.props.blockchainData, this.props.category, this.props.votingState);
+    this.props.setVotingsInParent(votings);
+    this.setState({ areVotingsFetched: true });
+  };
 
   private filteredVotings = () => {
     return this.props.votings

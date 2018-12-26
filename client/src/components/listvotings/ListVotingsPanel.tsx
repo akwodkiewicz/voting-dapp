@@ -20,6 +20,7 @@ interface IListVotingsPanelState {
   chosenVotingAddress: ContractAddress;
   chosenPrivacySetting: PrivacySetting;
   chosenAnswer: number;
+  isDataRefreshRequested: boolean;
 }
 
 export default class ListVotingsPanel extends Component<IListVotingsPanelProps, IListVotingsPanelState> {
@@ -31,6 +32,7 @@ export default class ListVotingsPanel extends Component<IListVotingsPanelProps, 
       chosenCategoryIndex: null,
       chosenPrivacySetting: PrivacySetting.All,
       chosenVotingAddress: null,
+      isDataRefreshRequested: false,
       votings: [],
     };
   }
@@ -57,6 +59,10 @@ export default class ListVotingsPanel extends Component<IListVotingsPanelProps, 
 
   public handleAnswerClick = (answerIndexFromChild: number) => {
     this.setState({ chosenAnswer: answerIndexFromChild });
+  };
+
+  public dataRefreshed = () => {
+    this.setState({ isDataRefreshRequested: false });
   };
 
   public render() {
@@ -93,6 +99,8 @@ export default class ListVotingsPanel extends Component<IListVotingsPanelProps, 
                 blockchainData={this.props.blockchainData}
                 privacySetting={this.state.chosenPrivacySetting}
                 votingState={this.props.votingState}
+                dataRefreshRequestHandled={this.dataRefreshed}
+                isDataRefreshRequested={this.state.isDataRefreshRequested}
               />
             ) : null}
           </Col>
@@ -107,6 +115,7 @@ export default class ListVotingsPanel extends Component<IListVotingsPanelProps, 
                 blockchainData={this.props.blockchainData}
                 chosenAnswer={this.state.chosenAnswer}
                 setChosenAnswerInParent={this.handleAnswerClick}
+                requestDataRefresh={() => this.setState({ isDataRefreshRequested: true })}
               />
             ) : null}
           </Col>
