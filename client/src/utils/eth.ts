@@ -83,3 +83,20 @@ export const submitVote = async (blockchainData: BlockchainData, voting: Voting,
     votingInstance.options.from = blockchainData.accounts[0];
     await votingInstance.methods.vote(answerIndex).send();
 };
+
+export const fetchVoting = async (blockchainData: BlockchainData, address: string) => {
+    const web3 = blockchainData.web3;
+    const categories = await fetchCategories(blockchainData);
+    for (let i = 0; i < categories.length; i++) {
+        const categoryInstance = new web3.eth.Contract(CategoryAbi.abi, categories[i].address) as CategoryContract;
+        const numberOfVotings = parseInt(await categoryInstance.methods.numberOfContracts().call(), 10);
+        for (let j = 0; j < numberOfVotings; j++) {
+            const votingAddress = await categoryInstance.methods.votingContracts(j).call();
+            if (address === votingAddress) {
+                return new web3.eth.Contract(VotingAbi.abi, votingAddress) as VotingContract;
+            }
+        }
+    }
+
+    return null;
+};
