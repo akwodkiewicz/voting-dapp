@@ -1,9 +1,10 @@
 import React, { Component } from "react";
 import "react-datetime/css/react-datetime.css"; // tslint:disable-line
-import { BlockchainData, VoteFormData } from "../common/types";
+import { BlockchainData, VoteFormData } from "../../utils/types";
 import CreateVoteForm from "./CreateVoteForm";
 import DisplayResult from "./DisplayResult";
 import LoadingResult from "./LoadingResult";
+import { VoteType } from "./VoteTypePanel";
 
 enum PageMode {
   Form = "form",
@@ -63,7 +64,7 @@ export default class CreateVotePage extends Component<ICreateVotePageProps, ICre
             this.state.formData.answers.map((opt) => web3.utils.fromUtf8(opt)),
             this.state.formData.voteEndTime,
             this.state.formData.resultsViewingEndTime,
-            this.state.formData.voteType,
+            this.state.formData.voteType === VoteType.Private ? true : false,
             this.state.formData.privilegedVoters
           )
           .send();
@@ -75,7 +76,7 @@ export default class CreateVotePage extends Component<ICreateVotePageProps, ICre
             this.state.formData.answers.map((opt) => web3.utils.fromUtf8(opt)),
             this.state.formData.voteEndTime,
             this.state.formData.resultsViewingEndTime,
-            this.state.formData.voteType,
+            this.state.formData.voteType === VoteType.Private ? true : false,
             this.state.formData.privilegedVoters
           )
           .send();

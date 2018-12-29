@@ -75,4 +75,7 @@ contract VotingContract {
         return (question, category, options, votingEndTime, resultsEndTime);
     }
     
+    function isPrivileged(address user) public view returns(bool) {
+        return permissions[user];
+    }
 }

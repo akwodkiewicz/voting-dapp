@@ -1,7 +1,7 @@
 import Web3 = require("web3");
-import { createCategoryName, createVotingOptions, decodeVotingOption } from "./web3helpers";
 import { CategoryContractInstance, ManagerContractInstance, VotingContractInstance } from "../types/truffle-contracts";
 import { CategoryContract, ManagerContract, VotingContract } from "./consts";
+import { createCategoryName, createVotingOptions, decodeVotingOption } from "./web3helpers";
 
 const web3 = new Web3(Web3.givenProvider);
 

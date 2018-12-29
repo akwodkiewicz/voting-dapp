@@ -1,6 +1,6 @@
 import React, { Component, Fragment } from "react";
 import { FormControl } from "react-bootstrap";
-import { Category, ContractAddress } from "../common/types";
+import { Category, ContractAddress } from "../../utils/types";
 
 export enum CategoryPanelType {
   Existing = "existing",
