@@ -93,7 +93,24 @@ export const fetchVoting = async (blockchainData: BlockchainData, address: strin
         for (let j = 0; j < numberOfVotings; j++) {
             const votingAddress = await categoryInstance.methods.votingContracts(j).call();
             if (address === votingAddress) {
-                return new web3.eth.Contract(VotingAbi.abi, votingAddress) as VotingContract;
+                const votingInstance = new web3.eth.Contract(VotingAbi.abi, votingAddress) as VotingContract;
+                const resp = await votingInstance.methods.viewContractInfo().call();
+                const info: VotingInfo = {
+                    question: resp[0],
+                    categoryAddress: resp[1],
+                    answers: resp[2].map((raw) => web3.utils.hexToUtf8(raw)),
+                    votingEndTime: parseInt(resp[3], 10),
+                    resultsEndTime: parseInt(resp[4], 10),
+                    isPrivate: null,
+                    isPrivileged: null,
+                    hasUserVoted: null,
+                };
+                const voting: Voting = {
+                    contract: votingInstance,
+                    info,
+                };
+
+                return voting;
             }
         }
     }
