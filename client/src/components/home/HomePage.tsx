@@ -1,18 +1,29 @@
 import React, { Component } from "react";
-import { Link } from "react-router-dom";
+import { Button, FormControl, FormGroup, InputGroup } from "react-bootstrap";
+import { fetchVoting } from "../../utils/eth";
+import { BlockchainData } from "../../utils/types";
 
-class HomePage extends Component {
+interface IHomePageProps {
+  blockchainData: BlockchainData;
+}
+export default class HomePage extends Component<IHomePageProps> {
+  public searchVoting = async () => {
+    // TODO: simple address validation
+    const address = (document.getElementById("address") as HTMLInputElement).value;
+    const voting = await fetchVoting(this.props.blockchainData, address);
+    return voting;
+  };
+
   public render() {
     return (
-      <div className="jumbotron">
-        <h1>Testing routing</h1>
-        <p>This app is the future</p>
-        <Link to="/about" className="btn btn-primary btn-lg">
-          About us
-        </Link>
-      </div>
+      <FormGroup>
+        <InputGroup>
+          <FormControl type="text" id="address" />
+          <InputGroup.Button>
+            <Button onClick={this.searchVoting}>Before</Button>
+          </InputGroup.Button>
+        </InputGroup>
+      </FormGroup>
     );
   }
 }
-
-export default HomePage;
