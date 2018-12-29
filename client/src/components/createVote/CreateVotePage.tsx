@@ -1,36 +1,55 @@
 import React, { Component } from "react";
+import "react-datetime/css/react-datetime.css"; // tslint:disable-line
+import { BlockchainData, VoteFormData } from "../common/types";
 import CreateVoteForm from "./CreateVoteForm";
-import LoadingResult from "./LoadingResult";
 import DisplayResult from "./DisplayResult";
-import "react-datetime/css/react-datetime.css";
-import BlockchainData from "../common/BlockchainData";
+import LoadingResult from "./LoadingResult";
 
-class CreateVotePage extends Component {
-  constructor() {
-    super();
+enum PageMode {
+  Form = "form",
+  Fetching = "fetching",
+  Finalized = "finalized",
+}
+
+export enum ResultStatus {
+  Success = "success",
+  Failure = "failure",
+}
+interface ICreateVotePageProps {
+  blockchainData: BlockchainData;
+}
+
+interface ICreateVotePageState {
+  formData: VoteFormData;
+  mode: PageMode;
+  resultStatus: ResultStatus;
+}
+
+export default class CreateVotePage extends Component<ICreateVotePageProps, ICreateVotePageState> {
+  constructor(props) {
+    super(props);
 
     this.state = {
-      mode: "form",
-      resultStatus: "success",
       formData: null,
+      mode: PageMode.Form,
+      resultStatus: ResultStatus.Success,
     };
   }
 
-  setSubmitData = (formData) => {
+  public setSubmitData = (formData) => {
     this.setState(() => ({
-      mode: "fetching",
-      formData: formData,
+      formData,
+      mode: PageMode.Fetching,
     }));
   };
 
-  setModeToForm = () => {
+  public setModeToForm = () => {
     this.setState(() => ({
-      mode: "form",
+      mode: PageMode.Form,
     }));
   };
 
-  getTransactionResult = async () => {
-    /** @type BlockchainData */
+  public getTransactionResult = async () => {
     const blockchainData = this.props.blockchainData;
     const web3 = blockchainData.web3;
     const manager = blockchainData.manager;
@@ -64,36 +83,33 @@ class CreateVotePage extends Component {
 
       console.log(txResponse);
       this.setState(() => ({
-        resultStatus: "success",
+        resultStatus: ResultStatus.Success,
       }));
     } catch (e) {
       console.error(e);
       this.setState(() => ({
-        resultStatus: "failed",
+        resultStatus: ResultStatus.Failure,
       }));
     } finally {
       this.setState(() => ({
-        mode: "finalized",
+        mode: PageMode.Finalized,
       }));
     }
   };
 
-  render() {
+  public render() {
     if (this.state.mode === "form") {
       return (
         <CreateVoteForm
           setSubmitData={this.setSubmitData}
-          setFormData={this.setFormData}
           formData={this.state.formData}
           blockchainData={this.props.blockchainData}
         />
       );
     } else if (this.state.mode === "fetching") {
       return <LoadingResult getTransactionResult={this.getTransactionResult} />;
-    } else if (this.state.mode === "finalized") {
+    } else {
       return <DisplayResult status={this.state.resultStatus} onClick={this.setModeToForm} />;
     }
   }
 }
-
-export default CreateVotePage;

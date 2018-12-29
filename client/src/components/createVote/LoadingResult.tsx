@@ -1,25 +1,27 @@
-import React, { Component } from "react";
+import React, { Component, Fragment } from "react";
 import Loader from "react-loader-spinner";
 
-class LoadingResult extends Component {
-  componentDidMount = async () => {
+interface ILoadingResultProps {
+  getTransactionResult: () => void;
+}
+
+export default class LoadingResult extends Component<ILoadingResultProps> {
+  public componentDidMount = async () => {
     await this.sleep(2000);
 
     this.props.getTransactionResult();
   };
 
-  sleep(ms) {
+  public sleep(ms) {
     return new Promise((resolve) => setTimeout(resolve, ms));
   }
 
-  render() {
+  public render() {
     return (
-      <React.Fragment>
+      <Fragment>
         <Loader type="Grid" color="#00BFFF" height="30%" width="30%" />
         <h1>Please wait, your transaction is being processed</h1>
-      </React.Fragment>
+      </Fragment>
     );
   }
 }
-
-export default LoadingResult;

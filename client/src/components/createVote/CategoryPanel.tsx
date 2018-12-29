@@ -1,21 +1,34 @@
-import React, { Component } from "react";
+import React, { Component, Fragment } from "react";
 import { FormControl } from "react-bootstrap";
+import { Category, ContractAddress } from "../common/types";
 
-class CategoryPanel extends Component {
+export enum CategoryPanelType {
+  Existing = "existing",
+  New = "new",
+}
+
+interface ICategoryPanelProps {
+  categoriesList: Category[];
+  categoryPanel: CategoryPanelType;
+  chosenCategory: string | ContractAddress;
+  setCategoryInParent: (arg: string) => void;
+}
+
+export default class CategoryPanel extends Component<ICategoryPanelProps> {
   constructor(props) {
     super(props);
   }
 
-  categoryHandler = (chosenCategory) => {
+  public categoryHandler = (chosenCategory) => {
     this.props.setCategoryInParent(chosenCategory.target.value);
   };
 
-  render() {
+  public render() {
     const categoryPanel = this.props.categoryPanel;
     if (categoryPanel === "existing") {
       if (this.props.categoriesList) {
         return (
-          <React.Fragment>
+          <Fragment>
             <FormControl
               onChange={this.categoryHandler}
               componentClass="select"
@@ -26,14 +39,14 @@ class CategoryPanel extends Component {
                 return <option value={category.address}>{category.name}</option>;
               })}
             </FormControl>
-          </React.Fragment>
+          </Fragment>
         );
       } else {
         return <h2>Loading categories from blockchain...</h2>;
       }
     } else {
       return (
-        <React.Fragment>
+        <Fragment>
           <FormControl
             onChange={this.categoryHandler}
             id="answer"
@@ -41,10 +54,8 @@ class CategoryPanel extends Component {
             placeholder="Enter new category"
             value={this.props.chosenCategory}
           />
-        </React.Fragment>
+        </Fragment>
       );
     }
   }
 }
-
-export default CategoryPanel;

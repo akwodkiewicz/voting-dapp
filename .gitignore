@@ -1,6 +1,9 @@
 # Contract ABIs
 build/*
-client/src/build/*
+client/src/contracts/*
+
+# Compiled TS
+client/build/*
 
 # Logs
 logs

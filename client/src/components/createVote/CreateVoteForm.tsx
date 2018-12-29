@@ -1,73 +1,93 @@
-import React, { Component } from "react";
-import AnswersList from "./AnswersList";
-import VoteType from "./VoteType";
-import VoteDates from "./VoteDates";
-import CategoryPanel from "./CategoryPanel";
-import "react-datetime/css/react-datetime.css";
-import { FormGroup, FormControl, ControlLabel, Button, Radio, InputGroup, HelpBlock } from "react-bootstrap";
 import moment from "moment";
-import CategoryContract from "../../build/CategoryContract.json";
-import BlockchainData from "../common/BlockchainData";
+import React, { Component } from "react";
+import { Button, ControlLabel, FormControl, FormGroup, HelpBlock, InputGroup, Radio } from "react-bootstrap";
+import "react-datetime/css/react-datetime.css"; //tslint:disable-line
+import * as CategoryContract from "../../contracts/CategoryContract.json";
+import { BlockchainData, Category, ContractAddress, VoteFormData } from "../common/types";
+import AnswersList from "./AnswersList";
+import CategoryPanel, { CategoryPanelType } from "./CategoryPanel";
+import VoteDates from "./VoteDates";
+import VoteTypePanel, { Voter, VoteType } from "./VoteTypePanel";
 
-class CreateVoteForm extends Component {
+interface ICreateVoteFormProps {
+  formData: VoteFormData;
+  blockchainData: BlockchainData;
+  setSubmitData: (arg: ICreateVoteFormState) => void;
+}
+
+interface ICreateVoteFormState {
+  answers: string[];
+  categoriesList: Category[];
+  categoryPanel: CategoryPanelType;
+  chosenCategory: string | ContractAddress;
+  isCategoriesListFetched: boolean;
+  privilegedVoters: Voter[];
+  question: string;
+  resultsViewingEndTime: number;
+  typedAnswer: string;
+  voteEndTime: number;
+  voteType: VoteType;
+}
+
+export default class CreateVoteForm extends Component<ICreateVoteFormProps, ICreateVoteFormState> {
   constructor(props) {
     super(props);
 
     this.state = {
-      question: "",
-      typedAnswer: "",
       answers: [],
-      voteEndTime: moment()
-        .add(3, "h")
-        .utc()
-        .unix(),
+      categoriesList: [],
+      categoryPanel: CategoryPanelType.Existing,
+      chosenCategory: null,
+      isCategoriesListFetched: false,
+      privilegedVoters: [],
+      question: "",
       resultsViewingEndTime: moment()
         .add(3, "d")
         .set("h", 21)
         .set("m", 0)
         .utc()
         .unix(),
-      categoryPanel: "existing",
-      chosenCategory: null,
-      categoriesList: [],
-      isCategoriesListFetched: false,
-      voteType: "public",
-      privilegedVoters: [],
+      typedAnswer: "",
+      voteEndTime: moment()
+        .add(3, "h")
+        .utc()
+        .unix(),
+      voteType: VoteType.Public,
     };
   }
 
-  componentDidMount = async () => {
+  public componentDidMount = async () => {
     if (this.props.blockchainData) {
       this.fetchCategories();
     }
     if (this.props.formData) {
       this.setState({
-        question: this.props.formData.question,
         answers: this.props.formData.answers,
-        voteEndTime: this.props.formData.voteEndTime,
-        resultsViewingEndTime: this.props.formData.resultsViewingEndTime,
         categoryPanel: this.props.formData.categoryPanel,
         chosenCategory: this.props.formData.chosenCategory,
-        voteType: this.props.formData.voteType,
         privilegedVoters: this.props.formData.privilegedVoters,
+        question: this.props.formData.question,
+        resultsViewingEndTime: this.props.formData.resultsViewingEndTime,
+        voteEndTime: this.props.formData.voteEndTime,
+        voteType: this.props.formData.voteType,
       });
     }
   };
 
-  componentDidUpdate = async (prevProps) => {
+  public componentDidUpdate = async () => {
     // If blockchainData was initialized after this component had mounted
     if (!this.state.isCategoriesListFetched && this.props.blockchainData) {
       this.fetchCategories();
     }
   };
 
-  fetchCategories = async () => {
+  public fetchCategories = async () => {
     /** @type BlockchainData */
     const blockchainData = this.props.blockchainData;
     const web3 = blockchainData.web3;
     const managerInstance = blockchainData.manager;
 
-    let categories = [];
+    const categories = [];
     const numberOfCategories = await managerInstance.methods.numberOfCategories().call();
     if (numberOfCategories.length > 0) {
       for (let index = 0; index < numberOfCategories; index++) {
@@ -85,87 +105,89 @@ class CreateVoteForm extends Component {
 
     if (this.props.formData) {
       this.setState({
-        question: this.props.formData.question,
         answers: this.props.formData.answers,
-        voteEndTime: this.props.formData.voteEndTime,
-        resultsViewingEndTime: this.props.formData.resultsViewingEndTime,
         categoryPanel: this.props.formData.categoryPanel,
         chosenCategory: this.props.formData.chosenCategory,
-        voteType: this.props.formData.voteType,
         privilegedVoters: this.props.formData.privilegedVoters,
+        question: this.props.formData.question,
+        resultsViewingEndTime: this.props.formData.resultsViewingEndTime,
+        voteEndTime: this.props.formData.voteEndTime,
+        voteType: this.props.formData.voteType,
       });
     }
   };
 
-  setQuestion = (e) => {
+  public setQuestion = (e) => {
     const question = e.target.value;
     this.setState(() => ({
-      question: question,
+      question,
     }));
   };
 
-  setTypedAnswer = (e) => {
+  public setTypedAnswer = (e) => {
     this.setState(() => ({
       typedAnswer: e.value,
     }));
   };
 
-  setAnswers = (answersFromChild) => {
+  public setAnswers = (answersFromChild) => {
     this.setState(() => ({
       answers: answersFromChild,
     }));
   };
 
-  setVoteEnd = (timeFromChild) => {
+  public setVoteEnd = (timeFromChild) => {
     this.setState(() => ({
       voteEndTime: timeFromChild,
     }));
   };
 
-  setResultsViewingEndTime = (timeFromChild) => {
+  public setResultsViewingEndTime = (timeFromChild) => {
     this.setState(() => ({
       resultsViewingEndTime: timeFromChild,
     }));
   };
 
-  setCategory = (categoryFromChild) => {
+  public setCategory = (categoryFromChild) => {
     this.setState(() => ({
       chosenCategory: categoryFromChild,
     }));
   };
 
-  setVoteType = (voteTypeFromChild) => {
+  public setVoteType = (voteTypeFromChild) => {
     this.setState(() => ({
       voteType: voteTypeFromChild,
     }));
   };
 
-  setPrivilegedVoters = (privilegedVotersFromChild) => {
+  public setPrivilegedVoters = (privilegedVotersFromChild) => {
     this.setState(() => ({
       privilegedVoters: privilegedVotersFromChild,
     }));
   };
 
-  changeCategoryPanel = () => {
-    var existingCategoryButton = document.getElementById("category-from-list");
-    var categoryType = existingCategoryButton.checked ? "existing" : "new";
-    let chosenCategory =
-      categoryType === "existing" && this.state.categoriesList.length > 0 ? this.state.categoriesList[0].address : null;
+  public changeCategoryPanel = () => {
+    const existingCategoryButton = document.getElementById("category-from-list") as HTMLInputElement;
+    const categoryType = existingCategoryButton.checked ? CategoryPanelType.Existing : CategoryPanelType.New;
+    const chosenCategory =
+      categoryType === CategoryPanelType.Existing && this.state.categoriesList.length > 0
+        ? this.state.categoriesList[0].address
+        : null;
 
     this.setState(() => ({
       categoryPanel: categoryType,
-      chosenCategory: chosenCategory,
+      chosenCategory,
     }));
   };
 
-  handleCreateVote = () => {
+  public handleCreateVote = () => {
     this.props.setSubmitData(this.state);
   };
 
-  addAnswer = () => {
-    const answer = document.getElementById("answer").value;
+  public addAnswer = () => {
+    const answer = (document.getElementById("answer") as HTMLInputElement).value;
     const allAnswers = this.state.answers;
-    if (!answer || !answer.trim() || allAnswers.includes(answer)) {
+    if (!answer || !answer.trim() || allAnswers.find((a) => a === answer)) {
       return;
     }
     allAnswers.push(answer);
@@ -175,7 +197,7 @@ class CreateVoteForm extends Component {
     }));
   };
 
-  render() {
+  public render() {
     return (
       <form>
         <FormGroup controlId="question">
@@ -236,7 +258,7 @@ class CreateVoteForm extends Component {
           chosenCategory={this.state.chosenCategory}
         />
 
-        <VoteType
+        <VoteTypePanel
           setVoteTypeInParent={this.setVoteType}
           setPrivilegedVotersInParent={this.setPrivilegedVoters}
           voteType={this.state.voteType}
@@ -248,5 +270,3 @@ class CreateVoteForm extends Component {
     );
   }
 }
-
-export default CreateVoteForm;

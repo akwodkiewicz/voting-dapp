@@ -1,30 +1,24 @@
 {
     "compilerOptions": {
-        "target": "es2017",
-        "module": "commonjs",
-        "strict": true,
+        "module": "commonjs", // set for web3
+        "target": "es5",
+        "lib": ["es2015", "dom"],
         "moduleResolution": "node",
         "noImplicitThis": true,
         "noImplicitReturns": true,
         "noUnusedLocals": true,
         "noUnusedParameters": true,
-        "strictNullChecks": true,
         "alwaysStrict": true,
-        "experimentalDecorators": true,
-        "emitDecoratorMetadata": true,
         "forceConsistentCasingInFileNames": true,
-        "lib": ["es2015", "esnext.asynciterable"],
-        "sourceMap": true,
-        "typeRoots": ["./node_modules/@types", "./types"],
-        "types": ["node", "truffle-contracts"],
-        "allowJs": true,
         "skipLibCheck": false,
         "esModuleInterop": true,
-        "allowSyntheticDefaultImports": true,
-        "isolatedModules": true,
         "noEmit": true,
-        "jsx": "preserve"
+        "jsx": "react",
+        "resolveJsonModule": true,
+        "allowSyntheticDefaultImports": true,
+        "rootDir": "./client/src",
+        "outDir": "./client/build"
     },
-    "include": ["**/*.ts"],
-    "exclude": ["node_modules", "example", "build"]
+    "include": ["./client/src/**/*", "./types/**/*"]
+    // "exclude": ["node_modules", "example", "build"]
 }

@@ -30,5 +30,6 @@ module.exports = {
       },
     },
   },
+  contracts_build_directory: "./client/src/contracts",
   test_file_extension_regexp: /.*\.ts$/,
 };

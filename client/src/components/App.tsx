@@ -1,27 +1,32 @@
 import React, { Component } from "react";
 import { BrowserRouter as Router, Route } from "react-router-dom";
-import Web3 from "web3";
 
-import HomePage from "./home/HomePage";
+import * as ManagerContract from "../contracts/ManagerContract.json";
 import AboutPage from "./about/AboutPage";
-import CreateVotePage from "./createVote/CreateVotePage";
-//import ListOfVotesPage from './listvotes/ListOfVotesPage';
 import Header from "./common/Header";
-import BlockchainData from "./common/BlockchainData";
-import ManagerContract from "../build/contracts/ManagerContract.json";
+import { BlockchainData } from "./common/types";
+import CreateVotePage from "./createVote/CreateVotePage";
+import HomePage from "./home/HomePage";
+import Web3 from "web3"; //tslint:disable-line
 
-class App extends Component {
-  constructor(props) {
+interface IAppState {
+  blockchainData: BlockchainData;
+  noMetamask: boolean;
+  waitingForAccess: boolean;
+}
+
+export default class App extends Component<any, IAppState> {
+  constructor(props: any) {
     super(props);
     this.state = {
-      /** @type {BlockchainData} */
       blockchainData: null,
-      waitingForAccess: true,
       noMetamask: false,
+      waitingForAccess: true,
     };
   }
-  componentDidMount = async () => {
-    if (!window.ethereum) {
+  // tslint:disable:no-string-literal
+  public componentDidMount = async () => {
+    if (!window["ethereum"]) {
       this.setState({
         noMetamask: true,
       });
@@ -29,13 +34,13 @@ class App extends Component {
     }
 
     try {
-      const accounts = await window.ethereum.enable();
-      const web3 = new Web3(window.ethereum);
+      const accounts = await window["ethereum"].enable();
+      const web3 = new Web3(window["ethereum"]);
       const instance = new web3.eth.Contract(ManagerContract.abi, "0x457D31982A783280F42e05e22493e47f8592358D");
       instance.setProvider(web3.currentProvider);
       instance.options.from = accounts[0];
       this.setState({
-        blockchainData: new BlockchainData(instance, accounts, web3),
+        blockchainData: { manager: instance, accounts, web3 },
       });
     } catch (e) {
       console.error(e);
@@ -45,8 +50,9 @@ class App extends Component {
       });
     }
   };
+  // tslint:enable:no-string-literal
 
-  render() {
+  public render() {
     if (this.state.noMetamask) {
       return (
         <div>
@@ -109,5 +115,3 @@ class App extends Component {
     }
   }
 }
-
-export default App;
