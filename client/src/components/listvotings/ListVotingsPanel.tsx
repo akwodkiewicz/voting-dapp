@@ -2,9 +2,9 @@ import React, { Component, Fragment } from "react";
 import { ButtonToolbar, Col, Row } from "react-bootstrap";
 
 import { BlockchainData, Category, ContractAddress, Voting } from "../../utils/types";
+import VoteModal from "../vote/VoteModal";
 import CategoryDropdown from "./CategoryDropdown";
 import PrivacyButtons, { PrivacySetting } from "./PrivacyButtons";
-import VotingInfoPanel from "./VotingInfoPanel";
 import VotingList, { VotingState } from "./VotingList";
 
 interface IListVotingsPanelProps {
@@ -19,6 +19,9 @@ interface IListVotingsPanelState {
   votings: Voting[];
   chosenVotingAddress: ContractAddress;
   chosenPrivacySetting: PrivacySetting;
+  chosenAnswer: number;
+  isDataRefreshRequested: boolean;
+  showVoteModal: boolean;
 }
 
 export default class ListVotingsPanel extends Component<IListVotingsPanelProps, IListVotingsPanelState> {
@@ -26,9 +29,12 @@ export default class ListVotingsPanel extends Component<IListVotingsPanelProps, 
     super(props);
     this.state = {
       categories: [],
+      chosenAnswer: null,
       chosenCategoryIndex: null,
       chosenPrivacySetting: PrivacySetting.All,
       chosenVotingAddress: null,
+      isDataRefreshRequested: false,
+      showVoteModal: false,
       votings: [],
     };
   }
@@ -50,7 +56,15 @@ export default class ListVotingsPanel extends Component<IListVotingsPanelProps, 
   };
 
   public handleVotingClick = (votingAddressFromChild: ContractAddress) => {
-    this.setState({ chosenVotingAddress: votingAddressFromChild });
+    this.setState({ chosenVotingAddress: votingAddressFromChild, showVoteModal: true });
+  };
+
+  public handleAnswerClick = (answerIndexFromChild: number) => {
+    this.setState({ chosenAnswer: answerIndexFromChild });
+  };
+
+  public dataRefreshed = () => {
+    this.setState({ isDataRefreshRequested: false });
   };
 
   public render() {
@@ -87,6 +101,8 @@ export default class ListVotingsPanel extends Component<IListVotingsPanelProps, 
                 blockchainData={this.props.blockchainData}
                 privacySetting={this.state.chosenPrivacySetting}
                 votingState={this.props.votingState}
+                dataRefreshRequestHandled={this.dataRefreshed}
+                isDataRefreshRequested={this.state.isDataRefreshRequested}
               />
             ) : null}
           </Col>
@@ -94,11 +110,16 @@ export default class ListVotingsPanel extends Component<IListVotingsPanelProps, 
         <Row>
           <Col md={12}>
             {this.state.chosenVotingAddress != null ? (
-              <VotingInfoPanel
+              <VoteModal
                 voting={this.state.votings.find(
                   (voting) => voting.contract._address === this.state.chosenVotingAddress
                 )}
                 blockchainData={this.props.blockchainData}
+                chosenAnswer={this.state.chosenAnswer}
+                setChosenAnswerInParent={this.handleAnswerClick}
+                requestDataRefresh={() => this.setState({ isDataRefreshRequested: true })}
+                show={this.state.showVoteModal}
+                handleOnHide={() => this.setState({ showVoteModal: false })}
               />
             ) : null}
           </Col>

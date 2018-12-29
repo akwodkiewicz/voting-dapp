@@ -44,6 +44,7 @@ export const fetchVotings = async (blockchainData: BlockchainData, category: Cat
             resultsEndTime: parseInt(resp[4], 10),
             isPrivate: null,
             isPrivileged: null,
+            hasUserVoted: null,
         };
 
         let testPassed: boolean;
@@ -68,10 +69,17 @@ export const fetchVotings = async (blockchainData: BlockchainData, category: Cat
         if (info.isPrivate) {
             info.isPrivileged = await votingInstance.methods.isPrivileged(blockchainData.accounts[0]).call();
         }
+        info.hasUserVoted = await votingInstance.methods.hasVoted(blockchainData.accounts[0]).call();
         votings.push({
             contract: votingInstance,
             info,
         });
     }
     return votings;
+};
+
+export const submitVote = async (blockchainData: BlockchainData, voting: Voting, answerIndex: number) => {
+    const votingInstance = voting.contract;
+    votingInstance.options.from = blockchainData.accounts[0];
+    await votingInstance.methods.vote(answerIndex).send();
 };

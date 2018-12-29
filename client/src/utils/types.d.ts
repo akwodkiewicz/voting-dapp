@@ -43,4 +43,5 @@ export type VotingInfo = {
     resultsEndTime: number;
     isPrivate: boolean;
     isPrivileged: boolean;
+    hasUserVoted: boolean;
 };

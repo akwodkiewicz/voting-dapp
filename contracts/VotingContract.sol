@@ -10,7 +10,7 @@ contract VotingContract {
     uint256 public resultsEndTime;
     bool public isPrivate;
     mapping(address => bool) internal permissions;
-    mapping(address => bool) internal hasVoted;
+    mapping(address => bool) public hasVoted;
     uint256[] internal votes;
 
     modifier hasPermission(address user) {
