@@ -1,12 +1,16 @@
 import React, { Component } from "react";
 import { Button, Modal } from "react-bootstrap";
+import { Voting, VotingInfo } from "../../utils/types";
 
 interface IResultsModalProps {
+  results: string[];
   show: boolean;
+  voting: Voting;
 }
 
 interface IResultsModalState {
   show: boolean;
+  votingInfo: VotingInfo;
 }
 
 export default class ResultsModal extends Component<IResultsModalProps, IResultsModalState> {
@@ -14,6 +18,7 @@ export default class ResultsModal extends Component<IResultsModalProps, IResults
     super(props);
     this.state = {
       show: false,
+      votingInfo: this.props.voting.info,
     };
   }
 
@@ -21,10 +26,10 @@ export default class ResultsModal extends Component<IResultsModalProps, IResults
     return (
       <Modal.Dialog>
         <Modal.Header>
-          <Modal.Title>Modal title</Modal.Title>
+          <Modal.Title>{this.state.votingInfo.question}</Modal.Title>
         </Modal.Header>
 
-        <Modal.Body>One fine body...</Modal.Body>
+        <Modal.Body>{this.props.results}</Modal.Body>
 
         <Modal.Footer>
           <Button>Close</Button>
