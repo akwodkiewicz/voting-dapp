@@ -1,8 +1,5 @@
-import React, { Component, Fragment } from "react";
-import { Button, Col, Modal, Row } from "react-bootstrap";
-import Loader from "react-loader-spinner";
-import { submitVote } from "../../utils/eth";
-import { BlockchainData, Voting } from "../../utils/types";
+import React, { Component } from "react";
+import { Button, Modal } from "react-bootstrap";
 
 interface IResultsModalProps {
   show: boolean;

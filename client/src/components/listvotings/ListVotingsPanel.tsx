@@ -7,6 +7,7 @@ import VoteModal from "../vote/VoteModal";
 import CategoryDropdown from "./CategoryDropdown";
 import PrivacyButtons, { PrivacySetting } from "./PrivacyButtons";
 import VotingList, { VotingState } from "./VotingList";
+import ResultsModal from "../vote/ResultsModal";
 
 interface IListVotingsPanelProps {
   blockchainData: BlockchainData;
@@ -146,19 +147,7 @@ export default class ListVotingsPanel extends Component<IListVotingsPanelProps, 
             )}
           </Col>
           <Col md={12}>
-            {this.state.chosenVotingAddress != null && this.state.showResultsModal && (
-              <VoteModal
-                voting={this.state.votings.find(
-                  (voting) => voting.contract._address === this.state.chosenVotingAddress
-                )}
-                blockchainData={this.props.blockchainData}
-                chosenAnswer={this.state.chosenAnswer}
-                setChosenAnswerInParent={this.handleAnswerClick}
-                requestDataRefresh={() => this.setState({ isDataRefreshRequested: true })}
-                show={this.state.showVoteModal}
-                handleOnHide={() => this.setState({ showVoteModal: false })}
-              />
-            )}
+            {this.state.chosenVotingAddress != null && this.state.showResultsModal && <ResultsModal show={true} />}
           </Col>
         </Row>
       </Fragment>
