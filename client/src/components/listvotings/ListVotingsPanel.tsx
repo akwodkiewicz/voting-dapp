@@ -8,6 +8,7 @@ import CategoryDropdown from "./CategoryDropdown";
 import PrivacyButtons, { PrivacySetting } from "./PrivacyButtons";
 import VotingList, { VotingState } from "./VotingList";
 import ResultsModal from "../vote/ResultsModal";
+import { fetchResults } from "../../utils/eth";
 
 interface IListVotingsPanelProps {
   blockchainData: BlockchainData;
@@ -23,6 +24,7 @@ interface IListVotingsPanelState {
   chosenPrivacySetting: PrivacySetting;
   chosenAnswer: number;
   isDataRefreshRequested: boolean;
+  results: string[];
   showResultsModal: boolean;
   showVoteModal: boolean;
 }
@@ -37,6 +39,7 @@ export default class ListVotingsPanel extends Component<IListVotingsPanelProps, 
       chosenPrivacySetting: PrivacySetting.All,
       chosenVotingAddress: null,
       isDataRefreshRequested: false,
+      results: [],
       showResultsModal: false,
       showVoteModal: false,
       votings: [],
@@ -59,7 +62,7 @@ export default class ListVotingsPanel extends Component<IListVotingsPanelProps, 
     this.setState({ chosenCategoryIndex: categoryIndexFromChild, chosenVotingAddress: null });
   };
 
-  public handleVotingClick = (votingAddressFromChild: ContractAddress) => {
+  public handleVotingClick = async (votingAddressFromChild: ContractAddress) => {
     this.setState({ chosenVotingAddress: votingAddressFromChild });
     if (votingAddressFromChild != null) {
       const now = moment().utc().unix(); // prettier-ignore
@@ -70,7 +73,9 @@ export default class ListVotingsPanel extends Component<IListVotingsPanelProps, 
           showVoteModal: true,
         });
       } else if (now <= voting.info.resultsEndTime) {
+        const results = await fetchResults(voting);
         this.setState({
+          results,
           showResultsModal: true,
           showVoteModal: false,
         });
@@ -147,7 +152,15 @@ export default class ListVotingsPanel extends Component<IListVotingsPanelProps, 
             )}
           </Col>
           <Col md={12}>
-            {this.state.chosenVotingAddress != null && this.state.showResultsModal && <ResultsModal show={true} />}
+            {this.state.chosenVotingAddress != null && this.state.showResultsModal && (
+              <ResultsModal
+                voting={this.state.votings.find(
+                  (voting) => voting.contract._address === this.state.chosenVotingAddress
+                )}
+                results={this.state.results}
+                show={this.state.showResultsModal}
+              />
+            )}
           </Col>
         </Row>
       </Fragment>
