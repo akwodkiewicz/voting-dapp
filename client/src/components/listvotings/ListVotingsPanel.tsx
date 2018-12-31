@@ -1,3 +1,4 @@
+import moment from "moment";
 import React, { Component, Fragment } from "react";
 import { ButtonToolbar, Col, Row } from "react-bootstrap";
 
@@ -21,6 +22,7 @@ interface IListVotingsPanelState {
   chosenPrivacySetting: PrivacySetting;
   chosenAnswer: number;
   isDataRefreshRequested: boolean;
+  showResultsModal: boolean;
   showVoteModal: boolean;
 }
 
@@ -34,6 +36,7 @@ export default class ListVotingsPanel extends Component<IListVotingsPanelProps, 
       chosenPrivacySetting: PrivacySetting.All,
       chosenVotingAddress: null,
       isDataRefreshRequested: false,
+      showResultsModal: false,
       showVoteModal: false,
       votings: [],
     };
@@ -56,7 +59,22 @@ export default class ListVotingsPanel extends Component<IListVotingsPanelProps, 
   };
 
   public handleVotingClick = (votingAddressFromChild: ContractAddress) => {
-    this.setState({ chosenVotingAddress: votingAddressFromChild, showVoteModal: true });
+    this.setState({ chosenVotingAddress: votingAddressFromChild });
+    if (votingAddressFromChild != null) {
+      const now = moment().utc().unix(); // prettier-ignore
+      const voting = this.state.votings.find((v) => v.contract._address === votingAddressFromChild);
+      if (now <= voting.info.votingEndTime) {
+        this.setState({
+          showResultsModal: false,
+          showVoteModal: true,
+        });
+      } else if (now <= voting.info.resultsEndTime) {
+        this.setState({
+          showResultsModal: true,
+          showVoteModal: false,
+        });
+      }
+    }
   };
 
   public handleAnswerClick = (answerIndexFromChild: number) => {
@@ -65,6 +83,10 @@ export default class ListVotingsPanel extends Component<IListVotingsPanelProps, 
 
   public dataRefreshed = () => {
     this.setState({ isDataRefreshRequested: false });
+  };
+
+  public votingTime = () => {
+    return true;
   };
 
   public render() {
@@ -91,7 +113,7 @@ export default class ListVotingsPanel extends Component<IListVotingsPanelProps, 
         </Row>
         <Row>
           <Col md={12}>
-            {this.state.chosenCategoryIndex != null ? (
+            {this.state.chosenCategoryIndex != null && (
               <VotingList
                 category={this.state.categories[this.state.chosenCategoryIndex]}
                 votings={this.state.votings}
@@ -104,12 +126,12 @@ export default class ListVotingsPanel extends Component<IListVotingsPanelProps, 
                 dataRefreshRequestHandled={this.dataRefreshed}
                 isDataRefreshRequested={this.state.isDataRefreshRequested}
               />
-            ) : null}
+            )}
           </Col>
         </Row>
         <Row>
           <Col md={12}>
-            {this.state.chosenVotingAddress != null ? (
+            {this.state.chosenVotingAddress != null && this.state.showVoteModal && (
               <VoteModal
                 voting={this.state.votings.find(
                   (voting) => voting.contract._address === this.state.chosenVotingAddress
@@ -121,7 +143,22 @@ export default class ListVotingsPanel extends Component<IListVotingsPanelProps, 
                 show={this.state.showVoteModal}
                 handleOnHide={() => this.setState({ showVoteModal: false })}
               />
-            ) : null}
+            )}
+          </Col>
+          <Col md={12}>
+            {this.state.chosenVotingAddress != null && this.state.showResultsModal && (
+              <VoteModal
+                voting={this.state.votings.find(
+                  (voting) => voting.contract._address === this.state.chosenVotingAddress
+                )}
+                blockchainData={this.props.blockchainData}
+                chosenAnswer={this.state.chosenAnswer}
+                setChosenAnswerInParent={this.handleAnswerClick}
+                requestDataRefresh={() => this.setState({ isDataRefreshRequested: true })}
+                show={this.state.showVoteModal}
+                handleOnHide={() => this.setState({ showVoteModal: false })}
+              />
+            )}
           </Col>
         </Row>
       </Fragment>
