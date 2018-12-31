@@ -1,41 +1,28 @@
 import React, { Component } from "react";
-import { Button, Modal } from "react-bootstrap";
-import { Voting, VotingInfo } from "../../utils/types";
+import { Modal } from "react-bootstrap";
+import { Voting } from "../../utils/types";
 
 interface IResultsModalProps {
   results: string[];
   show: boolean;
   voting: Voting;
+  handleOnHide: () => void;
 }
 
-interface IResultsModalState {
-  show: boolean;
-  votingInfo: VotingInfo;
-}
-
-export default class ResultsModal extends Component<IResultsModalProps, IResultsModalState> {
+export default class ResultsModal extends Component<IResultsModalProps> {
   constructor(props) {
     super(props);
-    this.state = {
-      show: false,
-      votingInfo: this.props.voting.info,
-    };
   }
 
   public render() {
     return (
-      <Modal.Dialog>
+      <Modal show={this.props.show} onHide={this.props.handleOnHide}>
         <Modal.Header>
-          <Modal.Title>{this.state.votingInfo.question}</Modal.Title>
+          <Modal.Title>{this.props.voting.info.question}</Modal.Title>
         </Modal.Header>
 
         <Modal.Body>{this.props.results}</Modal.Body>
-
-        <Modal.Footer>
-          <Button>Close</Button>
-          <Button bsStyle="primary">Save changes</Button>
-        </Modal.Footer>
-      </Modal.Dialog>
+      </Modal>
     );
   }
 }

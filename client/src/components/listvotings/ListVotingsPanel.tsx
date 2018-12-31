@@ -137,29 +137,28 @@ export default class ListVotingsPanel extends Component<IListVotingsPanelProps, 
         </Row>
         <Row>
           <Col md={12}>
-            {this.state.chosenVotingAddress != null && this.state.showVoteModal && (
-              <VoteModal
-                voting={this.state.votings.find(
-                  (voting) => voting.contract._address === this.state.chosenVotingAddress
-                )}
-                blockchainData={this.props.blockchainData}
-                chosenAnswer={this.state.chosenAnswer}
-                setChosenAnswerInParent={this.handleAnswerClick}
-                requestDataRefresh={() => this.setState({ isDataRefreshRequested: true })}
-                show={this.state.showVoteModal}
-                handleOnHide={() => this.setState({ showVoteModal: false })}
-              />
-            )}
-          </Col>
-          <Col md={12}>
-            {this.state.chosenVotingAddress != null && this.state.showResultsModal && (
-              <ResultsModal
-                voting={this.state.votings.find(
-                  (voting) => voting.contract._address === this.state.chosenVotingAddress
-                )}
-                results={this.state.results}
-                show={this.state.showResultsModal}
-              />
+            {this.state.chosenVotingAddress != null && (
+              <Fragment>
+                <VoteModal
+                  voting={this.state.votings.find(
+                    (voting) => voting.contract._address === this.state.chosenVotingAddress
+                  )}
+                  blockchainData={this.props.blockchainData}
+                  chosenAnswer={this.state.chosenAnswer}
+                  setChosenAnswerInParent={this.handleAnswerClick}
+                  requestDataRefresh={() => this.setState({ isDataRefreshRequested: true })}
+                  show={this.state.showVoteModal}
+                  handleOnHide={() => this.setState({ showVoteModal: false })}
+                />
+                <ResultsModal
+                  handleOnHide={() => this.setState({ showResultsModal: false })}
+                  voting={this.state.votings.find(
+                    (voting) => voting.contract._address === this.state.chosenVotingAddress
+                  )}
+                  results={this.state.results}
+                  show={this.state.showResultsModal}
+                />
+              </Fragment>
             )}
           </Col>
         </Row>
