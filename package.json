@@ -54,6 +54,7 @@
         "react-loader-spinner": "^2.3.0",
         "react-router": "^4.0.0",
         "react-router-dom": "^4.0.0",
+        "recharts": "^1.4.2",
         "resolve": "1.8.1",
         "sass-loader": "7.1.0",
         "style-loader": "0.23.0",
