@@ -74,7 +74,7 @@ export default class ResultsPieChart extends Component<IResultsPieChartProps, IR
             label={renderCustomizedLabel}
             fill="#8884d8"
           >
-            {this.state.chartData.map((_entry, index) => (
+            {this.state.chartData.map((_, index) => (
               <Cell fill={COLORS[index % COLORS.length]} />
             ))}
           </Pie>
