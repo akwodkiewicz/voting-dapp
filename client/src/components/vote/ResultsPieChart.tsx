@@ -65,15 +65,16 @@ export default class ResultsPieChart extends Component<IResultsPieChartProps, IR
             data={this.state.chartData}
             cx="50%"
             cy="50%"
-            outerRadius={80}
+            outerRadius="70%"
             label={renderCustomizedLabel}
             fill="#8884d8"
           >
-            {data.map((_entry, index) => (
+            {this.state.chartData.map((_entry, index) => (
               <Cell fill={COLORS[index % COLORS.length]} />
             ))}
           </Pie>
           <Tooltip />
+          <Legend />
         </PieChart>
       </ResponsiveContainer>
     );
