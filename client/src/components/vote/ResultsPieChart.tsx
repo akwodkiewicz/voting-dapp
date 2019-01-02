@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { Cell, Pie, PieChart, Legend, ResponsiveContainer, Sector, Tooltip } from "recharts";
 import { Voting } from "../../utils/types";
+import ResultsTooltip from "./ResultsTooltip";
 
 interface IResultsPieChartProps {
   results: string[];
@@ -50,7 +51,18 @@ export default class ResultsPieChart extends Component<IResultsPieChartProps, IR
   };
 
   public render() {
-    const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042"];
+    const COLORS = [
+      "#4FFF43",
+      "#FF7543",
+      "#438FFF",
+      "#DAFF43",
+      "#565A49",
+      "#DC35E8",
+      "#99FFCC",
+      "#B2A23A",
+      "#000066",
+      "#006666",
+    ];
     return (
       <ResponsiveContainer width="100%" height={400}>
         <PieChart>
