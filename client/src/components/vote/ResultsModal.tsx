@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { Modal } from "react-bootstrap";
 import { Voting } from "../../utils/types";
+import ResultsPieChart from "./ResultsPieChart";
 
 interface IResultsModalProps {
   results: string[];
@@ -21,7 +22,9 @@ export default class ResultsModal extends Component<IResultsModalProps> {
           <Modal.Title>{this.props.voting.info.question}</Modal.Title>
         </Modal.Header>
 
-        <Modal.Body>{this.props.results}</Modal.Body>
+        <Modal.Body>
+          <ResultsPieChart results={this.props.results} voting={this.props.voting} />
+        </Modal.Body>
       </Modal>
     );
   }
