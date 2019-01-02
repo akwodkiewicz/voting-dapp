@@ -1,12 +1,13 @@
+import moment from "moment";
 import React, { Component, Fragment } from "react";
 import { ButtonToolbar, Col, Row } from "react-bootstrap";
-
+import { fetchResults } from "../../utils/eth";
 import { BlockchainData, Category, ContractAddress, Voting } from "../../utils/types";
+import ResultsModal from "../vote/ResultsModal";
 import VoteModal from "../vote/VoteModal";
 import CategoryDropdown from "./CategoryDropdown";
 import PrivacyButtons, { PrivacySetting } from "./PrivacyButtons";
 import VotingList, { VotingState } from "./VotingList";
-
 interface IListVotingsPanelProps {
   blockchainData: BlockchainData;
   votingState: VotingState;
@@ -21,6 +22,8 @@ interface IListVotingsPanelState {
   chosenPrivacySetting: PrivacySetting;
   chosenAnswer: number;
   isDataRefreshRequested: boolean;
+  results: string[];
+  showResultsModal: boolean;
   showVoteModal: boolean;
 }
 
@@ -34,6 +37,8 @@ export default class ListVotingsPanel extends Component<IListVotingsPanelProps, 
       chosenPrivacySetting: PrivacySetting.All,
       chosenVotingAddress: null,
       isDataRefreshRequested: false,
+      results: [],
+      showResultsModal: false,
       showVoteModal: false,
       votings: [],
     };
@@ -55,8 +60,25 @@ export default class ListVotingsPanel extends Component<IListVotingsPanelProps, 
     this.setState({ chosenCategoryIndex: categoryIndexFromChild, chosenVotingAddress: null });
   };
 
-  public handleVotingClick = (votingAddressFromChild: ContractAddress) => {
-    this.setState({ chosenVotingAddress: votingAddressFromChild, showVoteModal: true });
+  public handleVotingClick = async (votingAddressFromChild: ContractAddress) => {
+    this.setState({ chosenVotingAddress: votingAddressFromChild });
+    if (votingAddressFromChild != null) {
+      const now = moment().utc().unix(); // prettier-ignore
+      const voting = this.state.votings.find((v) => v.contract._address === votingAddressFromChild);
+      if (now <= voting.info.votingEndTime) {
+        this.setState({
+          showResultsModal: false,
+          showVoteModal: true,
+        });
+      } else if (now <= voting.info.resultsEndTime) {
+        const results = await fetchResults(voting);
+        this.setState({
+          results,
+          showResultsModal: true,
+          showVoteModal: false,
+        });
+      }
+    }
   };
 
   public handleAnswerClick = (answerIndexFromChild: number) => {
@@ -65,6 +87,10 @@ export default class ListVotingsPanel extends Component<IListVotingsPanelProps, 
 
   public dataRefreshed = () => {
     this.setState({ isDataRefreshRequested: false });
+  };
+
+  public votingTime = () => {
+    return true;
   };
 
   public render() {
@@ -91,7 +117,7 @@ export default class ListVotingsPanel extends Component<IListVotingsPanelProps, 
         </Row>
         <Row>
           <Col md={12}>
-            {this.state.chosenCategoryIndex != null ? (
+            {this.state.chosenCategoryIndex != null && (
               <VotingList
                 category={this.state.categories[this.state.chosenCategoryIndex]}
                 votings={this.state.votings}
@@ -104,24 +130,34 @@ export default class ListVotingsPanel extends Component<IListVotingsPanelProps, 
                 dataRefreshRequestHandled={this.dataRefreshed}
                 isDataRefreshRequested={this.state.isDataRefreshRequested}
               />
-            ) : null}
+            )}
           </Col>
         </Row>
         <Row>
           <Col md={12}>
-            {this.state.chosenVotingAddress != null ? (
-              <VoteModal
-                voting={this.state.votings.find(
-                  (voting) => voting.contract._address === this.state.chosenVotingAddress
-                )}
-                blockchainData={this.props.blockchainData}
-                chosenAnswer={this.state.chosenAnswer}
-                setChosenAnswerInParent={this.handleAnswerClick}
-                requestDataRefresh={() => this.setState({ isDataRefreshRequested: true })}
-                show={this.state.showVoteModal}
-                handleOnHide={() => this.setState({ showVoteModal: false })}
-              />
-            ) : null}
+            {this.state.chosenVotingAddress != null && (
+              <Fragment>
+                <VoteModal
+                  voting={this.state.votings.find(
+                    (voting) => voting.contract._address === this.state.chosenVotingAddress
+                  )}
+                  blockchainData={this.props.blockchainData}
+                  chosenAnswer={this.state.chosenAnswer}
+                  setChosenAnswerInParent={this.handleAnswerClick}
+                  requestDataRefresh={() => this.setState({ isDataRefreshRequested: true })}
+                  show={this.state.showVoteModal}
+                  handleOnHide={() => this.setState({ showVoteModal: false })}
+                />
+                <ResultsModal
+                  handleOnHide={() => this.setState({ showResultsModal: false })}
+                  voting={this.state.votings.find(
+                    (voting) => voting.contract._address === this.state.chosenVotingAddress
+                  )}
+                  results={this.state.results}
+                  show={this.state.showResultsModal}
+                />
+              </Fragment>
+            )}
           </Col>
         </Row>
       </Fragment>
