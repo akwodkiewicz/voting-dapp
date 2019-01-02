@@ -105,6 +105,12 @@ export const fetchVoting = async (blockchainData: BlockchainData, address: strin
                     isPrivileged: null,
                     hasUserVoted: null,
                 };
+
+                info.isPrivate = await votingInstance.methods.isPrivate().call();
+                if (info.isPrivate) {
+                    info.isPrivileged = await votingInstance.methods.isPrivileged(blockchainData.accounts[0]).call();
+                }
+                info.hasUserVoted = await votingInstance.methods.hasVoted(blockchainData.accounts[0]).call();
                 const voting: Voting = {
                     contract: votingInstance,
                     info,
