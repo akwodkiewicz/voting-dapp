@@ -3,7 +3,6 @@ import React, { Component, Fragment } from "react";
 import { Button, Col, FormControl, InputGroup, Row } from "react-bootstrap";
 import { fetchVoting } from "../../utils/eth";
 import { BlockchainData, Voting } from "../../utils/types";
-import ResultsModal from "../vote/ResultsModal";
 import VoteModal from "../vote/VoteModal";
 
 interface IHomePageProps {
@@ -11,6 +10,7 @@ interface IHomePageProps {
 }
 
 interface IHomePageState {
+  chosenAnswer: number;
   isDataRefreshRequested: boolean;
   searchActionCalled: boolean;
   showNotFoundModal: boolean;
@@ -23,6 +23,7 @@ export default class HomePage extends Component<IHomePageProps, IHomePageState> 
   constructor(props) {
     super(props);
     this.state = {
+      chosenAnswer: null,
       isDataRefreshRequested: false,
       searchActionCalled: false,
       showNotFoundModal: false,
@@ -66,6 +67,10 @@ export default class HomePage extends Component<IHomePageProps, IHomePageState> 
     }
   };
 
+  public handleAnswerClick = (answerIndexFromChild: number) => {
+    this.setState({ chosenAnswer: answerIndexFromChild });
+  };
+
   public render() {
     let modal;
     if (this.state.voting != null) {
@@ -77,15 +82,15 @@ export default class HomePage extends Component<IHomePageProps, IHomePageState> 
             requestDataRefresh={() => this.setState({ isDataRefreshRequested: true })}
             show={this.state.showVoteModal}
             handleOnHide={() => this.setState({ showVoteModal: false })}
-            chosenAnswer={0}
-            setChosenAnswerInParent={null}
+            chosenAnswer={this.state.chosenAnswer}
+            setChosenAnswerInParent={this.handleAnswerClick}
           />
         );
       } else if (this.state.showResultsModal) {
         modal = <h1>Results modal soon</h1>;
       }
     } else if (this.state.searchActionCalled) {
-      modal = <h1>NI MA TAKIEGO GŁOSOWANIA</h1>;
+      modal = <h1>There is no active voting under given address</h1>;
     }
     return (
       <Fragment>
