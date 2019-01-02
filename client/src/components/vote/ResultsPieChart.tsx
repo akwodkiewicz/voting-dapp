@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Cell, Pie, PieChart, Legend, ResponsiveContainer, Tooltip } from "recharts";
+import { Cell, Legend, Pie, PieChart, ResponsiveContainer, Tooltip } from "recharts";
 import { Voting } from "../../utils/types";
 
 interface IResultsPieChartProps {
