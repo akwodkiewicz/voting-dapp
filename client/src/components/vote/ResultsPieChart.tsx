@@ -51,17 +51,11 @@ export default class ResultsPieChart extends Component<IResultsPieChartProps, IR
 
   public render() {
     const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042"];
-    const data = [
-      { name: "Group A", value: 0 },
-      { name: "Group B", value: 300 },
-      { name: "Group C", value: 300 },
-      { name: "Group D", value: 200 },
-    ];
     return (
       <ResponsiveContainer width="100%" height={400}>
         <PieChart>
           <Pie
-            isAnimationActive={false}
+            isAnimationActive={true}
             data={this.state.chartData}
             cx="50%"
             cy="50%"
