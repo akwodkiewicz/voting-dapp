@@ -19,7 +19,7 @@ export default class ResultsModal extends Component<IResultsModalProps> {
     return (
       <Modal show={this.props.show} onHide={this.props.handleOnHide}>
         <Modal.Header>
-          <Modal.Title>{this.props.voting.info.question}</Modal.Title>
+          <Modal.Title className="text-center">{this.props.voting.info.question}</Modal.Title>
         </Modal.Header>
 
         <Modal.Body>

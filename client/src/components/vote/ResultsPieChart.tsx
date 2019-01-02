@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Cell, Pie, PieChart, Legend, Sector, Tooltip } from "recharts";
+import { Cell, Pie, PieChart, Legend, ResponsiveContainer, Sector, Tooltip } from "recharts";
 import { Voting } from "../../utils/types";
 
 interface IResultsPieChartProps {
@@ -24,7 +24,7 @@ const renderCustomizedLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, per
   );
 };
 
-export default class ResultsModal extends Component<IResultsPieChartProps, IResultsPieChartState> {
+export default class ResultsPieChart extends Component<IResultsPieChartProps, IResultsPieChartState> {
   constructor(props) {
     super(props);
 
@@ -36,12 +36,13 @@ export default class ResultsModal extends Component<IResultsPieChartProps, IResu
 
   public componentDidMount = () => {
     const chartData = [];
-    //const answers = this.props.voting.info.answers;
-    //const results = this.props.results.map((result) => parseInt(result, 10));
+    const answers = this.props.voting.info.answers;
+    const results = this.props.results.map((result) => parseInt(result, 10));
 
-    //for (let index = 0; index < answers.length; index++) {
-    //const singleOption = { name: answers[index], value: results[index] };
-    //}
+    for (let index = 0; index < answers.length; index++) {
+      const singleOption = { name: answers[index], value: results[index] };
+      chartData.push(singleOption);
+    }
 
     this.setState({
       chartData,
@@ -49,24 +50,25 @@ export default class ResultsModal extends Component<IResultsPieChartProps, IResu
   };
 
   public render() {
-    const data = [
-      { name: "Group A", value: 400 },
-      { name: "Group B", value: 300 },
-      { name: "Group C", value: 300 },
-      { name: "Group D", value: 200 },
-    ];
     const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042"];
     return (
-      <PieChart width={800} height={400}>
-        <Pie data={data} cx={200} cy={200} outerRadius={80} fill="#8884d8" label={renderCustomizedLabel} />
-        {/* {data.map((
-          _entry, // tslint:disable-line
-          index
-        ) => (
-          <Cell fill={COLORS[index % COLORS.length]} />
-        ))} */}
-        <Tooltip />
-      </PieChart>
+      <ResponsiveContainer width="100%" height={400}>
+        <PieChart>
+          <Pie
+            isAnimationActive={false}
+            data={this.state.chartData}
+            cx="50%"
+            cy="50%"
+            outerRadius={80}
+            fill="#8884d8"
+            label={renderCustomizedLabel}
+          />
+          {data.map((_entry, index) => (
+            <Cell fill={COLORS[index % COLORS.length]} />
+          ))}
+          <Tooltip />
+        </PieChart>
+      </ResponsiveContainer>
     );
   }
 }
