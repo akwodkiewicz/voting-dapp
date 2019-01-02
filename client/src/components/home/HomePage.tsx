@@ -4,7 +4,7 @@ import { Button, Col, FormControl, InputGroup, Row } from "react-bootstrap";
 import { fetchVoting } from "../../utils/eth";
 import { BlockchainData, Voting } from "../../utils/types";
 import ResultsModal from "../vote/ResultsModal";
-//import VoteModal from "../vote/VoteModal";
+import VoteModal from "../vote/VoteModal";
 
 interface IHomePageProps {
   blockchainData: BlockchainData;
@@ -71,33 +71,18 @@ export default class HomePage extends Component<IHomePageProps, IHomePageState> 
     if (this.state.voting != null) {
       if (this.state.showVoteModal) {
         modal = (
-          // <VoteModal
-          //   voting={this.state.voting}
-          //   blockchainData={this.props.blockchainData}
-          //   chosenAnswer={this.state.chosenAnswer}
-          //   setChosenAnswerInParent={this.handleAnswerClick}
-          //   requestDataRefresh={() => this.setState({ isDataRefreshRequested: true })}
-          //   show={this.state.showVoteModal}
-          //   handleOnHide={() => this.setState({ showVoteModal: false })}
-          // />
-          <ResultsModal
+          <VoteModal
             voting={this.state.voting}
             blockchainData={this.props.blockchainData}
             requestDataRefresh={() => this.setState({ isDataRefreshRequested: true })}
-            show={this.state.showResultsModal}
+            show={this.state.showVoteModal}
             handleOnHide={() => this.setState({ showVoteModal: false })}
+            chosenAnswer={0}
+            setChosenAnswerInParent={null}
           />
         );
-      } else {
-        modal = (
-          <ResultsModal
-            voting={this.state.voting}
-            blockchainData={this.props.blockchainData}
-            requestDataRefresh={() => this.setState({ isDataRefreshRequested: true })}
-            show={this.state.showResultsModal}
-            handleOnHide={() => this.setState({ showVoteModal: false })}
-          />
-        );
+      } else if (this.state.showResultsModal) {
+        modal = <h1>Results modal soon</h1>;
       }
     } else if (this.state.searchActionCalled) {
       modal = <h1>NI MA TAKIEGO GŁOSOWANIA</h1>;
