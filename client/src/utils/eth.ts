@@ -78,7 +78,7 @@ export const fetchVotings = async (blockchainData: BlockchainData, category: Cat
         }
     );
 
-    return Promise.all(votingPromises);
+    return Promise.all(votingPromises).then((votings) => votings.filter((v) => v !== null));
 };
 
 export const submitVote = async (blockchainData: BlockchainData, voting: Voting, answerIndex: number) => {
