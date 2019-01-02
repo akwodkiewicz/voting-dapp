@@ -44,7 +44,11 @@ export default class ResultsModal extends Component<IResultsModalProps> {
               <Panel.Title componentClass="h3">Voting results</Panel.Title>
             </Panel.Heading>
             <Panel.Body>
-              <ResultsPieChart results={this.props.results} voting={this.props.voting} />
+              {this.props.results.every((val) => parseInt(val, 10) === 0) ? (
+                <h3 className="text-center">No one has voted!</h3>
+              ) : (
+                <ResultsPieChart results={this.props.results} voting={this.props.voting} />
+              )}
             </Panel.Body>
           </Panel>
         </Modal.Body>
