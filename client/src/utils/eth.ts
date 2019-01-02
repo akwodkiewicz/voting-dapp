@@ -11,18 +11,18 @@ import { BlockchainData, Category, Voting, VotingInfo } from "./types";
 export const fetchCategories = async (blockchainData: BlockchainData) => {
     const web3 = blockchainData.web3;
     const managerInstance = blockchainData.manager as ManagerContract;
-
-    const categories: Category[] = [];
     const numberOfCategories = parseInt(await managerInstance.methods.numberOfCategories().call(), 10);
 
-    for (let index = 0; index < numberOfCategories; index++) {
-        const categoryAddress = await managerInstance.methods.categoryContractsList(index).call();
-        const categoryContract = new web3.eth.Contract(CategoryAbi.abi, categoryAddress) as CategoryContract;
-        const categoryName = web3.utils.toUtf8(await categoryContract.methods.categoryName().call());
-        categories.push({ name: categoryName, address: categoryAddress });
-    }
+    const categoryPromises = [...Array(numberOfCategories).keys()].map(
+        async (index): Promise<Category> => {
+            const categoryAddress = await managerInstance.methods.categoryContractsList(index).call();
+            const categoryContract = new web3.eth.Contract(CategoryAbi.abi, categoryAddress) as CategoryContract;
+            const categoryName = web3.utils.toUtf8(await categoryContract.methods.categoryName().call());
+            return { name: categoryName, address: categoryAddress };
+        }
+    );
 
-    return categories;
+    return Promise.all(categoryPromises);
 };
 
 // tslint:disable:object-literal-sort-keys
