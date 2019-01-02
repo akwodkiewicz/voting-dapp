@@ -1,7 +1,6 @@
 import React, { Component } from "react";
-import { Cell, Pie, PieChart, Legend, ResponsiveContainer, Sector, Tooltip } from "recharts";
+import { Cell, Pie, PieChart, Legend, ResponsiveContainer, Tooltip } from "recharts";
 import { Voting } from "../../utils/types";
-import ResultsTooltip from "./ResultsTooltip";
 
 interface IResultsPieChartProps {
   results: string[];
