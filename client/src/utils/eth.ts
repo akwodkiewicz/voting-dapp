@@ -86,41 +86,32 @@ export const submitVote = async (blockchainData: BlockchainData, voting: Voting,
 
 export const fetchVoting = async (blockchainData: BlockchainData, address: string) => {
     const web3 = blockchainData.web3;
-    const categories = await fetchCategories(blockchainData);
-    for (let i = 0; i < categories.length; i++) {
-        const categoryInstance = new web3.eth.Contract(CategoryAbi.abi, categories[i].address) as CategoryContract;
-        const numberOfVotings = parseInt(await categoryInstance.methods.numberOfContracts().call(), 10);
-        for (let j = 0; j < numberOfVotings; j++) {
-            const votingAddress = await categoryInstance.methods.votingContracts(j).call();
-            if (address === votingAddress) {
-                const votingInstance = new web3.eth.Contract(VotingAbi.abi, votingAddress) as VotingContract;
-                const resp = await votingInstance.methods.viewContractInfo().call();
-                const info: VotingInfo = {
-                    question: resp[0],
-                    categoryAddress: resp[1],
-                    answers: resp[2].map((raw) => web3.utils.hexToUtf8(raw)),
-                    votingEndTime: parseInt(resp[3], 10),
-                    resultsEndTime: parseInt(resp[4], 10),
-                    isPrivate: null,
-                    isPrivileged: null,
-                    hasUserVoted: null,
-                };
-
-                info.isPrivate = await votingInstance.methods.isPrivate().call();
-                if (info.isPrivate) {
-                    info.isPrivileged = await votingInstance.methods.isPrivileged(blockchainData.accounts[0]).call();
-                }
-                info.hasUserVoted = await votingInstance.methods.hasVoted(blockchainData.accounts[0]).call();
-                const voting: Voting = {
-                    contract: votingInstance,
-                    info,
-                };
-                return voting;
-            }
+    try {
+        const votingInstance = new web3.eth.Contract(VotingAbi.abi, address) as VotingContract;
+        const resp = await votingInstance.methods.viewContractInfo().call();
+        const info: VotingInfo = {
+            question: resp[0],
+            categoryAddress: resp[1],
+            answers: resp[2].map((raw) => web3.utils.hexToUtf8(raw)),
+            votingEndTime: parseInt(resp[3], 10),
+            resultsEndTime: parseInt(resp[4], 10),
+            isPrivate: null,
+            isPrivileged: null,
+            hasUserVoted: null,
+        };
+        info.isPrivate = await votingInstance.methods.isPrivate().call();
+        if (info.isPrivate) {
+            info.isPrivileged = await votingInstance.methods.isPrivileged(blockchainData.accounts[0]).call();
         }
+        info.hasUserVoted = await votingInstance.methods.hasVoted(blockchainData.accounts[0]).call();
+        const voting: Voting = {
+            contract: votingInstance,
+            info,
+        };
+        return voting;
+    } catch {
+        return null;
     }
-
-    return null;
 };
 
 export const fetchResults = async (voting: Voting) => {
