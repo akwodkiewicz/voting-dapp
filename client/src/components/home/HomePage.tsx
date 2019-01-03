@@ -98,13 +98,7 @@ export default class HomePage extends Component<IHomePageProps, IHomePageState> 
   public getValidationState = () => {
     const searchText = this.state.searchBoxText;
     if (searchText !== "") {
-      const properBeginning = searchText.substring(0, 2) === "0x";
-      const properLength = searchText.length === 42;
-      if (properBeginning && properLength) {
-        return "success";
-      } else if (!properBeginning || !properLength) {
-        return "error";
-      }
+      return this.props.blockchainData.web3.utils.isAddress(searchText) ? "success" : "error";
     }
     return null;
   };
