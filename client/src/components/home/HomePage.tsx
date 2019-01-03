@@ -14,6 +14,7 @@ import {
 } from "react-bootstrap";
 import { fetchResults, fetchVoting } from "../../utils/eth";
 import { BlockchainData, Voting } from "../../utils/types";
+import NotFoundModal from "../vote/NotFoundModal";
 import ResultsModal from "../vote/ResultsModal";
 import VoteModal from "../vote/VoteModal";
 
@@ -80,13 +81,13 @@ export default class HomePage extends Component<IHomePageProps, IHomePageState> 
           showVoteModal: false,
           votingResults: results,
         });
-      } else {
-        this.setState({
-          showNotFoundModal: true,
-          showResultsModal: false,
-          showVoteModal: false,
-        });
       }
+    } else {
+      this.setState({
+        showNotFoundModal: true,
+        showResultsModal: false,
+        showVoteModal: false,
+      });
     }
   };
 
@@ -140,7 +141,12 @@ export default class HomePage extends Component<IHomePageProps, IHomePageState> 
         );
       }
     } else if (this.state.searchActionCalled) {
-      modal = <h1>There is no active voting under given address</h1>;
+      modal = (
+        <NotFoundModal
+          show={this.state.showNotFoundModal}
+          handleOnHide={() => this.setState({ showNotFoundModal: false })}
+        />
+      );
     }
     return (
       <Grid>
