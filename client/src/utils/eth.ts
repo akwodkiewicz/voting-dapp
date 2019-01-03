@@ -87,6 +87,36 @@ export const submitVote = async (blockchainData: BlockchainData, voting: Voting,
     await votingInstance.methods.vote(answerIndex).send();
 };
 
+export const fetchVoting = async (blockchainData: BlockchainData, address: string) => {
+    const web3 = blockchainData.web3;
+    try {
+        const votingInstance = new web3.eth.Contract(VotingAbi.abi, address) as VotingContract;
+        const resp = await votingInstance.methods.viewContractInfo().call();
+        const info: VotingInfo = {
+            question: resp[0],
+            categoryAddress: resp[1],
+            answers: resp[2].map((raw) => web3.utils.hexToUtf8(raw)),
+            votingEndTime: parseInt(resp[3], 10),
+            resultsEndTime: parseInt(resp[4], 10),
+            isPrivate: null,
+            isPrivileged: null,
+            hasUserVoted: null,
+        };
+        info.isPrivate = await votingInstance.methods.isPrivate().call();
+        if (info.isPrivate) {
+            info.isPrivileged = await votingInstance.methods.isPrivileged(blockchainData.accounts[0]).call();
+        }
+        info.hasUserVoted = await votingInstance.methods.hasVoted(blockchainData.accounts[0]).call();
+        const voting: Voting = {
+            contract: votingInstance,
+            info,
+        };
+        return voting;
+    } catch {
+        return null;
+    }
+};
+
 export const fetchResults = async (voting: Voting) => {
     const votingInstance = voting.contract;
     const results = await votingInstance.methods.viewVotes().call();

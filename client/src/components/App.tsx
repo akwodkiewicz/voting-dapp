@@ -109,7 +109,7 @@ export default class App extends Component<any, IAppState> {
               <Header />
             </div>
             <div>
-              <Route exact path="/" component={HomePage} />
+              <Route exact path="/" render={() => <HomePage blockchainData={this.state.blockchainData} />} />
               <Route path="/createvote" render={() => <CreateVotePage blockchainData={this.state.blockchainData} />} />
               <Route
                 path="/listvotings"
