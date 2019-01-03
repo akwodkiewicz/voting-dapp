@@ -1,6 +1,6 @@
 import moment from "moment";
-import React, { Component, Fragment } from "react";
-import { Button, Col, FormControl, InputGroup, Row } from "react-bootstrap";
+import React, { Component } from "react";
+import { Button, Col, ControlLabel, FormControl, Glyphicon, Grid, HelpBlock, InputGroup, Row } from "react-bootstrap";
 import { fetchVoting } from "../../utils/eth";
 import { BlockchainData, Voting } from "../../utils/types";
 import VoteModal from "../vote/VoteModal";
@@ -93,13 +93,17 @@ export default class HomePage extends Component<IHomePageProps, IHomePageState> 
       modal = <h1>There is no active voting under given address</h1>;
     }
     return (
-      <Fragment>
+      <Grid>
         <Row>
           <Col md={12}>
+            <ControlLabel>Search for the voting</ControlLabel>
+            <HelpBlock>A valid address starts with '0x' and has 20 characters</HelpBlock>
             <InputGroup>
               <FormControl type="text" id="address" />
               <InputGroup.Button>
-                <Button onClick={this.searchVoting}>Before</Button>
+                <Button onClick={this.searchVoting}>
+                  <Glyphicon glyph="search" />
+                </Button>
               </InputGroup.Button>
             </InputGroup>
           </Col>
@@ -107,7 +111,8 @@ export default class HomePage extends Component<IHomePageProps, IHomePageState> 
         <Row>
           <Col md={12}>{modal}</Col>
         </Row>
-      </Fragment>
+      </Grid>
     );
   }
 }
+//glyphicon glyphicon-search
