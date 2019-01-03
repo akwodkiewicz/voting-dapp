@@ -5,15 +5,16 @@ import {
   Col,
   ControlLabel,
   FormControl,
+  FormGroup,
   Glyphicon,
   Grid,
   HelpBlock,
   InputGroup,
   Row,
-  FormGroup,
 } from "react-bootstrap";
-import { fetchVoting } from "../../utils/eth";
+import { fetchResults, fetchVoting } from "../../utils/eth";
 import { BlockchainData, Voting } from "../../utils/types";
+import ResultsModal from "../vote/ResultsModal";
 import VoteModal from "../vote/VoteModal";
 
 interface IHomePageProps {
@@ -30,6 +31,7 @@ interface IHomePageState {
   showResultsModal: boolean;
   showVoteModal: boolean;
   voting: Voting;
+  votingResults: string[];
 }
 
 export default class HomePage extends Component<IHomePageProps, IHomePageState> {
@@ -45,6 +47,7 @@ export default class HomePage extends Component<IHomePageProps, IHomePageState> 
       showResultsModal: false,
       showVoteModal: false,
       voting: null,
+      votingResults: null,
     };
   }
 
@@ -70,10 +73,12 @@ export default class HomePage extends Component<IHomePageProps, IHomePageState> 
           showVoteModal: true,
         });
       } else if (now <= fetchedVoting.info.resultsEndTime) {
+        const results = await fetchResults(this.state.voting);
         this.setState({
           showNotFoundModal: false,
           showResultsModal: true,
           showVoteModal: false,
+          votingResults: results,
         });
       } else {
         this.setState({
@@ -125,7 +130,14 @@ export default class HomePage extends Component<IHomePageProps, IHomePageState> 
           />
         );
       } else if (this.state.showResultsModal) {
-        modal = <h1>Results modal soon</h1>;
+        modal = (
+          <ResultsModal
+            show={this.state.showResultsModal}
+            handleOnHide={() => this.setState({ showResultsModal: false })}
+            voting={this.state.voting}
+            results={this.state.votingResults}
+          />
+        );
       }
     } else if (this.state.searchActionCalled) {
       modal = <h1>There is no active voting under given address</h1>;
