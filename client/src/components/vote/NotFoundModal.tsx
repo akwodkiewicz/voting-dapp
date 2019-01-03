@@ -28,7 +28,23 @@ export default class NotFound extends Component<INotFoundModalProps> {
               <h4>Voting has expired</h4>
               <p>
                 Every voting has an expiration date. When it passes, it is impossible to check the results of the voting
-                via our application. On the other hand, you can check the voting via etherscan.
+                via our application.
+               However, because transactions on the blockchain are permanent, you can still
+                examine the voting contract's state using Etherscan:
+                <ul>
+                  <li>
+                    <a href="https://etherscan.io/">Mainnet (Official Ethereum Network)</a>
+                  </li>
+                  <li>
+                    <a href="https://ropsten.etherscan.io/">Ropsten (Test Network)</a>
+                  </li>
+                  <li>
+                    <a href="https://kovan.etherscan.io/">Kovan (Test Network)</a>
+                  </li>
+                  <li>
+                    <a href="https://rinkeby.etherscan.io/">Rinkeby (Test Network)</a>
+                  </li>
+                </ul>
               </p>
             </Panel.Body>
           </Panel>
