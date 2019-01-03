@@ -24,7 +24,7 @@ export default class NotFound extends Component<INotFoundModalProps> {
             </Panel.Heading>
             <Panel.Body>
               <h4>Invalid address</h4>
-              <p>You might have done a spelling error in the address you provided. Please double check </p>
+              <p>You might have done a spelling error in the provided address.</p>
               <h4>Voting has expired</h4>
               <p>
                 Every voting has an expiration date. When it passes, it is impossible to check the results of the voting
