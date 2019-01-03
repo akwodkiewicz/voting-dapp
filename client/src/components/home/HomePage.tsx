@@ -123,7 +123,7 @@ export default class HomePage extends Component<IHomePageProps, IHomePageState> 
           <VoteModal
             voting={this.state.voting}
             blockchainData={this.props.blockchainData}
-            requestDataRefresh={() => this.setState({ isDataRefreshRequested: true })}
+            requestDataRefresh={this.searchVoting}
             show={this.state.showVoteModal}
             handleOnHide={() => this.setState({ showVoteModal: false })}
             chosenAnswer={this.state.chosenAnswer}
