@@ -115,11 +115,16 @@ export const fetchVoting = async (blockchainData: BlockchainData, address: strin
                     contract: votingInstance,
                     info,
                 };
-
                 return voting;
             }
         }
     }
 
     return null;
+};
+
+export const fetchResults = async (voting: Voting) => {
+    const votingInstance = voting.contract;
+    const results = await votingInstance.methods.viewVotes().call();
+    return results;
 };
