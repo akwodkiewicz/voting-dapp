@@ -1,6 +1,17 @@
 import moment from "moment";
 import React, { Component } from "react";
-import { Button, Col, ControlLabel, FormControl, Glyphicon, Grid, HelpBlock, InputGroup, Row } from "react-bootstrap";
+import {
+  Button,
+  Col,
+  ControlLabel,
+  FormControl,
+  Glyphicon,
+  Grid,
+  HelpBlock,
+  InputGroup,
+  Row,
+  FormGroup,
+} from "react-bootstrap";
 import { fetchVoting } from "../../utils/eth";
 import { BlockchainData, Voting } from "../../utils/types";
 import VoteModal from "../vote/VoteModal";
@@ -11,8 +22,10 @@ interface IHomePageProps {
 
 interface IHomePageState {
   chosenAnswer: number;
+  disableSearch: boolean;
   isDataRefreshRequested: boolean;
   searchActionCalled: boolean;
+  searchBoxText: string;
   showNotFoundModal: boolean;
   showResultsModal: boolean;
   showVoteModal: boolean;
@@ -24,8 +37,10 @@ export default class HomePage extends Component<IHomePageProps, IHomePageState> 
     super(props);
     this.state = {
       chosenAnswer: null,
+      disableSearch: false,
       isDataRefreshRequested: false,
       searchActionCalled: false,
+      searchBoxText: "",
       showNotFoundModal: false,
       showResultsModal: false,
       showVoteModal: false,
@@ -34,7 +49,10 @@ export default class HomePage extends Component<IHomePageProps, IHomePageState> 
   }
 
   public searchVoting = async () => {
-    // TODO: simple address validation
+    if (this.getValidationState() !== "success") {
+      return;
+    }
+
     const address = (document.getElementById("address") as HTMLInputElement).value;
     const fetchedVoting = await fetchVoting(this.props.blockchainData, address);
 
@@ -71,6 +89,26 @@ export default class HomePage extends Component<IHomePageProps, IHomePageState> 
     this.setState({ chosenAnswer: answerIndexFromChild });
   };
 
+  public getValidationState = () => {
+    const searchText = this.state.searchBoxText;
+    if (searchText !== "") {
+      const properBeginning = searchText.substring(0, 2) === "0x";
+      const properLength = searchText.length === 42;
+      if (properBeginning && properLength) {
+        return "success";
+      } else if (!properBeginning || !properLength) {
+        return "error";
+      }
+    }
+    return null;
+  };
+
+  public handleSearchBoxChange = (e) => {
+    this.setState({
+      searchBoxText: e.target.value,
+    });
+  };
+
   public render() {
     let modal;
     if (this.state.voting != null) {
@@ -96,16 +134,21 @@ export default class HomePage extends Component<IHomePageProps, IHomePageState> 
       <Grid>
         <Row>
           <Col md={12}>
-            <ControlLabel>Search for the voting</ControlLabel>
-            <HelpBlock>A valid address starts with '0x' and has 20 characters</HelpBlock>
-            <InputGroup>
-              <FormControl type="text" id="address" />
-              <InputGroup.Button>
-                <Button onClick={this.searchVoting}>
-                  <Glyphicon glyph="search" />
-                </Button>
-              </InputGroup.Button>
-            </InputGroup>
+            <FormGroup bsSize="large" controlId="address" validationState={this.getValidationState()}>
+              <ControlLabel>Search for the voting</ControlLabel>
+              <HelpBlock>A valid address starts with '0x' and has 42 characters</HelpBlock>
+              <InputGroup>
+                <FormGroup bsSize="large" controlId="address" validationState={this.getValidationState()}>
+                  <FormControl type="text" value={this.state.searchBoxText} onChange={this.handleSearchBoxChange} />
+                  <FormControl.Feedback />
+                </FormGroup>
+                <InputGroup.Button>
+                  <Button bsSize="large" onClick={this.searchVoting}>
+                    <Glyphicon glyph="search" />
+                  </Button>
+                </InputGroup.Button>
+              </InputGroup>
+            </FormGroup>
           </Col>
         </Row>
         <Row>
@@ -115,4 +158,3 @@ export default class HomePage extends Component<IHomePageProps, IHomePageState> 
     );
   }
 }
-//glyphicon glyphicon-search
