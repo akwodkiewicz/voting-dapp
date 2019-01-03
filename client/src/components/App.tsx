@@ -1,8 +1,8 @@
 import React, { Component } from "react";
 import { BrowserRouter as Router, Route } from "react-router-dom";
 import Web3 from "web3";
-
 import ManagerAbi from "../contracts/ManagerContract.json";
+import * as ManagerContractConfig from "../managerContract.config.json";
 import { ManagerContract } from "../typed-contracts/ManagerContract";
 import { BlockchainData } from "../utils/types.js";
 import AboutPage from "./about/AboutPage";
@@ -38,10 +38,7 @@ export default class App extends Component<any, IAppState> {
     try {
       const accounts = await window["ethereum"].enable();
       const web3 = new Web3(window["ethereum"]);
-      const instance = new web3.eth.Contract(
-        ManagerAbi.abi,
-        "0x859a5e36B49A54AEe354a441b0E73E65B55Aee7e"
-      ) as ManagerContract;
+      const instance = new web3.eth.Contract(ManagerAbi.abi, ManagerContractConfig.address) as ManagerContract;
       instance.setProvider(web3.currentProvider);
       instance.options.from = accounts[0];
       this.setState({

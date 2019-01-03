@@ -83,3 +83,6 @@ typings/
 
 # FuseBox cache
 .fusebox/
+
+# ManagerContract config
+client/src/managerContract.config.json
