@@ -58,9 +58,7 @@ export default class App extends Component<any, IAppState> {
     if (this.state.noMetamask) {
       return (
         <div>
-          <div className="jumbotron">
-            <h1>Decentralized voting platform</h1>
-          </div>
+          <div className="jumbotron">{/* <h1>Decentralized voting platform</h1> */}</div>
           <div>
             <h1>No MetaMask detected</h1>
             <p>This application needs MetaMask browser extension to work properly</p>
@@ -74,9 +72,7 @@ export default class App extends Component<any, IAppState> {
     if (this.state.waitingForAccess) {
       return (
         <div>
-          <div className="jumbotron">
-            <h1>Decentralized voting platform</h1>
-          </div>
+          <div className="jumbotron">{/* <h1>Decentralized voting platform</h1> */}</div>
           <div>
             <h1>Waiting for access...</h1>
           </div>
@@ -86,9 +82,7 @@ export default class App extends Component<any, IAppState> {
       return (
         <Router>
           <div>
-            <div className="jumbotron">
-              <h1>Decentralized voting platform</h1>
-            </div>
+            <div className="jumbotron">{/* <h1>Decentralized voting platform</h1> */}</div>
             <div>
               <h1>Access request rejected</h1>
               <p>This decentralized application needs access to your Metamask data.</p>
@@ -102,7 +96,7 @@ export default class App extends Component<any, IAppState> {
         <Router>
           <div>
             <div className="jumbotron">
-              <h1>Decentralized voting platform</h1>
+              {/* <h1>Decentralized voting platform</h1> */}
               <Header />
             </div>
             <div>
