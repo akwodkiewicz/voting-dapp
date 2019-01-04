@@ -73,22 +73,22 @@ export default class App extends Component<any, IAppState> {
                         fontFamily: "Roboto",
                         fontSize: "4em",
                         textAlign: "center",
-                        marginTop: "5vh",
                         marginBottom: "5vh",
+                        marginTop: "5vh",
                       }}
                     >
                       No MetaMask detected
                     </h1>
                     <img
                       style={{
-                        marginLeft: "auto",
-                        marginRight: "auto",
                         display: "block",
-                        maxWidth: "50%", // 2nd option: remove
-                        maxHeight: "50%", // 2nd option: remove
-                        width: "auto", // 2nd option: auto
                         height: "auto", // 2nd option: 50%
                         marginBottom: "5vh",
+                        marginLeft: "auto",
+                        marginRight: "auto",
+                        maxHeight: "50%", // 2nd option: remove
+                        maxWidth: "50%", // 2nd option: remove
+                        width: "auto", // 2nd option: auto
                       }}
                       src={require("../images/no-metamask.png")}
                     />
@@ -122,12 +122,39 @@ export default class App extends Component<any, IAppState> {
     } else if (!this.state.blockchainData) {
       return (
         <Router>
-          <div>
+          <div style={{ width: "100vw", height: "100vh" }}>
             <Header block={3} />
             <div>
-              <h1>Access request rejected</h1>
-              <p>This decentralized application needs access to your Metamask data.</p>
-              <p>Refresh page and grant access when the Metamask pop-up window appears.</p>
+              <h1
+                style={{
+                  fontFamily: "Roboto",
+                  fontSize: "4em",
+                  marginBottom: "5vh",
+                  marginTop: "5vh",
+                  textAlign: "center",
+                }}
+              >
+                Access request rejected
+              </h1>
+              <img
+                style={{
+                  display: "block",
+                  height: "auto", // 2nd option: 50%
+                  marginBottom: "5vh",
+                  marginLeft: "auto",
+                  marginRight: "auto",
+                  maxHeight: "50%", // 2nd option: remove
+                  maxWidth: "50%", // 2nd option: remove
+                  width: "auto", // 2nd option: auto
+                }}
+                src={require("../images/no-acceptance.png")}
+              />
+              <p style={{ fontSize: "2em", fontFamily: "Roboto", textAlign: "center" }}>
+                This decentralized application needs access to your Metamask data.
+              </p>
+              <p style={{ fontSize: "2em", fontFamily: "Roboto", textAlign: "center" }}>
+                Refresh page and grant access when the Metamask pop-up window appears.
+              </p>
             </div>
           </div>
         </Router>
