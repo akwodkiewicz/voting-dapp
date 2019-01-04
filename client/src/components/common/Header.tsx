@@ -1,40 +1,30 @@
-import React from "react";
+import React, { Component, Fragment } from "react";
 import { Nav, Navbar, NavItem } from "react-bootstrap";
+import { LinkContainer } from "react-router-bootstrap";
 
-import { Link } from "react-router-dom";
-
-const Header = () => {
-  return (
-    <div>
-      <Navbar fixedTop={false} inverse>
-        <Navbar.Header>
-          <Navbar.Brand href="#home">{" React Bootstrap"}</Navbar.Brand>{" "}
-        </Navbar.Header>
-        <Nav>
-          <NavItem>
-            <Link to="/">Home</Link>
-          </NavItem>
-          <NavItem>
-            <Link to="/createvote">Create vote</Link>
-          </NavItem>
-          <NavItem>
-            <Link to="/listvotings">List votings</Link>
-          </NavItem>
-          <NavItem>
-            <Link to="/about">About</Link>
-          </NavItem>
-        </Nav>
-      </Navbar>
-      <nav>
-        <Link to="/">Home</Link>
-        {" | "}
-        <Link to="/createvote">Create vote</Link>
-        {" | "}
-        <Link to="/listvotings">List votings</Link>
-        {" | "}
-        <Link to="/about">About</Link>
-      </nav>
-    </div>
-  );
-};
-export default Header;
+export default class Header extends Component {
+  public render() {
+    return (
+      <Fragment>
+        {/* <h1>Decentralized Voting Platform</h1>
+        <small>Fully anonymous and transparent voting platform powered by Ethereum blockchain</small> */}
+        <Navbar fluid fixedTop={false} collapseOnSelect>
+          <Nav bsStyle="tabs" justified>
+            <LinkContainer to="/home">
+              <NavItem>Home</NavItem>
+            </LinkContainer>
+            <LinkContainer to="/createvote">
+              <NavItem>Create new voting</NavItem>
+            </LinkContainer>
+            <LinkContainer to="/listvotings">
+              <NavItem>List votingse</NavItem>
+            </LinkContainer>
+            <LinkContainer to="/about">
+              <NavItem>About</NavItem>
+            </LinkContainer>
+          </Nav>
+        </Navbar>
+      </Fragment>
+    );
+  }
+}
