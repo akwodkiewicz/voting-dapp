@@ -1,25 +1,29 @@
 import React, { Component, Fragment } from "react";
 import { Nav, Navbar, NavItem } from "react-bootstrap";
-import { LinkContainer } from "react-router-bootstrap";
+import { IndexLinkContainer, LinkContainer } from "react-router-bootstrap";
 
-export default class Header extends Component {
+interface IHeaderProps {
+  block: number;
+}
+
+export default class Header extends Component<IHeaderProps> {
   public render() {
     return (
       <Fragment>
         {/* <h1>Decentralized Voting Platform</h1>
         <small>Fully anonymous and transparent voting platform powered by Ethereum blockchain</small> */}
-        <Navbar fluid fixedTop={false} collapseOnSelect>
+        <Navbar fluid fixedTop={false} collapseOnSelect={false}>
           <Nav bsStyle="tabs" justified>
-            <LinkContainer to="/">
+            <IndexLinkContainer to="/" disabled={this.props.block === 4 ? true : false}>
               <NavItem>Home</NavItem>
-            </LinkContainer>
-            <LinkContainer to="/createvote">
+            </IndexLinkContainer>
+            <LinkContainer to="/createvote" disabled={this.props.block > 0 ? true : false}>
               <NavItem disabled={true}>Create new voting</NavItem>
             </LinkContainer>
-            <LinkContainer to="/listvotings">
-              <NavItem>List votingse</NavItem>
+            <LinkContainer to="/listvotings" disabled={this.props.block > 0 ? true : false}>
+              <NavItem>List votings</NavItem>
             </LinkContainer>
-            <LinkContainer to="/about">
+            <LinkContainer to="/about" disabled={this.props.block === 4 ? true : false}>
               <NavItem>About</NavItem>
             </LinkContainer>
           </Nav>

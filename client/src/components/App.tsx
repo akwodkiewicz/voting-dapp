@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { BrowserRouter as Router, Route } from "react-router-dom";
+import { BrowserRouter as Router, Redirect, Route } from "react-router-dom";
 import Web3 from "web3";
 import ManagerAbi from "../contracts/ManagerContract.json";
 import * as ManagerContractConfig from "../managerContract.config.json";
@@ -53,17 +53,58 @@ export default class App extends Component<any, IAppState> {
     }
   };
   // tslint:enable:no-string-literal
-
+  public lol = () => {
+    this.forceUpdate();
+  };
   public render() {
     if (this.state.noMetamask) {
       return (
         <div>
+          <Header block={3} />
           <div>
-            <h1>No MetaMask detected</h1>
-            <p>This application needs MetaMask browser extension to work properly</p>
-            <p>
-              <a href="https://metamask.io/">Install it now</a>, create your first wallet and come back later.
-            </p>
+            <Route
+              exact
+              path="/"
+              render={
+                () => (
+                  <div style={{ width: "100vw", height: "100vh" }}>
+                    <h1
+                      style={{
+                        fontFamily: "Roboto",
+                        fontSize: "4em",
+                        textAlign: "center",
+                        marginTop: "5vh",
+                        marginBottom: "5vh",
+                      }}
+                    >
+                      No MetaMask detected
+                    </h1>
+                    <img
+                      style={{
+                        marginLeft: "auto",
+                        marginRight: "auto",
+                        display: "block",
+                        maxWidth: "50%", // 2nd option: remove
+                        maxHeight: "50%", // 2nd option: remove
+                        width: "auto", // 2nd option: auto
+                        height: "auto", // 2nd option: 50%
+                        marginBottom: "5vh",
+                      }}
+                      src={require("../images/no-metamask.png")}
+                    />
+                    <p style={{ fontSize: "2em", fontFamily: "Roboto", textAlign: "center" }}>
+                      This application needs MetaMask browser extension to work properly
+                    </p>
+                    <p style={{ fontSize: "2em", fontFamily: "Roboto", textAlign: "center" }}>
+                      <a href="https://metamask.io/">Install it now</a>, create your first wallet and come back later.
+                    </p>
+                  </div>
+                ) /*<HomePage blockchainData={this.state.blockchainData} displayHome={false} />*/
+              }
+            />
+            <Route exact path="/about" component={AboutPage} />
+
+            <Redirect path="*" to="/" />
           </div>
         </div>
       );
@@ -71,8 +112,10 @@ export default class App extends Component<any, IAppState> {
     if (this.state.waitingForAccess) {
       return (
         <div>
+          <Header block={3} />
           <div>
             <h1>Waiting for access...</h1>
+            <Redirect path="*" to="/" />
           </div>
         </div>
       );
@@ -80,6 +123,7 @@ export default class App extends Component<any, IAppState> {
       return (
         <Router>
           <div>
+            <Header block={3} />
             <div>
               <h1>Access request rejected</h1>
               <p>This decentralized application needs access to your Metamask data.</p>
@@ -92,9 +136,13 @@ export default class App extends Component<any, IAppState> {
       return (
         <Router>
           <div>
-            <Header />
+            <Header block={0} />
             <div>
-              <Route exact path="/" render={() => <HomePage blockchainData={this.state.blockchainData} />} />
+              <Route
+                exact
+                path="/"
+                render={() => <HomePage blockchainData={this.state.blockchainData} displayHome={true} />}
+              />
               <Route path="/createvote" render={() => <CreateVotePage blockchainData={this.state.blockchainData} />} />
               <Route
                 path="/listvotings"
