@@ -20,6 +20,7 @@ import VoteModal from "../vote/VoteModal";
 
 interface IHomePageProps {
   blockchainData: BlockchainData;
+  displayHome: boolean;
 }
 
 interface IHomePageState {
@@ -143,7 +144,7 @@ export default class HomePage extends Component<IHomePageProps, IHomePageState> 
       );
     }
 
-    return (
+    return this.props.displayHome ? (
       <Grid>
         <Row>
           <div style={{ height: "20vh" }}>
@@ -182,6 +183,8 @@ export default class HomePage extends Component<IHomePageProps, IHomePageState> 
           <Col md={12}>{modal}</Col>
         </Row>
       </Grid>
+    ) : (
+      <h1>xd</h1>
     );
   }
 }
