@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { Alert, Button } from "react-bootstrap";
 import { ResultStatus } from "./CreateVotePage";
 
 interface IDisplayResultProps {
@@ -12,11 +13,13 @@ export default class DisplayResult extends Component<IDisplayResultProps> {
       return <h1>Congrats m8</h1>;
     } else {
       return (
-        <div>
-          <h1>Operation cancelled!</h1>
+        <Alert bsStyle="danger">
+          <h4>Oh snap! You got an error!</h4>
           <p>You did not submit your contract. Press the button below to fill the form again.</p>
-          <button onClick={this.props.onClick}>Return</button>
-        </div>
+          <p>
+            <Button onClick={this.props.onClick}>Return to form</Button>
+          </p>
+        </Alert>
       );
     }
   }

@@ -1,12 +1,12 @@
 import moment from "moment";
 import React, { Component } from "react";
-import { Button, ControlLabel, FormControl, FormGroup, HelpBlock, InputGroup, Radio } from "react-bootstrap";
+import { Button, Col, ControlLabel, FormControl, FormGroup, HelpBlock, InputGroup, Radio, Row } from "react-bootstrap";
 import "react-datetime/css/react-datetime.css"; //tslint:disable-line
 import * as CategoryContract from "../../contracts/CategoryContract.json";
 import { BlockchainData, Category, ContractAddress, VoteFormData } from "../../utils/types";
 import AnswersList from "./AnswersList";
 import CategoryPanel, { CategoryPanelType } from "./CategoryPanel";
-import VoteDates from "./VoteDates";
+import VoteDates, { VotingExpiryOption } from "./VoteDates";
 import VoteTypePanel, { Voter, VoteType } from "./VoteTypePanel";
 
 interface ICreateVoteFormProps {
@@ -23,10 +23,10 @@ interface ICreateVoteFormState {
   isCategoriesListFetched: boolean;
   privilegedVoters: Voter[];
   question: string;
-  resultsViewingEndTime: number;
   typedAnswer: string;
   voteEndTime: number;
   voteType: VoteType;
+  votingExpiryOption: VotingExpiryOption;
 }
 
 export default class CreateVoteForm extends Component<ICreateVoteFormProps, ICreateVoteFormState> {
@@ -41,18 +41,13 @@ export default class CreateVoteForm extends Component<ICreateVoteFormProps, ICre
       isCategoriesListFetched: false,
       privilegedVoters: [],
       question: "",
-      resultsViewingEndTime: moment()
-        .add(3, "d")
-        .set("h", 21)
-        .set("m", 0)
-        .utc()
-        .unix(),
       typedAnswer: "",
       voteEndTime: moment()
         .add(3, "h")
         .utc()
         .unix(),
       voteType: VoteType.Public,
+      votingExpiryOption: VotingExpiryOption.ThreeDays,
     };
   }
 
@@ -67,9 +62,9 @@ export default class CreateVoteForm extends Component<ICreateVoteFormProps, ICre
         chosenCategory: this.props.formData.chosenCategory,
         privilegedVoters: this.props.formData.privilegedVoters,
         question: this.props.formData.question,
-        resultsViewingEndTime: this.props.formData.resultsViewingEndTime,
         voteEndTime: this.props.formData.voteEndTime,
         voteType: this.props.formData.voteType,
+        votingExpiryOption: this.props.formData.votingExpiryOption,
       });
     }
   };
@@ -78,6 +73,11 @@ export default class CreateVoteForm extends Component<ICreateVoteFormProps, ICre
     // If blockchainData was initialized after this component had mounted
     if (!this.state.isCategoriesListFetched && this.props.blockchainData) {
       this.fetchCategories();
+    }
+    if (this.state.categoriesList.length === 0 && this.state.categoryPanel !== CategoryPanelType.New) {
+      this.setState({
+        categoryPanel: CategoryPanelType.New,
+      });
     }
   };
 
@@ -109,9 +109,9 @@ export default class CreateVoteForm extends Component<ICreateVoteFormProps, ICre
         chosenCategory: this.props.formData.chosenCategory,
         privilegedVoters: this.props.formData.privilegedVoters,
         question: this.props.formData.question,
-        resultsViewingEndTime: this.props.formData.resultsViewingEndTime,
         voteEndTime: this.props.formData.voteEndTime,
         voteType: this.props.formData.voteType,
+        votingExpiryOption: this.props.formData.votingExpiryOption,
       });
     }
   };
@@ -123,9 +123,12 @@ export default class CreateVoteForm extends Component<ICreateVoteFormProps, ICre
     }));
   };
 
-  public setTypedAnswer = (e) => {
+  public setTypedAnswer = (e: React.FormEvent<FormControl & HTMLInputElement>) => {
+    // Do not simplify this code!
+    // Setting state using e.currentTarget.value directly generates "released/nullified synthetic event" warning
+    const val = e.currentTarget.value;
     this.setState(() => ({
-      typedAnswer: e.value,
+      typedAnswer: val,
     }));
   };
 
@@ -138,12 +141,6 @@ export default class CreateVoteForm extends Component<ICreateVoteFormProps, ICre
   public setVoteEnd = (timeFromChild) => {
     this.setState(() => ({
       voteEndTime: timeFromChild,
-    }));
-  };
-
-  public setResultsViewingEndTime = (timeFromChild) => {
-    this.setState(() => ({
-      resultsViewingEndTime: timeFromChild,
     }));
   };
 
@@ -165,17 +162,25 @@ export default class CreateVoteForm extends Component<ICreateVoteFormProps, ICre
     }));
   };
 
-  public changeCategoryPanel = () => {
-    const existingCategoryButton = document.getElementById("category-from-list") as HTMLInputElement;
-    const categoryType = existingCategoryButton.checked ? CategoryPanelType.Existing : CategoryPanelType.New;
-    const chosenCategory =
-      categoryType === CategoryPanelType.Existing && this.state.categoriesList.length > 0
-        ? this.state.categoriesList[0].address
-        : null;
+  public changeCategoryPanelToExisting = (event: React.FormEvent<Radio & HTMLInputElement>) => {
+    if (!event.currentTarget.value) {
+      return;
+    }
+    const chosenCategory = this.state.categoriesList.length > 0 ? this.state.categoriesList[0].address : null;
 
     this.setState(() => ({
-      categoryPanel: categoryType,
+      categoryPanel: CategoryPanelType.Existing,
       chosenCategory,
+    }));
+  };
+
+  public changeCategoryPanelToNew = (event: React.FormEvent<Radio & HTMLInputElement>) => {
+    if (!event.currentTarget.value) {
+      return;
+    }
+    this.setState(() => ({
+      categoryPanel: CategoryPanelType.New,
+      chosenCategory: null,
     }));
   };
 
@@ -199,73 +204,120 @@ export default class CreateVoteForm extends Component<ICreateVoteFormProps, ICre
   public render() {
     return (
       <form>
-        <FormGroup controlId="question">
-          <ControlLabel>Question</ControlLabel>
-          <FormControl
-            type="text"
-            placeholder="Enter the voting question"
-            onChange={this.setQuestion}
-            value={this.state.question}
-          />
-        </FormGroup>
+        <Row>
+          <Col md={12}>
+            <FormGroup controlId="question">
+              <ControlLabel>Question</ControlLabel>
+              <FormControl
+                type="text"
+                placeholder="E.g. 'Do you believe in life after love?'"
+                onChange={this.setQuestion}
+                value={this.state.question}
+              />
+            </FormGroup>
+          </Col>
+        </Row>
 
-        <FormGroup controlId="answer">
-          <ControlLabel>Answers</ControlLabel>
-          <HelpBlock>There must be at least 2 answers.</HelpBlock>
-          <InputGroup>
-            <FormControl
-              type="text"
-              placeholder="Enter the answer"
-              onChange={this.setTypedAnswer}
-              onKeyPress={(event) => {
-                if (event.key === "Enter") {
-                  this.addAnswer();
-                }
-              }}
-              value={this.state.typedAnswer}
-            />
-            <InputGroup.Button>
-              <Button onClick={this.addAnswer}>Add answer</Button>
-            </InputGroup.Button>
-          </InputGroup>
-        </FormGroup>
+        <Row>
+          <Col md={12}>
+            <FormGroup controlId="answer">
+              <ControlLabel>Answers</ControlLabel>
+              <HelpBlock>There must be at least 2 answers.</HelpBlock>
+              <InputGroup>
+                <FormControl
+                  type="text"
+                  placeholder="Your answer here"
+                  onChange={this.setTypedAnswer}
+                  onKeyPress={(event) => {
+                    if (event.key === "Enter") {
+                      this.addAnswer();
+                    }
+                  }}
+                  value={this.state.typedAnswer}
+                />
+                <InputGroup.Button>
+                  <Button onClick={this.addAnswer}>Add answer</Button>
+                </InputGroup.Button>
+              </InputGroup>
+            </FormGroup>
+          </Col>
+        </Row>
 
-        <AnswersList setAnswers={this.setAnswers} answers={this.state.answers} />
+        {this.state.answers.length !== 0 ? (
+          <Row>
+            <Col md={12}>
+              <AnswersList setAnswers={this.setAnswers} answers={this.state.answers} />
+            </Col>
+          </Row>
+        ) : null}
 
         <VoteDates
           getVoteEnd={this.setVoteEnd}
-          getResultsViewingEnd={this.setResultsViewingEndTime}
           voteEndDateTime={moment(this.state.voteEndTime, "X")}
-          resultsEndDateTime={moment(this.state.resultsViewingEndTime, "X")}
+          votingExpiryOption={this.state.votingExpiryOption}
+          setVotingExpiryOptionInParent={this.setVotingExpiryOption}
         />
 
-        <FormGroup onChange={this.changeCategoryPanel}>
-          <ControlLabel>Category</ControlLabel>
-          <HelpBlock>Select existing category from the list or create a new one.</HelpBlock>
-          <Radio name="categoryGroup" id="category-from-list" checked={this.state.categoryPanel === "existing"} inline>
-            Select existing category
-          </Radio>
-          <Radio name="categoryGroup" id="category-new" checked={this.state.categoryPanel === "new"} inline>
-            Create new category
-          </Radio>
-        </FormGroup>
+        <Row>
+          <Col md={12}>
+            <FormGroup>
+              <ControlLabel>Category</ControlLabel>
+              <HelpBlock>Select an existing category from the list or create a new one.</HelpBlock>
+              <Radio
+                name="categoryGroup"
+                id="category-from-list"
+                disabled={this.state.isCategoriesListFetched && this.state.categoriesList.length === 0}
+                checked={this.state.categoryPanel === "existing"}
+                onChange={this.changeCategoryPanelToExisting}
+                inline
+              >
+                Select existing category
+              </Radio>
+              <Radio
+                name="categoryGroup"
+                id="category-new"
+                checked={this.state.categoryPanel === "new"}
+                onChange={this.changeCategoryPanelToNew}
+                inline
+              >
+                Create new category
+              </Radio>
+            </FormGroup>
+          </Col>
+        </Row>
 
-        <CategoryPanel
-          setCategoryInParent={this.setCategory}
-          categoryPanel={this.state.categoryPanel}
-          categoriesList={this.state.categoriesList}
-          chosenCategory={this.state.chosenCategory}
-        />
+        <Row>
+          <Col md={12}>
+            <CategoryPanel
+              setCategoryInParent={this.setCategory}
+              categoryPanel={this.state.categoryPanel}
+              categoriesList={this.state.categoriesList}
+              chosenCategory={this.state.chosenCategory}
+            />
+          </Col>
+        </Row>
 
-        <VoteTypePanel
-          setVoteTypeInParent={this.setVoteType}
-          setPrivilegedVotersInParent={this.setPrivilegedVoters}
-          voteType={this.state.voteType}
-          privilegedVoters={this.state.privilegedVoters}
-        />
+        <Row>
+          <Col md={12}>
+            <VoteTypePanel
+              setVoteTypeInParent={this.setVoteType}
+              setPrivilegedVotersInParent={this.setPrivilegedVoters}
+              voteType={this.state.voteType}
+              privilegedVoters={this.state.privilegedVoters}
+            />
+          </Col>
+        </Row>
 
-        <Button onClick={this.handleCreateVote}>Submit</Button>
+        <Row>
+          <Col md={12}>
+            <Button onClick={this.handleCreateVote}>Submit</Button>
+          </Col>
+        </Row>
       </form>
     );
   }
+
+  private setVotingExpiryOption = (votingExpiryOptionFromChild: VotingExpiryOption) => {
+    this.setState({ votingExpiryOption: votingExpiryOptionFromChild });
+  };
 }

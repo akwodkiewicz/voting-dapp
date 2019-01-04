@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { ListGroup, ListGroupItem } from "react-bootstrap";
+import { ListGroup, ListGroupItem, OverlayTrigger, Tooltip } from "react-bootstrap";
 
 interface IAnswersListProps {
   answers: string[];
@@ -26,11 +26,19 @@ export default class AnswersList extends Component<IAnswersListProps> {
 
   public render() {
     return (
-      <ListGroup key={"answers"}>
+      <ListGroup>
         {this.props.answers.map((answer) => (
-          <ListGroupItem key={answer} onClick={this.deleteListItem}>
-            {answer}
-          </ListGroupItem>
+          <OverlayTrigger
+            placement="right"
+            overlay={
+              <Tooltip id="answer-tooltip">
+                <strong>Click</strong> to remove the answer
+              </Tooltip>
+            }
+            key={answer}
+          >
+            <ListGroupItem onClick={this.deleteListItem}>{answer}</ListGroupItem>
+          </OverlayTrigger>
         ))}
       </ListGroup>
     );

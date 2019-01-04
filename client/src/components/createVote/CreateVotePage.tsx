@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { Col, Grid, Row } from "react-bootstrap";
 import "react-datetime/css/react-datetime.css"; // tslint:disable-line
 import { BlockchainData, VoteFormData } from "../../utils/types";
 import CreateVoteForm from "./CreateVoteForm";
@@ -63,7 +64,7 @@ export default class CreateVotePage extends Component<ICreateVotePageProps, ICre
             this.state.formData.question,
             this.state.formData.answers.map((opt) => web3.utils.fromUtf8(opt)),
             this.state.formData.voteEndTime,
-            this.state.formData.resultsViewingEndTime,
+            this.state.formData.voteEndTime + this.state.formData.votingExpiryOption,
             this.state.formData.voteType === VoteType.Private ? true : false,
             this.state.formData.privilegedVoters
           )
@@ -75,7 +76,7 @@ export default class CreateVotePage extends Component<ICreateVotePageProps, ICre
             this.state.formData.question,
             this.state.formData.answers.map((opt) => web3.utils.fromUtf8(opt)),
             this.state.formData.voteEndTime,
-            this.state.formData.resultsViewingEndTime,
+            this.state.formData.voteEndTime + this.state.formData.votingExpiryOption,
             this.state.formData.voteType === VoteType.Private ? true : false,
             this.state.formData.privilegedVoters
           )
@@ -99,18 +100,24 @@ export default class CreateVotePage extends Component<ICreateVotePageProps, ICre
   };
 
   public render() {
-    if (this.state.mode === "form") {
-      return (
-        <CreateVoteForm
-          setSubmitData={this.setSubmitData}
-          formData={this.state.formData}
-          blockchainData={this.props.blockchainData}
-        />
-      );
-    } else if (this.state.mode === "fetching") {
-      return <LoadingResult getTransactionResult={this.getTransactionResult} />;
-    } else {
-      return <DisplayResult status={this.state.resultStatus} onClick={this.setModeToForm} />;
-    }
+    return (
+      <Grid>
+        <Row>
+          <Col md={6} mdOffset={3}>
+            {this.state.mode === PageMode.Form ? (
+              <CreateVoteForm
+                setSubmitData={this.setSubmitData}
+                formData={this.state.formData}
+                blockchainData={this.props.blockchainData}
+              />
+            ) : this.state.mode === PageMode.Fetching ? (
+              <LoadingResult getTransactionResult={this.getTransactionResult} />
+            ) : (
+              <DisplayResult status={this.state.resultStatus} onClick={this.setModeToForm} />
+            )}
+          </Col>
+        </Row>
+      </Grid>
+    );
   }
 }

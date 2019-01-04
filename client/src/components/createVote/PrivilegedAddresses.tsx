@@ -27,7 +27,7 @@ export default class PrivilegedAddresses extends Component<IPrivilegedAddressesP
           <FormControl
             onChange={this.saveAddresses}
             componentClass="textarea"
-            placeholder="textarea"
+            placeholder="Don't forget to paste your own address here (if you want to vote)!"
             value={this.props.textAreaValue}
           />
         </FormGroup>
