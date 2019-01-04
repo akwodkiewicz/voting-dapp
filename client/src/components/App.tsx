@@ -9,6 +9,7 @@ import AboutPage from "./about/AboutPage";
 import Header from "./common/Header";
 import CreateVotePage from "./createVote/CreateVotePage";
 import HomePage from "./home/HomePage";
+import NoAccessPage from "./home/NoAccessPage";
 import ListVotingsPage from "./listvotings/ListVotingsPage";
 
 interface IAppState {
@@ -58,54 +59,14 @@ export default class App extends Component<any, IAppState> {
   };
   public render() {
     if (this.state.noMetamask) {
+      const title = "No MetaMask detected";
+      const firstParagraph = "This application needs MetaMask browser extension to work properly";
+      const secondParagraph =
+        '<a href="https://metamask.io/">Install it now</a>, create your first wallet and come back later.';
       return (
         <div>
           <Header block={3} />
-          <div>
-            <Route
-              exact
-              path="/"
-              render={
-                () => (
-                  <div style={{ width: "100vw", height: "100vh" }}>
-                    <h1
-                      style={{
-                        fontFamily: "Roboto",
-                        fontSize: "4em",
-                        textAlign: "center",
-                        marginBottom: "5vh",
-                        marginTop: "5vh",
-                      }}
-                    >
-                      No MetaMask detected
-                    </h1>
-                    <img
-                      style={{
-                        display: "block",
-                        height: "auto", // 2nd option: 50%
-                        marginBottom: "5vh",
-                        marginLeft: "auto",
-                        marginRight: "auto",
-                        maxHeight: "50%", // 2nd option: remove
-                        maxWidth: "50%", // 2nd option: remove
-                        width: "auto", // 2nd option: auto
-                      }}
-                      src={require("../images/no-metamask.png")}
-                    />
-                    <p style={{ fontSize: "2em", fontFamily: "Roboto", textAlign: "center" }}>
-                      This application needs MetaMask browser extension to work properly
-                    </p>
-                    <p style={{ fontSize: "2em", fontFamily: "Roboto", textAlign: "center" }}>
-                      <a href="https://metamask.io/">Install it now</a>, create your first wallet and come back later.
-                    </p>
-                  </div>
-                ) /*<HomePage blockchainData={this.state.blockchainData} displayHome={false} />*/
-              }
-            />
-            <Route exact path="/about" component={AboutPage} />
-
-            <Redirect path="*" to="/" />
-          </div>
+          <NoAccessPage title={title} firstParagraph={firstParagraph} secondParagraph={secondParagraph} imgChoice={1} />
         </div>
       );
     }
@@ -120,44 +81,14 @@ export default class App extends Component<any, IAppState> {
         </div>
       );
     } else if (!this.state.blockchainData) {
+      const title = "Access request rejected";
+      const firstParagraph = "This decentralized application needs access to your Metamask data.";
+      const secondParagraph = "Refresh page and grant access when the Metamask pop-up window appears.";
       return (
-        <Router>
-          <div style={{ width: "100vw", height: "100vh" }}>
-            <Header block={3} />
-            <div>
-              <h1
-                style={{
-                  fontFamily: "Roboto",
-                  fontSize: "4em",
-                  marginBottom: "5vh",
-                  marginTop: "5vh",
-                  textAlign: "center",
-                }}
-              >
-                Access request rejected
-              </h1>
-              <img
-                style={{
-                  display: "block",
-                  height: "auto", // 2nd option: 50%
-                  marginBottom: "5vh",
-                  marginLeft: "auto",
-                  marginRight: "auto",
-                  maxHeight: "50%", // 2nd option: remove
-                  maxWidth: "50%", // 2nd option: remove
-                  width: "auto", // 2nd option: auto
-                }}
-                src={require("../images/no-acceptance.png")}
-              />
-              <p style={{ fontSize: "2em", fontFamily: "Roboto", textAlign: "center" }}>
-                This decentralized application needs access to your Metamask data.
-              </p>
-              <p style={{ fontSize: "2em", fontFamily: "Roboto", textAlign: "center" }}>
-                Refresh page and grant access when the Metamask pop-up window appears.
-              </p>
-            </div>
-          </div>
-        </Router>
+        <div>
+          <Header block={3} />
+          <NoAccessPage title={title} firstParagraph={firstParagraph} secondParagraph={secondParagraph} imgChoice={2} />
+        </div>
       );
     } else {
       return (
