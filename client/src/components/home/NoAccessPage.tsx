@@ -7,7 +7,7 @@ import AboutPage from "../about/AboutPage";
 interface INoAccessPageProps {
   title: string;
   firstParagraph: string;
-  secondParagraph: string;
+  secondParagraph: any;
   imgChoice: number;
 }
 
