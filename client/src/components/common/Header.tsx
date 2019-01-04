@@ -10,11 +10,11 @@ export default class Header extends Component {
         <small>Fully anonymous and transparent voting platform powered by Ethereum blockchain</small> */}
         <Navbar fluid fixedTop={false} collapseOnSelect>
           <Nav bsStyle="tabs" justified>
-            <LinkContainer to="/home">
+            <LinkContainer to="/">
               <NavItem>Home</NavItem>
             </LinkContainer>
             <LinkContainer to="/createvote">
-              <NavItem>Create new voting</NavItem>
+              <NavItem disabled={true}>Create new voting</NavItem>
             </LinkContainer>
             <LinkContainer to="/listvotings">
               <NavItem>List votingse</NavItem>
