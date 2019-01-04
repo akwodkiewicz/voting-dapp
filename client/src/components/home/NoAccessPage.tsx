@@ -43,7 +43,7 @@ export default class NoAccessPage extends Component<INoAccessPageProps> {
                   marginLeft: "auto",
                   marginRight: "auto",
                   maxHeight: "50%", // 2nd option: remove
-                  maxWidth: "50%", // 2nd option: remove
+                  maxWidth: "70%", // 2nd option: remove
                   width: "auto", // 2nd option: auto
                 }}
                 src={this.props.imgChoice === 1 ? NoMetamaskInstalled : NoMetamaskAccess}

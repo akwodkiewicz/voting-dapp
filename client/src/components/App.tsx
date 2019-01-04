@@ -60,10 +60,10 @@ export default class App extends Component<any, IAppState> {
   public render() {
     if (this.state.noMetamask) {
       const title = "No MetaMask detected";
-      const firstParagraph = "This application needs MetaMask browser extension to work properly";
+      const firstParagraph = "This application needs MetaMask browser extension to work properly.";
       const secondParagraph = (
         <span>
-          <a href="https://metamask.io/">Install it now</a> create your first wallet and come back later.';
+          <a href="https://metamask.io/">Install it now</a> create your first wallet and come back later.
         </span>
       );
       return (
