@@ -16,7 +16,7 @@ export default class PrivilegedAddresses extends Component<IPrivilegedAddressesP
   }
 
   public saveAddresses = (e: FormEvent<FormControl & HTMLInputElement>) => {
-    const addressesArray = (e.currentTarget.value as string).trim().split("\n");
+    const addressesArray = (e.currentTarget.value as string).split("\n");
     this.props.setPrivilegedAddressesInParent(addressesArray);
   };
 
