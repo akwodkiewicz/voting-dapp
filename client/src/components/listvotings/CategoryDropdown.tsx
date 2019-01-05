@@ -60,7 +60,7 @@ export default class CategoryDropdown extends Component<ICategoryListProps, ICat
       <Fragment>
         <FormGroup>
           <ControlLabel>Category</ControlLabel>
-          <HelpBlock>Select an existing category from the list or create a new one.</HelpBlock>
+          <HelpBlock>Select an existing category from the list.</HelpBlock>
           {this.state.areCategoriesFetched ? (
             <DropdownButton id="categories" title={this.state.buttonTitle} bsStyle="default">
               {this.props.categories.map((cat, index) => {

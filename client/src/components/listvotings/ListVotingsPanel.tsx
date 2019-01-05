@@ -1,6 +1,6 @@
 import moment from "moment";
 import React, { Component, Fragment } from "react";
-import { ButtonToolbar, Col, Row } from "react-bootstrap";
+import { Col, Grid, Row } from "react-bootstrap";
 import { fetchResults } from "../../utils/eth";
 import { BlockchainData, Category, ContractAddress, Voting } from "../../utils/types";
 import ResultsModal from "../vote/ResultsModal";
@@ -95,13 +95,13 @@ export default class ListVotingsPanel extends Component<IListVotingsPanelProps, 
 
   public render() {
     return (
-      <Fragment>
+      <Grid fluid>
         <Row className="text-center">
           <h3>{this.props.title}</h3>
         </Row>
         <Row>
           {/* https://github.com/react-bootstrap/react-bootstrap/issues/1928#issuecomment-331509515 */}
-          <ButtonToolbar style={{ display: "flex", justifyContent: "center" }}>
+          <Col md={6}>
             <CategoryDropdown
               blockchainData={this.props.blockchainData}
               categories={this.state.categories}
@@ -109,11 +109,13 @@ export default class ListVotingsPanel extends Component<IListVotingsPanelProps, 
               setCategoriesInParent={this.setCategories}
               setChosenCategoryInParent={this.handleCategoryClick}
             />
+          </Col>
+          <Col md={6}>
             <PrivacyButtons
               chosenPrivacySetting={this.state.chosenPrivacySetting}
               setchosenPrivacySettingInParent={this.setPrivacySetting}
             />
-          </ButtonToolbar>
+          </Col>
         </Row>
         <Row>
           <Col md={12}>
@@ -160,7 +162,7 @@ export default class ListVotingsPanel extends Component<IListVotingsPanelProps, 
             )}
           </Col>
         </Row>
-      </Fragment>
+      </Grid>
     );
   }
 }
