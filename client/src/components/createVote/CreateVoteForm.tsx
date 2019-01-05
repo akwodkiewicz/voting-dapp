@@ -20,6 +20,8 @@ export interface ICreateVoteFormState {
   isCategoriesListFetched: boolean;
   privilegedVoters: Voter[];
   question: string;
+  questionTouched: boolean;
+  questionValid: boolean;
   typedAnswer: string;
   voteEndTime: number;
   voteType: VoteType;
@@ -44,6 +46,8 @@ export default class CreateVoteForm extends Component<ICreateVoteFormProps, ICre
       isCategoriesListFetched: false,
       privilegedVoters: [],
       question: "",
+      questionTouched: false,
+      questionValid: false,
       typedAnswer: "",
       voteEndTime: moment()
         .add(3, "h")
@@ -129,13 +133,6 @@ export default class CreateVoteForm extends Component<ICreateVoteFormProps, ICre
         };
       });
     }
-  };
-
-  public setQuestion = (e) => {
-    const question = e.target.value;
-    this.setState(() => ({
-      question,
-    }));
   };
 
   public setTypedAnswer = (e: React.FormEvent<FormControl & HTMLInputElement>) => {
@@ -231,7 +228,10 @@ export default class CreateVoteForm extends Component<ICreateVoteFormProps, ICre
       <form>
         <Row>
           <Col md={12}>
-            <FormGroup controlId="question">
+            <FormGroup
+              controlId="question"
+              validationState={this.state.questionTouched ? (this.state.questionValid ? "success" : "error") : null}
+            >
               <ControlLabel>Question</ControlLabel>
               <FormControl
                 type="text"
@@ -239,6 +239,10 @@ export default class CreateVoteForm extends Component<ICreateVoteFormProps, ICre
                 onChange={this.setQuestion}
                 value={this.state.question}
               />
+              <FormControl.Feedback />
+              {this.state.questionTouched && !this.state.questionValid ? (
+                <HelpBlock>Question cannot be empty</HelpBlock>
+              ) : null}
             </FormGroup>
           </Col>
         </Row>
@@ -345,6 +349,16 @@ export default class CreateVoteForm extends Component<ICreateVoteFormProps, ICre
       </form>
     );
   }
+
+  private setQuestion = (e) => {
+    const question = e.currentTarget.value;
+
+    this.setState(() => ({
+      question,
+      questionTouched: true,
+      questionValid: question.length > 0,
+    }));
+  };
 
   private setCategory = (categoryFromChild: string) => {
     const valid =
