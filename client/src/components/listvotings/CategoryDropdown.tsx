@@ -59,7 +59,7 @@ export default class CategoryDropdown extends Component<ICategoryListProps, ICat
     return (
       <Fragment>
         <FormGroup>
-          <ControlLabel>Category</ControlLabel>
+          <ControlLabel style={{ fontSize: "1.5em" }}>Category</ControlLabel>
           <HelpBlock>Select an existing category from the list.</HelpBlock>
           {this.state.areCategoriesFetched ? (
             <DropdownButton id="categories" title={this.state.buttonTitle} bsStyle="default">
