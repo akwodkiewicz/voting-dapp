@@ -1,6 +1,6 @@
 import moment from "moment";
 import React, { Component } from "react";
-import { Glyphicon, ListGroup, ListGroupItem, OverlayTrigger, Panel, Tooltip } from "react-bootstrap";
+import { Glyphicon, ListGroup, ListGroupItem, OverlayTrigger, Pagination, Panel, Tooltip } from "react-bootstrap";
 
 import { fetchVotings } from "../../utils/eth";
 import { BlockchainData, Category, ContractAddress, Voting } from "../../utils/types";
@@ -27,6 +27,7 @@ interface IVotingListProps {
 
 interface IVotingListState {
   areVotingsFetched: boolean;
+  filteredVotings: Voting[];
 }
 
 export default class VotingList extends Component<IVotingListProps, IVotingListState> {
@@ -59,6 +60,7 @@ export default class VotingList extends Component<IVotingListProps, IVotingListS
 
     this.state = {
       areVotingsFetched: false,
+      filteredVotings: [],
     };
   }
 
@@ -86,11 +88,12 @@ export default class VotingList extends Component<IVotingListProps, IVotingListS
       <Panel>
         {this.state.areVotingsFetched ? (
           <ListGroup>
-            {this.filteredVotings().map((voting) => {
+            {this.state.filteredVotings.map((voting) => {
               if (voting.info.isPrivate && voting.info.isPrivileged) {
                 return (
                   <OverlayTrigger placement="right" overlay={this.privateVotingTooltip}>
                     <ListGroupItem
+                      //style={{ height: "10vh" }}
                       key={voting.contract._address}
                       onClick={this.handleVotingClick}
                       {...(voting.info.hasUserVoted ? { bsStyle: "success" } : null)}
@@ -105,6 +108,7 @@ export default class VotingList extends Component<IVotingListProps, IVotingListS
                 return (
                   <OverlayTrigger placement="right" overlay={this.inaccessibleVotingTooltip}>
                     <ListGroupItem
+                      //style={{ height: "10vh" }}
                       key={voting.contract._address}
                       onClick={this.handleVotingClick}
                       bsStyle="danger"
@@ -119,6 +123,7 @@ export default class VotingList extends Component<IVotingListProps, IVotingListS
                 return (
                   <OverlayTrigger placement="right" overlay={this.publicVotingTooltip}>
                     <ListGroupItem
+                      //style={{ height: "10vh" }}
                       key={voting.contract._address}
                       onClick={this.handleVotingClick}
                       {...(voting.info.hasUserVoted ? { bsStyle: "success" } : null)}
@@ -131,6 +136,29 @@ export default class VotingList extends Component<IVotingListProps, IVotingListS
                 );
               }
             })}
+            <Pagination>
+              <Pagination.First />
+              <Pagination.Prev />
+              <Pagination.Item>{1}</Pagination.Item>
+              <Pagination.Ellipsis />
+
+              <Pagination.Item>{10}</Pagination.Item>
+              <Pagination.Item>{11}</Pagination.Item>
+              <Pagination.Item active>{12}</Pagination.Item>
+              <Pagination.Item>{13}</Pagination.Item>
+              <Pagination.Item disabled>{14}</Pagination.Item>
+
+              <Pagination.Ellipsis />
+              <Pagination.Item
+                onClick={() => {
+                  console.log("xD");
+                }}
+              >
+                {20}
+              </Pagination.Item>
+              <Pagination.Next />
+              <Pagination.Last />
+            </Pagination>
           </ListGroup>
         ) : (
           <Panel.Body>Fetching data from blockchain...</Panel.Body>
@@ -154,10 +182,11 @@ export default class VotingList extends Component<IVotingListProps, IVotingListS
     const votings = await fetchVotings(this.props.blockchainData, this.props.category, this.props.votingState);
     this.props.setVotingsInParent(votings);
     this.setState({ areVotingsFetched: true });
+    this.filteredVotings();
   };
 
   private filteredVotings = () => {
-    return this.props.votings
+    const filteredVotings = this.props.votings
       .filter((voting) => {
         if (this.props.privacySetting === PrivacySetting.Private) {
           return voting.info.isPrivate;
@@ -173,5 +202,9 @@ export default class VotingList extends Component<IVotingListProps, IVotingListS
           return voting.info.votingEndTime < now && now <= voting.info.resultsEndTime;
         } else return false;
       });
+
+    this.setState({
+      filteredVotings,
+    });
   };
 }
