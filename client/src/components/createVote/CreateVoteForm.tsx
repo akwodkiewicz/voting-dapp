@@ -36,7 +36,7 @@ export default class CreateVoteForm extends Component<ICreateVoteFormProps, ICre
     this.state = {
       answers: [],
       categoriesList: [],
-      categoryPanel: CategoryPanelType.Existing,
+      categoryPanel: CategoryPanelType.New,
       chosenCategory: null,
       isCategoriesListFetched: false,
       privilegedVoters: [],
@@ -74,11 +74,6 @@ export default class CreateVoteForm extends Component<ICreateVoteFormProps, ICre
     if (!this.state.isCategoriesListFetched && this.props.blockchainData) {
       this.fetchCategories();
     }
-    if (this.state.categoriesList.length === 0 && this.state.categoryPanel !== CategoryPanelType.New) {
-      this.setState({
-        categoryPanel: CategoryPanelType.New,
-      });
-    }
   };
 
   public fetchCategories = async () => {
@@ -98,6 +93,7 @@ export default class CreateVoteForm extends Component<ICreateVoteFormProps, ICre
 
     this.setState({
       categoriesList: categories,
+      categoryPanel: categories.length > 0 ? CategoryPanelType.Existing : CategoryPanelType.New,
       chosenCategory: categories.length > 0 ? categories[0].address : null,
       isCategoriesListFetched: true,
     });
