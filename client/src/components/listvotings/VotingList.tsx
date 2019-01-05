@@ -32,6 +32,8 @@ interface IVotingListState {
 }
 
 export default class VotingList extends Component<IVotingListProps, IVotingListState> {
+  private nrOfVotingsPerPage = 4; // TBD
+
   private publicVotingTooltip = (
     <Tooltip id="tooltip">
       <strong>Public voting</strong>
@@ -69,6 +71,7 @@ export default class VotingList extends Component<IVotingListProps, IVotingListS
   public componentDidMount = async () => {
     if (this.props.blockchainData) {
       this.fetchVotingsAndSetState();
+      this.getVotingsForPage();
     }
   };
 
@@ -86,12 +89,14 @@ export default class VotingList extends Component<IVotingListProps, IVotingListS
   };
 
   public render() {
+    const pageVotings = this.state.filteredVotings;
+    const nrOfPages = Math.ceil(pageVotings.length / this.nrOfVotingsPerPage);
     return (
       <Panel>
         {this.state.areVotingsFetched ? (
           <Fragment>
             <ListGroup>
-              {this.state.filteredVotings.map((voting) => {
+              {this.getVotingsForPage().map((voting) => {
                 if (voting.info.isPrivate && voting.info.isPrivileged) {
                   return (
                     <OverlayTrigger placement="right" overlay={this.privateVotingTooltip}>
@@ -140,7 +145,35 @@ export default class VotingList extends Component<IVotingListProps, IVotingListS
                 }
               })}
             </ListGroup>
-            <Pagination>{this.setPageVotingsAndCreatePagination()}</Pagination>
+            <Pagination>
+              <Pagination.First
+                onClick={this.state.activePageIndex !== 1 ? this.paginationFirst : null}
+                disabled={this.state.activePageIndex === 1 ? true : false}
+              />
+              <Pagination.Prev
+                onClick={this.state.activePageIndex > 1 ? this.paginationPrev : null}
+                disabled={this.state.activePageIndex === 1 ? true : false}
+              />
+            </Pagination>
+            <span>
+              Page {this.state.activePageIndex}/{nrOfPages}
+            </span>
+            <Pagination>
+              <Pagination.Next
+                onClick={this.state.activePageIndex !== nrOfPages ? this.paginationNext : null}
+                disabled={this.state.activePageIndex === nrOfPages ? true : false}
+              />
+              <Pagination.Last
+                onClick={
+                  this.state.activePageIndex !== nrOfPages
+                    ? () => {
+                        this.paginationLast(nrOfPages);
+                      }
+                    : null
+                }
+                disabled={this.state.activePageIndex === nrOfPages ? true : false}
+              />
+            </Pagination>
           </Fragment>
         ) : (
           <Panel.Body>Fetching data from blockchain...</Panel.Body>
@@ -168,7 +201,6 @@ export default class VotingList extends Component<IVotingListProps, IVotingListS
       areVotingsFetched: true,
       filteredVotings,
     });
-    this.setPageVotingsAndCreatePagination();
   };
 
   private filteredVotings = () => {
@@ -190,59 +222,16 @@ export default class VotingList extends Component<IVotingListProps, IVotingListS
       });
   };
 
-  private setPageVotingsAndCreatePagination = () => {
-    let pageVotings: Voting[];
-    pageVotings = this.state.filteredVotings;
-    const paginatorItems = [];
+  private getVotingsForPage() {
+    const votings = this.filteredVotings();
+    const dividedVotings: Voting[][] = [];
 
-    paginatorItems.push(
-      <Pagination.First
-        onClick={this.state.activePageIndex !== 1 ? this.paginationFirst : null}
-        disabled={this.state.activePageIndex === 1 ? true : false}
-      />
-    );
-    paginatorItems.push(
-      <Pagination.Prev
-        onClick={this.state.activePageIndex > 1 ? this.paginationPrev : null}
-        disabled={this.state.activePageIndex === 1 ? true : false}
-      />
-    );
-
-    for (let x = 1; x <= pageVotings.length; x++) {
-      paginatorItems.push(
-        <Pagination.Item
-          key={x}
-          active={x === this.state.activePageIndex}
-          onClick={() => {
-            this.handlePageClick(x);
-          }}
-        >
-          {x}
-        </Pagination.Item>
-      );
+    for (let i = 0; i < votings.length; i += this.nrOfVotingsPerPage) {
+      dividedVotings.push(votings.slice(i, i + this.nrOfVotingsPerPage));
     }
 
-    paginatorItems.push(
-      <Pagination.Next
-        onClick={this.state.activePageIndex !== pageVotings.length ? this.paginationNext : null}
-        disabled={this.state.activePageIndex === pageVotings.length ? true : false}
-      />
-    );
-    paginatorItems.push(
-      <Pagination.Last
-        onClick={
-          this.state.activePageIndex !== pageVotings.length
-            ? () => {
-                this.paginationLast(pageVotings.length);
-              }
-            : null
-        }
-        disabled={this.state.activePageIndex === pageVotings.length ? true : false}
-      />
-    );
-
-    return paginatorItems;
-  };
+    return dividedVotings[this.state.activePageIndex - 1];
+  }
 
   private handlePageClick(index: number) {
     if (this.state.activePageIndex !== index) {
