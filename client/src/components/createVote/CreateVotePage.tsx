@@ -1,7 +1,8 @@
 import React, { Component } from "react";
 import { Col, Grid, Row } from "react-bootstrap";
 import "react-datetime/css/react-datetime.css"; // tslint:disable-line
-import { BlockchainData, VoteFormData } from "../../utils/types";
+import { TransactionReceipt } from "web3/types"; // tslint:disable-line
+import { BlockchainData, ContractAddress, VoteFormData } from "../../utils/types";
 import CreateVoteForm from "./CreateVoteForm";
 import DisplayResult from "./DisplayResult";
 import LoadingResult from "./LoadingResult";
@@ -17,6 +18,9 @@ export enum ResultStatus {
   Success = "success",
   Failure = "failure",
 }
+
+export type VotingCreatedEventData = { creator: ContractAddress; votingAddress: ContractAddress; question: string };
+
 interface ICreateVotePageProps {
   blockchainData: BlockchainData;
 }
@@ -25,6 +29,8 @@ interface ICreateVotePageState {
   formData: VoteFormData;
   mode: PageMode;
   resultStatus: ResultStatus;
+  txHash: ContractAddress;
+  votingCreatedEventData: VotingCreatedEventData;
 }
 
 export default class CreateVotePage extends Component<ICreateVotePageProps, ICreateVotePageState> {
@@ -35,26 +41,16 @@ export default class CreateVotePage extends Component<ICreateVotePageProps, ICre
       formData: null,
       mode: PageMode.Form,
       resultStatus: ResultStatus.Success,
+      txHash: "",
+      votingCreatedEventData: null,
     };
   }
-
-  public setSubmitData = (formData) => {
-    this.setState(() => ({
-      formData,
-      mode: PageMode.Fetching,
-    }));
-  };
-
-  public setModeToForm = () => {
-    this.setState(() => ({
-      mode: PageMode.Form,
-    }));
-  };
 
   public getTransactionResult = async () => {
     const blockchainData = this.props.blockchainData;
     const web3 = blockchainData.web3;
     const manager = blockchainData.manager;
+
     try {
       let txResponse;
       if (this.state.formData.categoryPanel === "new") {
@@ -82,10 +78,34 @@ export default class CreateVotePage extends Component<ICreateVotePageProps, ICre
           )
           .send();
       }
+      const txReceipt = txResponse as TransactionReceipt;
+      const txHash = txReceipt.transactionHash;
+      const votingCreatedEventData = web3.eth.abi.decodeLog(
+        [
+          {
+            indexed: false,
+            name: "creator",
+            type: "address",
+          },
+          {
+            indexed: false,
+            name: "votingAddress",
+            type: "address",
+          },
+          {
+            indexed: false,
+            name: "question",
+            type: "string",
+          },
+        ],
+        txReceipt.events.VotingCreated.raw.data,
+        txReceipt.events.VotingCreated.raw.topics
+      ) as VotingCreatedEventData;
 
-      console.log(txResponse);
       this.setState(() => ({
         resultStatus: ResultStatus.Success,
+        txHash,
+        votingCreatedEventData,
       }));
     } catch (e) {
       console.error(e);
@@ -103,21 +123,53 @@ export default class CreateVotePage extends Component<ICreateVotePageProps, ICre
     return (
       <Grid>
         <Row>
-          <Col md={6} mdOffset={3}>
-            {this.state.mode === PageMode.Form ? (
+          {this.state.mode === PageMode.Form ? (
+            <Col md={6} mdOffset={3}>
               <CreateVoteForm
                 setSubmitData={this.setSubmitData}
                 formData={this.state.formData}
                 blockchainData={this.props.blockchainData}
               />
-            ) : this.state.mode === PageMode.Fetching ? (
+            </Col>
+          ) : this.state.mode === PageMode.Fetching ? (
+            <Col md={6} mdOffset={3}>
               <LoadingResult getTransactionResult={this.getTransactionResult} />
-            ) : (
-              <DisplayResult status={this.state.resultStatus} onClick={this.setModeToForm} />
-            )}
-          </Col>
+            </Col>
+          ) : (
+            <Col md={8} mdOffset={2}>
+              <DisplayResult
+                status={this.state.resultStatus}
+                softReset={this.setModeToForm}
+                hardReset={this.resetPage}
+                votingCreatedEventData={this.state.votingCreatedEventData}
+                txHash={this.state.txHash}
+              />
+            </Col>
+          )}
         </Row>
       </Grid>
     );
   }
+
+  private setSubmitData = (formData) => {
+    this.setState(() => ({
+      formData,
+      mode: PageMode.Fetching,
+    }));
+  };
+
+  private setModeToForm = () => {
+    this.setState(() => ({
+      mode: PageMode.Form,
+    }));
+  };
+
+  private resetPage = () => {
+    this.setState(() => ({
+      formData: null,
+      mode: PageMode.Form,
+      txHash: "",
+      votingCreatedEventData: null,
+    }));
+  };
 }
