@@ -17,6 +17,8 @@ interface ICreateVoteFormProps {
 
 export interface ICreateVoteFormState {
   answers: string[];
+  answersTouched: boolean;
+  answersValid: boolean;
   isCategoriesListFetched: boolean;
   privilegedVoters: Voter[];
   question: string;
@@ -27,6 +29,7 @@ export interface ICreateVoteFormState {
   voteType: VoteType;
   votingExpiryOption: VotingExpiryOption;
   categoryPanelProps: ICategoryPanelProps;
+  submitFailed: boolean;
 }
 
 export default class CreateVoteForm extends Component<ICreateVoteFormProps, ICreateVoteFormState> {
@@ -35,6 +38,8 @@ export default class CreateVoteForm extends Component<ICreateVoteFormProps, ICre
 
     this.state = {
       answers: [],
+      answersTouched: false,
+      answersValid: true,
       categoryPanelProps: {
         categoriesList: [],
         categoryPanel: CategoryPanelType.New,
@@ -48,6 +53,7 @@ export default class CreateVoteForm extends Component<ICreateVoteFormProps, ICre
       question: "",
       questionTouched: false,
       questionValid: false,
+      submitFailed: false,
       typedAnswer: "",
       voteEndTime: moment()
         .add(3, "h")
@@ -65,18 +71,20 @@ export default class CreateVoteForm extends Component<ICreateVoteFormProps, ICre
     if (this.props.formData) {
       this.setState((state, props) => {
         return {
-          answers: this.props.formData.answers,
+          answers: props.formData.answers,
+          answersValid: this.isAnswerListValid(props.formData.answers),
           categoryPanelProps: {
             ...state.categoryPanelProps,
             categoryPanel: props.formData.categoryPanel,
             chosenCategory: props.formData.chosenCategory,
+            valid: this.isCategoryValid(props.formData.chosenCategory),
           },
-
-          privilegedVoters: this.props.formData.privilegedVoters,
-          question: this.props.formData.question,
-          voteEndTime: this.props.formData.voteEndTime,
-          voteType: this.props.formData.voteType,
-          votingExpiryOption: this.props.formData.votingExpiryOption,
+          privilegedVoters: props.formData.privilegedVoters,
+          question: props.formData.question,
+          questionValid: this.isQuestionValid(props.formData.question),
+          voteEndTime: props.formData.voteEndTime,
+          voteType: props.formData.voteType,
+          votingExpiryOption: props.formData.votingExpiryOption,
         };
       });
     }
@@ -147,6 +155,8 @@ export default class CreateVoteForm extends Component<ICreateVoteFormProps, ICre
   public setAnswers = (answersFromChild) => {
     this.setState(() => ({
       answers: answersFromChild,
+      answersTouched: true,
+      answersValid: answersFromChild.length >= 2,
     }));
   };
 
@@ -206,10 +216,6 @@ export default class CreateVoteForm extends Component<ICreateVoteFormProps, ICre
     });
   };
 
-  public handleCreateVote = () => {
-    this.props.setSubmitData(this.state);
-  };
-
   public addAnswer = () => {
     const answer = (document.getElementById("answer") as HTMLInputElement).value;
     const allAnswers = this.state.answers;
@@ -217,8 +223,16 @@ export default class CreateVoteForm extends Component<ICreateVoteFormProps, ICre
       return;
     }
     allAnswers.push(answer);
+
+    if (allAnswers.length >= 2 && this.state.answersTouched) {
+      this.setState({
+        answersTouched: false,
+      });
+    }
+
     this.setState(() => ({
       answers: allAnswers,
+      answersValid: allAnswers.length >= 2,
       typedAnswer: "",
     }));
   };
@@ -249,7 +263,10 @@ export default class CreateVoteForm extends Component<ICreateVoteFormProps, ICre
 
         <Row>
           <Col md={12}>
-            <FormGroup controlId="answer">
+            <FormGroup
+              controlId="answer"
+              validationState={this.state.answersTouched ? (this.state.answersValid ? null : "error") : null}
+            >
               <ControlLabel>Answers</ControlLabel>
               <HelpBlock>There must be at least 2 answers.</HelpBlock>
               <InputGroup>
@@ -341,14 +358,41 @@ export default class CreateVoteForm extends Component<ICreateVoteFormProps, ICre
           </Col>
         </Row>
 
-        <Row>
+        <Row style={{ marginBottom: "10px" }}>
           <Col md={12}>
-            <Button onClick={this.handleCreateVote}>Submit</Button>
+            <FormGroup validationState={this.state.submitFailed ? "error" : null}>
+              <Button onClick={this.handleCreateVote}>Submit</Button>
+              {this.state.submitFailed ? <HelpBlock>You need to fill the form correctly</HelpBlock> : null}
+            </FormGroup>
           </Col>
         </Row>
       </form>
     );
   }
+
+  private handleCreateVote = () => {
+    this.setState((state) => {
+      return {
+        answersTouched: true,
+        categoryPanelProps: { ...state.categoryPanelProps, touched: true },
+        questionTouched: true,
+      };
+    });
+
+    if (!this.isAnswerListValid(this.state.answers)) {
+      this.setState({
+        answersValid: false,
+      });
+    }
+
+    if (!this.state.answersValid || !this.state.categoryPanelProps.valid || !this.state.questionValid) {
+      this.setState({
+        submitFailed: true,
+      });
+    } else {
+      this.props.setSubmitData(this.state);
+    }
+  };
 
   private setQuestion = (e) => {
     const question = e.currentTarget.value;
@@ -356,24 +400,33 @@ export default class CreateVoteForm extends Component<ICreateVoteFormProps, ICre
     this.setState(() => ({
       question,
       questionTouched: true,
-      questionValid: question.length > 0,
+      questionValid: this.isQuestionValid(question),
     }));
   };
 
   private setCategory = (categoryFromChild: string) => {
-    const valid =
-      categoryFromChild.length > 0 && this.props.blockchainData.web3.utils.fromUtf8(categoryFromChild).length <= 32;
-
     this.setState((state) => {
       return {
         categoryPanelProps: {
           ...state.categoryPanelProps,
           chosenCategory: categoryFromChild,
           touched: true,
-          valid,
+          valid: this.isCategoryValid(categoryFromChild),
         },
       };
     });
+  };
+
+  private isAnswerListValid = (answerList: string[]) => {
+    return answerList.length >= 2;
+  };
+
+  private isCategoryValid = (categoryName: string) => {
+    return categoryName.length > 0 && this.props.blockchainData.web3.utils.fromUtf8(categoryName).length <= 32;
+  };
+
+  private isQuestionValid = (question: string) => {
+    return question.length > 0;
   };
 
   private setVotingExpiryOption = (votingExpiryOptionFromChild: VotingExpiryOption) => {
