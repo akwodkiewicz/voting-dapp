@@ -20,6 +20,7 @@ import VoteModal from "../vote/VoteModal";
 
 interface IHomePageProps {
   blockchainData: BlockchainData;
+  displayHome: boolean;
 }
 
 interface IHomePageState {
@@ -142,16 +143,28 @@ export default class HomePage extends Component<IHomePageProps, IHomePageState> 
         />
       );
     }
-    return (
+
+    return this.props.displayHome ? (
       <Grid>
+        <Row>
+          <div style={{ height: "20vh" }}>
+            <h1 style={{ fontSize: "5em", fontFamily: "Roboto", textAlign: "center", marginTop: "1em" }}>
+              Decentralized voting platfrom
+            </h1>
+            <h3 style={{ fontFamily: "Roboto", textAlign: "center" }}>
+              Fully anonymous and transparent voting platform powered by Ethereum blockchain.
+            </h3>
+          </div>
+        </Row>
+        <Row />
         <Row>
           <Col md={12}>
             <FormGroup bsSize="large" controlId="address" validationState={this.getValidationState()}>
-              <ControlLabel>Search for the voting</ControlLabel>
-<HelpBlock>
-    Enter a valid keccak256 Ethereum address. Use all upper- or lowercase characters to ignore{" "}
-    <a href="https://github.com/ethereum/EIPs/blob/master/EIPS/eip-55.md">checksum validation</a>.
-</HelpBlock>
+              <ControlLabel style={{ fontSize: "2em" }}>Search for the voting</ControlLabel>
+              <HelpBlock>
+                Enter a valid keccak256 Ethereum address. Use all upper- or lowercase characters to ignore{" "}
+                <a href="https://github.com/ethereum/EIPs/blob/master/EIPS/eip-55.md">checksum validation</a>.
+              </HelpBlock>
               <InputGroup>
                 <FormGroup bsSize="large" controlId="address" validationState={this.getValidationState()}>
                   <FormControl type="text" value={this.state.searchBoxText} onChange={this.handleSearchBoxChange} />
@@ -170,6 +183,8 @@ export default class HomePage extends Component<IHomePageProps, IHomePageState> 
           <Col md={12}>{modal}</Col>
         </Row>
       </Grid>
+    ) : (
+      <h1>xd</h1>
     );
   }
 }
