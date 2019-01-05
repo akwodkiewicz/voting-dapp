@@ -59,8 +59,8 @@ export default class CreateVotePage extends Component<ICreateVotePageProps, ICre
             web3.utils.fromUtf8(this.state.formData.chosenCategory),
             this.state.formData.question,
             this.state.formData.answers.map((opt) => web3.utils.fromUtf8(opt)),
-            this.state.formData.voteEndTime,
-            this.state.formData.voteEndTime + this.state.formData.votingExpiryOption,
+            this.state.formData.voteEndDateTime.unix(),
+            this.state.formData.voteEndDateTime.unix() + this.state.formData.votingExpiryOption,
             this.state.formData.voteType === VoteType.Private ? true : false,
             this.state.formData.privilegedVoters
           )
@@ -71,8 +71,8 @@ export default class CreateVotePage extends Component<ICreateVotePageProps, ICre
             this.state.formData.chosenCategory,
             this.state.formData.question,
             this.state.formData.answers.map((opt) => web3.utils.fromUtf8(opt)),
-            this.state.formData.voteEndTime,
-            this.state.formData.voteEndTime + this.state.formData.votingExpiryOption,
+            this.state.formData.voteEndDateTime.unix(),
+            this.state.formData.voteEndDateTime.unix() + this.state.formData.votingExpiryOption,
             this.state.formData.voteType === VoteType.Private ? true : false,
             this.state.formData.privilegedVoters
           )
@@ -158,9 +158,9 @@ export default class CreateVotePage extends Component<ICreateVotePageProps, ICre
       chosenCategory: formState.categoryPanelProps.chosenCategory,
       privilegedVoters: formState.privilegedVoters,
       question: formState.question,
-      voteEndTime: formState.voteEndTime,
+      voteEndDateTime: formState.voteDatesProps.endDateTime,
       voteType: formState.voteType,
-      votingExpiryOption: formState.votingExpiryOption,
+      votingExpiryOption: formState.voteDatesProps.votingExpiryOption,
     };
     this.setState(() => ({
       formData,
