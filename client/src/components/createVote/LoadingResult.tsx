@@ -1,4 +1,5 @@
 import React, { Component, Fragment } from "react";
+import { Col, Row } from "react-bootstrap";
 import Loader from "react-loader-spinner";
 
 interface ILoadingResultProps {
@@ -19,8 +20,21 @@ export default class LoadingResult extends Component<ILoadingResultProps> {
   public render() {
     return (
       <Fragment>
-        <Loader type="Grid" color="#00BFFF" height="30%" width="30%" />
-        <h1>Please wait, your transaction is being processed</h1>
+        <Row className="text-center">
+          <Col sm={12}>
+            <h1>Please wait</h1>
+          </Col>
+        </Row>
+        <Row className="text-center" style={{ marginTop: "12px" }}>
+          <Col sm={12}>
+            <Loader type="Grid" color="#00BFFF" height="10%" width="10%" />
+          </Col>
+        </Row>
+        <Row className="text-center">
+          <Col sm={12}>
+            <h3>Your transaction is being processed</h3>
+          </Col>
+        </Row>
       </Fragment>
     );
   }

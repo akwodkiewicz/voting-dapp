@@ -1,13 +1,19 @@
 import moment from "moment";
 import React, { Component } from "react";
-import { Col, ControlLabel, FormGroup, Grid, Row } from "react-bootstrap";
+import { Col, ControlLabel, FormGroup, HelpBlock, Row, ToggleButton, ToggleButtonGroup } from "react-bootstrap";
 import Datetime from "react-datetime";
+
+export enum VotingExpiryOption {
+  ThreeDays = 3 * 24 * 60 * 60,
+  Week = 7 * 24 * 60 * 60,
+  Month = 30 * 24 * 60 * 60,
+}
 
 interface IVoteDatesProps {
   voteEndDateTime: moment.Moment;
-  resultsEndDateTime: moment.Moment;
-  getResultsViewingEnd: (arg: number) => void;
+  votingExpiryOption: VotingExpiryOption;
   getVoteEnd: (arg: number) => void;
+  setVotingExpiryOptionInParent: (arg: VotingExpiryOption) => void;
 }
 
 // tslint:disable:object-literal-sort-keys
@@ -16,132 +22,96 @@ export default class VoteDates extends Component<IVoteDatesProps> {
     super(props);
   }
 
-  public voteEndDateHandler = (inputMoment) => {
+  public render() {
+    return (
+      <Row>
+        <Col md={6}>
+          <Row>
+            <Col md={12}>
+              <ControlLabel>Deadline</ControlLabel>
+            </Col>
+          </Row>
+          <Row>
+            <Col md={6}>
+              <FormGroup>
+                <HelpBlock>Date</HelpBlock>
+                <Datetime
+                  inputProps={{ id: "voteDateEnd" }}
+                  closeOnSelect={true}
+                  isValidDate={(current) => {
+                    return current.isAfter(moment().subtract(1, "day"), "minute");
+                  }}
+                  timeFormat={false}
+                  onChange={this.voteEndDateHandler}
+                  value={this.props.voteEndDateTime}
+                />
+              </FormGroup>
+            </Col>
+            <Col md={6}>
+              <FormGroup>
+                <HelpBlock>Time</HelpBlock>
+                <Datetime
+                  inputProps={{ id: "voteTimeEnd" }}
+                  dateFormat={false}
+                  closeOnSelect={true}
+                  onChange={this.voteEndTimeHandler}
+                  value={this.props.voteEndDateTime}
+                />
+              </FormGroup>
+            </Col>
+          </Row>
+        </Col>
+
+        <Col md={6}>
+          <Row>
+            <Col md={12}>
+              <ControlLabel>Results expiry date</ControlLabel>
+            </Col>
+          </Row>
+          <Row>
+            <Col md={12}>
+              <FormGroup>
+                <HelpBlock>
+                  How long will the results be available?
+                </HelpBlock>
+                <ToggleButtonGroup
+                  type="radio"
+                  name="votingExpiryOption"
+                  value={this.props.votingExpiryOption}
+                  onChange={this.votingExpiryOptionHandler}
+                  justified
+                >
+                  <ToggleButton value={VotingExpiryOption.ThreeDays}>3 Days</ToggleButton>
+                  <ToggleButton value={VotingExpiryOption.Week}>1 Week</ToggleButton>
+                  <ToggleButton value={VotingExpiryOption.Month}>1 Month</ToggleButton>
+                </ToggleButtonGroup>
+              </FormGroup>
+            </Col>
+          </Row>
+        </Col>
+      </Row>
+    );
+  }
+
+  private voteEndDateHandler = (inputMoment) => {
     const newVoteEndDateTime = moment(inputMoment).set({
       hours: this.props.voteEndDateTime.hours(),
       minutes: this.props.voteEndDateTime.minutes(),
     });
 
-    // Reset resultsEndDateTime if neccessary
-    if (newVoteEndDateTime.isAfter(this.props.resultsEndDateTime, "minute")) {
-      const newResultsEndDateTime = moment(newVoteEndDateTime).add(1, "d");
-      this.props.getResultsViewingEnd(newResultsEndDateTime.utc().unix());
-    }
-
     this.props.getVoteEnd(newVoteEndDateTime.utc().unix());
   };
-  public voteEndTimeHandler = (inputMoment) => {
+  private voteEndTimeHandler = (inputMoment) => {
     const newVoteEndDateTime = moment(inputMoment).set({
       year: this.props.voteEndDateTime.year(),
       month: this.props.voteEndDateTime.month(),
       day: this.props.voteEndDateTime.day(),
     });
 
-    // Reset resultsEndDateTime if neccessary
-    if (newVoteEndDateTime.isAfter(this.props.resultsEndDateTime, "minute")) {
-      const newResultsEndDateTime = moment(newVoteEndDateTime).add(1, "h");
-      this.props.getResultsViewingEnd(newResultsEndDateTime.utc().unix());
-    }
-
     this.props.getVoteEnd(newVoteEndDateTime.utc().unix());
   };
 
-  public resultsEndDateHandler = (inputMoment) => {
-    const newResultsEndDateTime = moment(inputMoment).set({
-      hours: this.props.resultsEndDateTime.hours(),
-      minutes: this.props.resultsEndDateTime.minutes(),
-    });
-
-    this.props.getResultsViewingEnd(newResultsEndDateTime.utc().unix());
+  private votingExpiryOptionHandler = (value: VotingExpiryOption) => {
+    this.props.setVotingExpiryOptionInParent(value);
   };
-
-  public resultsEndTimeHandler = (inputMoment) => {
-    const newResultsEndDateTime = moment(inputMoment).set({
-      year: this.props.resultsEndDateTime.year(),
-      month: this.props.resultsEndDateTime.month(),
-      day: this.props.resultsEndDateTime.day(),
-    });
-
-    // Don't allow changing incorrect value
-    if (newResultsEndDateTime.isBefore(this.props.voteEndDateTime, "minute")) {
-      return;
-    }
-
-    this.props.getResultsViewingEnd(newResultsEndDateTime.utc().unix());
-  };
-
-  public render() {
-    return (
-      <FormGroup>
-        <Grid>
-          <Row className="showGrid">
-            <Col xs={6}>
-              <ControlLabel>Voting end time</ControlLabel>
-            </Col>
-            <Col xs={6}>
-              <ControlLabel>Results viewing end time</ControlLabel>
-            </Col>
-          </Row>
-          <Row>
-            <Col xs={3}>Date</Col>
-
-            <Col xs={3}>Time</Col>
-
-            <Col xs={3}>Date</Col>
-
-            <Col xs={3}>Time</Col>
-          </Row>
-          <Row className="showGrid">
-            <Col xs={3}>
-              <Datetime
-                inputProps={{ id: "voteDateEnd" }}
-                closeOnSelect={true}
-                isValidDate={(current) => {
-                  return current.isAfter(moment().subtract(1, "day"), "minute");
-                }}
-                timeFormat={false}
-                onChange={this.voteEndDateHandler}
-                value={this.props.voteEndDateTime}
-              />
-            </Col>
-            <Col xs={3}>
-              <Datetime
-                inputProps={{ id: "voteTimeEnd" }}
-                dateFormat={false}
-                closeOnSelect={true}
-                onChange={this.voteEndTimeHandler}
-                value={this.props.voteEndDateTime}
-              />
-            </Col>
-
-            <Col xs={3}>
-              <Datetime
-                inputProps={{ id: "resultsDateEnd" }}
-                closeOnSelect={true}
-                isValidDate={(current) => {
-                  current.set({
-                    hour: this.props.resultsEndDateTime.hour(),
-                    minute: this.props.resultsEndDateTime.minute(),
-                  });
-                  return current.isAfter(this.props.voteEndDateTime, "m");
-                }}
-                timeFormat={false}
-                onChange={this.resultsEndDateHandler}
-                value={this.props.resultsEndDateTime}
-              />
-            </Col>
-            <Col xs={3}>
-              <Datetime
-                inputProps={{ id: "resultsTimeEnd" }}
-                closeOnSelect={true}
-                dateFormat={false}
-                onChange={this.resultsEndTimeHandler}
-                value={this.props.resultsEndDateTime}
-              />
-            </Col>
-          </Row>
-        </Grid>
-      </FormGroup>
-    );
-  }
 }

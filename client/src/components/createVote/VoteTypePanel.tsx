@@ -1,6 +1,6 @@
 import React, { Component, Fragment } from "react";
 
-import { ControlLabel, FormGroup, Radio } from "react-bootstrap";
+import { ControlLabel, FormGroup, Glyphicon, OverlayTrigger, Radio, Tooltip } from "react-bootstrap";
 import PrivilegedAddresses from "./PrivilegedAddresses";
 
 export type Voter = string;
@@ -35,17 +35,40 @@ export default class VoteTypePanel extends Component<IVoteTypeProps> {
   public render() {
     return (
       <Fragment>
-        <ControlLabel>Vote type</ControlLabel>
-        <FormGroup onChange={this.changeVoteType}>
+        <FormGroup>
+          <ControlLabel style={{ display: "block" }}>
+            Vote type
+            <OverlayTrigger
+              placement="top"
+              overlay={
+                <Tooltip id="tooltip">
+                  <strong>Public voting</strong>
+                  <p>Everyone can take active participation in this voting!</p>
+                  <strong>Private voting</strong>
+                  <p>Only privileged addresses are permitted to vote.</p>
+                </Tooltip>
+              }
+            >
+              <Glyphicon glyph="info-sign" style={{ padding: "0 0 3px 5px", verticalAlign: "middle" }} />
+            </OverlayTrigger>
+          </ControlLabel>
+
           <Radio
+            id="votePublic"
             name="radioGroup"
             checked={this.props.voteType === VoteType.Public ? true : false}
-            id="votePublic"
+            onChange={this.changeVoteType}
             inline
           >
             Public
           </Radio>
-          <Radio name="radioGroup" checked={this.props.voteType === VoteType.Private ? true : false} inline>
+          <Radio
+            id="votePrivate"
+            name="radioGroup"
+            checked={this.props.voteType === VoteType.Private ? true : false}
+            onChange={this.changeVoteType}
+            inline
+          >
             Private
           </Radio>
         </FormGroup>

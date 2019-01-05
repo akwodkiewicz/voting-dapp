@@ -1,5 +1,5 @@
-import React, { Component, Fragment } from "react";
-import { FormControl } from "react-bootstrap";
+import React, { Component } from "react";
+import { FormControl, FormGroup } from "react-bootstrap";
 import { Category, ContractAddress } from "../../utils/types";
 
 export enum CategoryPanelType {
@@ -28,33 +28,37 @@ export default class CategoryPanel extends Component<ICategoryPanelProps> {
     if (categoryPanel === "existing") {
       if (this.props.categoriesList) {
         return (
-          <Fragment>
+          <FormGroup>
             <FormControl
               onChange={this.categoryHandler}
               componentClass="select"
               placeholder="select"
-              value={this.props.chosenCategory}
+              value={this.props.chosenCategory ? this.props.chosenCategory : ""}
             >
               {this.props.categoriesList.map((category) => {
-                return <option value={category.address}>{category.name}</option>;
+                return (
+                  <option value={category.address} key={category.address}>
+                    {category.name}
+                  </option>
+                );
               })}
             </FormControl>
-          </Fragment>
+          </FormGroup>
         );
       } else {
         return <h2>Loading categories from blockchain...</h2>;
       }
     } else {
       return (
-        <Fragment>
+        <FormGroup>
           <FormControl
             onChange={this.categoryHandler}
             id="answer"
             type="text"
-            placeholder="Enter new category"
-            value={this.props.chosenCategory}
+            placeholder="Category name here"
+            value={this.props.chosenCategory ? this.props.chosenCategory : ""}
           />
-        </Fragment>
+        </FormGroup>
       );
     }
   }

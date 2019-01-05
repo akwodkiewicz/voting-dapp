@@ -1,5 +1,6 @@
 import Web3 = require("web3");
 import { CategoryPanelType } from "../components/createVote/CategoryPanel";
+import { VotingExpiryOption } from "../components/createVote/VoteDates";
 import { Voter, VoteType } from "../components/createVote/VoteTypePanel";
 import { PrivacySetting } from "../components/listvotings/PrivacyButtons";
 import { ManagerContract } from "../typed-contracts/ManagerContract";
@@ -28,7 +29,7 @@ export interface VoteFormData {
     question: string;
     answers: string[];
     voteEndTime: number;
-    resultsViewingEndTime: number;
+    votingExpiryOption: VotingExpiryOption;
     categoryPanel: CategoryPanelType;
     chosenCategory: string | ContractAddress;
     voteType: VoteType;
