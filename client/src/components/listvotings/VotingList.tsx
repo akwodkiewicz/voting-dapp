@@ -1,5 +1,5 @@
 import moment from "moment";
-import React, { Component } from "react";
+import React, { Component, Fragment } from "react";
 import { Glyphicon, ListGroup, ListGroupItem, OverlayTrigger, Pagination, Panel, Tooltip } from "react-bootstrap";
 
 import { fetchVotings } from "../../utils/eth";
@@ -26,6 +26,7 @@ interface IVotingListProps {
 }
 
 interface IVotingListState {
+  activePageIndex: number;
   areVotingsFetched: boolean;
   filteredVotings: Voting[];
 }
@@ -59,6 +60,7 @@ export default class VotingList extends Component<IVotingListProps, IVotingListS
     super(params);
 
     this.state = {
+      activePageIndex: 1,
       areVotingsFetched: false,
       filteredVotings: [],
     };
@@ -87,79 +89,59 @@ export default class VotingList extends Component<IVotingListProps, IVotingListS
     return (
       <Panel>
         {this.state.areVotingsFetched ? (
-          <ListGroup>
-            {this.state.filteredVotings.map((voting) => {
-              if (voting.info.isPrivate && voting.info.isPrivileged) {
-                return (
-                  <OverlayTrigger placement="right" overlay={this.privateVotingTooltip}>
-                    <ListGroupItem
-                      //style={{ height: "10vh" }}
-                      key={voting.contract._address}
-                      onClick={this.handleVotingClick}
-                      {...(voting.info.hasUserVoted ? { bsStyle: "success" } : null)}
-                      {...(voting.contract._address === this.props.chosenVotingAddress ? { active: true } : null)}
-                    >
-                      {voting.info.question}
-                      <Glyphicon glyph="lock" className="pull-right" />
-                    </ListGroupItem>
-                  </OverlayTrigger>
-                );
-              } else if (voting.info.isPrivate && !voting.info.isPrivileged) {
-                return (
-                  <OverlayTrigger placement="right" overlay={this.inaccessibleVotingTooltip}>
-                    <ListGroupItem
-                      //style={{ height: "10vh" }}
-                      key={voting.contract._address}
-                      onClick={this.handleVotingClick}
-                      bsStyle="danger"
-                      {...(voting.contract._address === this.props.chosenVotingAddress ? { active: true } : null)}
-                    >
-                      {voting.info.question}
-                      <Glyphicon glyph="ban-circle" className="pull-right" />
-                    </ListGroupItem>
-                  </OverlayTrigger>
-                );
-              } else {
-                return (
-                  <OverlayTrigger placement="right" overlay={this.publicVotingTooltip}>
-                    <ListGroupItem
-                      //style={{ height: "10vh" }}
-                      key={voting.contract._address}
-                      onClick={this.handleVotingClick}
-                      {...(voting.info.hasUserVoted ? { bsStyle: "success" } : null)}
-                      {...(voting.contract._address === this.props.chosenVotingAddress ? { active: true } : null)}
-                    >
-                      {voting.info.question}
-                      <Glyphicon glyph="globe" className="pull-right" />
-                    </ListGroupItem>
-                  </OverlayTrigger>
-                );
-              }
-            })}
-            <Pagination>
-              <Pagination.First />
-              <Pagination.Prev />
-              <Pagination.Item>{1}</Pagination.Item>
-              <Pagination.Ellipsis />
-
-              <Pagination.Item>{10}</Pagination.Item>
-              <Pagination.Item>{11}</Pagination.Item>
-              <Pagination.Item active>{12}</Pagination.Item>
-              <Pagination.Item>{13}</Pagination.Item>
-              <Pagination.Item disabled>{14}</Pagination.Item>
-
-              <Pagination.Ellipsis />
-              <Pagination.Item
-                onClick={() => {
-                  console.log("xD");
-                }}
-              >
-                {20}
-              </Pagination.Item>
-              <Pagination.Next />
-              <Pagination.Last />
-            </Pagination>
-          </ListGroup>
+          <Fragment>
+            <ListGroup>
+              {this.state.filteredVotings.map((voting) => {
+                if (voting.info.isPrivate && voting.info.isPrivileged) {
+                  return (
+                    <OverlayTrigger placement="right" overlay={this.privateVotingTooltip}>
+                      <ListGroupItem
+                        //style={{ height: "10vh" }}
+                        key={voting.contract._address}
+                        onClick={this.handleVotingClick}
+                        {...(voting.info.hasUserVoted ? { bsStyle: "success" } : null)}
+                        {...(voting.contract._address === this.props.chosenVotingAddress ? { active: true } : null)}
+                      >
+                        {voting.info.question}
+                        <Glyphicon glyph="lock" className="pull-right" />
+                      </ListGroupItem>
+                    </OverlayTrigger>
+                  );
+                } else if (voting.info.isPrivate && !voting.info.isPrivileged) {
+                  return (
+                    <OverlayTrigger placement="right" overlay={this.inaccessibleVotingTooltip}>
+                      <ListGroupItem
+                        //style={{ height: "10vh" }}
+                        key={voting.contract._address}
+                        onClick={this.handleVotingClick}
+                        bsStyle="danger"
+                        {...(voting.contract._address === this.props.chosenVotingAddress ? { active: true } : null)}
+                      >
+                        {voting.info.question}
+                        <Glyphicon glyph="ban-circle" className="pull-right" />
+                      </ListGroupItem>
+                    </OverlayTrigger>
+                  );
+                } else {
+                  return (
+                    <OverlayTrigger placement="right" overlay={this.publicVotingTooltip}>
+                      <ListGroupItem
+                        //style={{ height: "10vh" }}
+                        key={voting.contract._address}
+                        onClick={this.handleVotingClick}
+                        {...(voting.info.hasUserVoted ? { bsStyle: "success" } : null)}
+                        {...(voting.contract._address === this.props.chosenVotingAddress ? { active: true } : null)}
+                      >
+                        {voting.info.question}
+                        <Glyphicon glyph="globe" className="pull-right" />
+                      </ListGroupItem>
+                    </OverlayTrigger>
+                  );
+                }
+              })}
+            </ListGroup>
+            <Pagination>{this.setPageVotingsAndCreatePagination()}</Pagination>
+          </Fragment>
         ) : (
           <Panel.Body>Fetching data from blockchain...</Panel.Body>
         )}
@@ -181,12 +163,16 @@ export default class VotingList extends Component<IVotingListProps, IVotingListS
   private fetchVotingsAndSetState = async () => {
     const votings = await fetchVotings(this.props.blockchainData, this.props.category, this.props.votingState);
     this.props.setVotingsInParent(votings);
-    this.setState({ areVotingsFetched: true });
-    this.filteredVotings();
+    const filteredVotings = this.filteredVotings();
+    this.setState({
+      areVotingsFetched: true,
+      filteredVotings,
+    });
+    this.setPageVotingsAndCreatePagination();
   };
 
   private filteredVotings = () => {
-    const filteredVotings = this.props.votings
+    return this.props.votings
       .filter((voting) => {
         if (this.props.privacySetting === PrivacySetting.Private) {
           return voting.info.isPrivate;
@@ -202,9 +188,98 @@ export default class VotingList extends Component<IVotingListProps, IVotingListS
           return voting.info.votingEndTime < now && now <= voting.info.resultsEndTime;
         } else return false;
       });
+  };
 
+  private setPageVotingsAndCreatePagination = () => {
+    let pageVotings: Voting[];
+    pageVotings = this.state.filteredVotings;
+    const paginatorItems = [];
+
+    paginatorItems.push(
+      <Pagination.First
+        onClick={this.state.activePageIndex !== 1 ? this.paginationFirst : null}
+        disabled={this.state.activePageIndex === 1 ? true : false}
+      />
+    );
+    paginatorItems.push(
+      <Pagination.Prev
+        onClick={this.state.activePageIndex > 1 ? this.paginationPrev : null}
+        disabled={this.state.activePageIndex === 1 ? true : false}
+      />
+    );
+
+    for (let x = 1; x <= pageVotings.length; x++) {
+      paginatorItems.push(
+        <Pagination.Item
+          key={x}
+          active={x === this.state.activePageIndex}
+          onClick={() => {
+            this.handlePageClick(x);
+          }}
+        >
+          {x}
+        </Pagination.Item>
+      );
+    }
+
+    paginatorItems.push(
+      <Pagination.Next
+        onClick={this.state.activePageIndex !== pageVotings.length ? this.paginationNext : null}
+        disabled={this.state.activePageIndex === pageVotings.length ? true : false}
+      />
+    );
+    paginatorItems.push(
+      <Pagination.Last
+        onClick={
+          this.state.activePageIndex !== pageVotings.length
+            ? () => {
+                this.paginationLast(pageVotings.length);
+              }
+            : null
+        }
+        disabled={this.state.activePageIndex === pageVotings.length ? true : false}
+      />
+    );
+
+    return paginatorItems;
+  };
+
+  private handlePageClick(index: number) {
+    if (this.state.activePageIndex !== index) {
+      console.log(index);
+      this.setState({
+        activePageIndex: index,
+      });
+    }
+  }
+
+  private paginationFirst = () => {
     this.setState({
-      filteredVotings,
+      activePageIndex: 1,
     });
+    this.handlePageClick(1);
+  };
+
+  private paginationNext = () => {
+    const newIndex = this.state.activePageIndex + 1;
+    this.setState({
+      activePageIndex: newIndex,
+    });
+    this.handlePageClick(newIndex);
+  };
+
+  private paginationPrev = () => {
+    const newIndex = this.state.activePageIndex - 1;
+    this.setState({
+      activePageIndex: newIndex,
+    });
+    this.handlePageClick(newIndex);
+  };
+
+  private paginationLast = (length: number) => {
+    this.setState({
+      activePageIndex: length,
+    });
+    this.handlePageClick(length);
   };
 }
