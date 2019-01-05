@@ -1,5 +1,7 @@
 import React, { Component } from "react";
-import { BrowserRouter as Router, Redirect, Route } from "react-router-dom";
+import { Col, Grid, Row } from "react-bootstrap";
+import Loader from "react-loader-spinner";
+import { BrowserRouter as Router, Route } from "react-router-dom";
 import Web3 from "web3";
 import ManagerAbi from "../contracts/ManagerContract.json";
 import * as ManagerContractConfig from "../managerContract.config.json";
@@ -76,11 +78,32 @@ export default class App extends Component<any, IAppState> {
     if (this.state.waitingForAccess) {
       return (
         <div>
-          <Header block={3} />
-          <div>
-            <h1>Waiting for access...</h1>
-            <Redirect path="*" to="/" />
-          </div>
+          <Header block={4} />
+          <Grid>
+            <Row className="text-center">
+              <div
+                style={{
+                  marginTop: "10vh",
+                }}
+              >
+                <Loader style={{ marginTop: "20vh" }} type="Grid" color="#00BFFF" height="30%" width="30%" />
+              </div>
+            </Row>
+            <Row className="text-center">
+              <Col sm={12}>
+                <h1
+                  style={{
+                    fontFamily: "Roboto",
+                    marginBottom: "5vh",
+                    marginTop: "5vh",
+                    textAlign: "center",
+                  }}
+                >
+                  Waiting for access
+                </h1>
+              </Col>
+            </Row>
+          </Grid>
         </div>
       );
     } else if (!this.state.blockchainData) {
