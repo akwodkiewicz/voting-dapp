@@ -21,6 +21,8 @@ export interface ICreateVoteFormState {
   answersValid: boolean;
   isCategoriesListFetched: boolean;
   privilegedVoters: Voter[];
+  privilegedAddressesValid: boolean;
+  privilegedAddressesTouched: boolean;
   question: string;
   questionTouched: boolean;
   questionValid: boolean;
@@ -48,6 +50,8 @@ export default class CreateVoteForm extends Component<ICreateVoteFormProps, ICre
         valid: false,
       },
       isCategoriesListFetched: false,
+      privilegedAddressesTouched: false,
+      privilegedAddressesValid: false,
       privilegedVoters: [],
       question: "",
       questionTouched: false,
@@ -236,6 +240,8 @@ export default class CreateVoteForm extends Component<ICreateVoteFormProps, ICre
               setPrivilegedVotersInParent={this.setPrivilegedVoters}
               voteType={this.state.voteType}
               privilegedVoters={this.state.privilegedVoters}
+              privilegedAddressesValid={this.state.privilegedAddressesValid}
+              privilegedAddressesTouched={this.state.privilegedAddressesTouched}
             />
           </Col>
         </Row>
@@ -386,8 +392,10 @@ export default class CreateVoteForm extends Component<ICreateVoteFormProps, ICre
     }));
   };
 
-  private setPrivilegedVoters = (privilegedVotersFromChild) => {
+  private setPrivilegedVoters = (privilegedVotersFromChild: Voter[]) => {
     this.setState(() => ({
+      privilegedAddressesTouched: true,
+      privilegedAddressesValid: this.arePrivilegedAddressesValid(privilegedVotersFromChild),
       privilegedVoters: privilegedVotersFromChild,
     }));
   };
@@ -424,7 +432,8 @@ export default class CreateVoteForm extends Component<ICreateVoteFormProps, ICre
       !this.state.questionValid ||
       !this.state.answersValid ||
       !this.state.voteDatesProps.valid ||
-      !this.state.categoryPanelProps.valid
+      !this.state.categoryPanelProps.valid ||
+      !this.state.privilegedAddressesValid
     ) {
       this.setState({
         submitFailed: true,
@@ -432,6 +441,10 @@ export default class CreateVoteForm extends Component<ICreateVoteFormProps, ICre
     } else {
       this.props.setSubmitData(this.state);
     }
+  };
+
+  private arePrivilegedAddressesValid = (addresses: Voter[]) => {
+    return addresses.every((a) => this.props.blockchainData.web3.utils.isAddress(a));
   };
 
   private isAnswerListValid = (answerList: string[]) => {

@@ -1,9 +1,11 @@
 import React, { Component, FormEvent } from "react";
-import { ControlLabel, FormControl, FormGroup, Glyphicon, OverlayTrigger, Tooltip } from "react-bootstrap";
+import { ControlLabel, FormControl, FormGroup, Glyphicon, HelpBlock, OverlayTrigger, Tooltip } from "react-bootstrap";
 import { VoteType } from "./VoteTypePanel";
 
 interface IPrivilegedAddressesProps {
   voteType: VoteType;
+  touched: boolean;
+  valid: boolean;
   textAreaValue: string;
   setPrivilegedAddressesInParent: (arg: string[]) => void;
 }
@@ -14,15 +16,14 @@ export default class PrivilegedAddresses extends Component<IPrivilegedAddressesP
   }
 
   public saveAddresses = (e: FormEvent<FormControl & HTMLInputElement>) => {
-    const addressesArray = e.currentTarget.value.split("\n");
-    // TODO: validate each address
+    const addressesArray = (e.currentTarget.value as string).trim().split("\n");
     this.props.setPrivilegedAddressesInParent(addressesArray);
   };
 
   public render() {
     if (this.props.voteType === "private") {
       return (
-        <FormGroup>
+        <FormGroup validationState={this.props.touched ? (this.props.valid ? null : "error") : null}>
           <ControlLabel>
             Privileged addresses
             <OverlayTrigger
@@ -43,6 +44,13 @@ export default class PrivilegedAddresses extends Component<IPrivilegedAddressesP
             placeholder="Don't forget to paste your own address here (if you want to vote)!"
             value={this.props.textAreaValue}
           />
+          {this.props.touched && !this.props.valid ? (
+            this.props.textAreaValue === "" ? (
+              <HelpBlock>You have to provide at least one address</HelpBlock>
+            ) : (
+              <HelpBlock>Addresses have to be valid keccak256 Ethereum addresses</HelpBlock>
+            )
+          ) : null}
         </FormGroup>
       );
     } else return null;
