@@ -72,7 +72,7 @@ export default class VoteDates extends Component<IVoteDatesProps> {
             <Col md={12}>
               <FormGroup>
                 <HelpBlock>
-                  <em>How long will the results be available?</em>
+                  How long will the results be available?
                 </HelpBlock>
                 <ToggleButtonGroup
                   type="radio"
