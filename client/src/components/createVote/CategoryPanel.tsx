@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { FormControl, FormGroup } from "react-bootstrap";
+import { FormControl, FormGroup, HelpBlock } from "react-bootstrap";
 import { Category, ContractAddress } from "../../utils/types";
 
 export enum CategoryPanelType {
@@ -7,21 +7,19 @@ export enum CategoryPanelType {
   New = "new",
 }
 
-interface ICategoryPanelProps {
+export interface ICategoryPanelProps {
   categoriesList: Category[];
   categoryPanel: CategoryPanelType;
   chosenCategory: string | ContractAddress;
   setCategoryInParent: (arg: string) => void;
+  touched: boolean;
+  valid: boolean;
 }
 
 export default class CategoryPanel extends Component<ICategoryPanelProps> {
   constructor(props) {
     super(props);
   }
-
-  public categoryHandler = (chosenCategory) => {
-    this.props.setCategoryInParent(chosenCategory.target.value);
-  };
 
   public render() {
     const categoryPanel = this.props.categoryPanel;
@@ -50,7 +48,7 @@ export default class CategoryPanel extends Component<ICategoryPanelProps> {
       }
     } else {
       return (
-        <FormGroup>
+        <FormGroup validationState={this.props.touched ? (this.props.valid ? "success" : "error") : null}>
           <FormControl
             onChange={this.categoryHandler}
             id="answer"
@@ -58,8 +56,20 @@ export default class CategoryPanel extends Component<ICategoryPanelProps> {
             placeholder="Category name here"
             value={this.props.chosenCategory ? this.props.chosenCategory : ""}
           />
+          <FormControl.Feedback />
+          {this.props.touched && !this.props.valid ? (
+            this.props.chosenCategory.length === 0 ? (
+              <HelpBlock>Category name cannot be empty</HelpBlock>
+            ) : (
+              <HelpBlock>Category name cannot be larger than 32 bytes</HelpBlock>
+            )
+          ) : null}
         </FormGroup>
       );
     }
   }
+
+  private categoryHandler = (chosenCategory) => {
+    this.props.setCategoryInParent(chosenCategory.target.value);
+  };
 }

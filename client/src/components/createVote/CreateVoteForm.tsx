@@ -3,9 +3,9 @@ import React, { Component } from "react";
 import { Button, Col, ControlLabel, FormControl, FormGroup, HelpBlock, InputGroup, Radio, Row } from "react-bootstrap";
 import "react-datetime/css/react-datetime.css"; //tslint:disable-line
 import * as CategoryContract from "../../contracts/CategoryContract.json";
-import { BlockchainData, Category, ContractAddress, VoteFormData } from "../../utils/types";
+import { BlockchainData, VoteFormData } from "../../utils/types";
 import AnswersList from "./AnswersList";
-import CategoryPanel, { CategoryPanelType } from "./CategoryPanel";
+import CategoryPanel, { CategoryPanelType, ICategoryPanelProps } from "./CategoryPanel";
 import VoteDates, { VotingExpiryOption } from "./VoteDates";
 import VoteTypePanel, { Voter, VoteType } from "./VoteTypePanel";
 
@@ -15,11 +15,8 @@ interface ICreateVoteFormProps {
   setSubmitData: (arg: ICreateVoteFormState) => void;
 }
 
-interface ICreateVoteFormState {
+export interface ICreateVoteFormState {
   answers: string[];
-  categoriesList: Category[];
-  categoryPanel: CategoryPanelType;
-  chosenCategory: string | ContractAddress;
   isCategoriesListFetched: boolean;
   privilegedVoters: Voter[];
   question: string;
@@ -27,6 +24,7 @@ interface ICreateVoteFormState {
   voteEndTime: number;
   voteType: VoteType;
   votingExpiryOption: VotingExpiryOption;
+  categoryPanelProps: ICategoryPanelProps;
 }
 
 export default class CreateVoteForm extends Component<ICreateVoteFormProps, ICreateVoteFormState> {
@@ -35,9 +33,14 @@ export default class CreateVoteForm extends Component<ICreateVoteFormProps, ICre
 
     this.state = {
       answers: [],
-      categoriesList: [],
-      categoryPanel: CategoryPanelType.New,
-      chosenCategory: null,
+      categoryPanelProps: {
+        categoriesList: [],
+        categoryPanel: CategoryPanelType.New,
+        chosenCategory: "",
+        setCategoryInParent: this.setCategory,
+        touched: false,
+        valid: false,
+      },
       isCategoriesListFetched: false,
       privilegedVoters: [],
       question: "",
@@ -56,15 +59,21 @@ export default class CreateVoteForm extends Component<ICreateVoteFormProps, ICre
       this.fetchCategories();
     }
     if (this.props.formData) {
-      this.setState({
-        answers: this.props.formData.answers,
-        categoryPanel: this.props.formData.categoryPanel,
-        chosenCategory: this.props.formData.chosenCategory,
-        privilegedVoters: this.props.formData.privilegedVoters,
-        question: this.props.formData.question,
-        voteEndTime: this.props.formData.voteEndTime,
-        voteType: this.props.formData.voteType,
-        votingExpiryOption: this.props.formData.votingExpiryOption,
+      this.setState((state, props) => {
+        return {
+          answers: this.props.formData.answers,
+          categoryPanelProps: {
+            ...state.categoryPanelProps,
+            categoryPanel: props.formData.categoryPanel,
+            chosenCategory: props.formData.chosenCategory,
+          },
+
+          privilegedVoters: this.props.formData.privilegedVoters,
+          question: this.props.formData.question,
+          voteEndTime: this.props.formData.voteEndTime,
+          voteType: this.props.formData.voteType,
+          votingExpiryOption: this.props.formData.votingExpiryOption,
+        };
       });
     }
   };
@@ -91,23 +100,33 @@ export default class CreateVoteForm extends Component<ICreateVoteFormProps, ICre
       categories.push({ name: categoryName, address: categoryAddress });
     }
 
-    this.setState({
-      categoriesList: categories,
-      categoryPanel: categories.length > 0 ? CategoryPanelType.Existing : CategoryPanelType.New,
-      chosenCategory: categories.length > 0 ? categories[0].address : null,
-      isCategoriesListFetched: true,
+    this.setState((state) => {
+      return {
+        categoryPanelProps: {
+          ...state.categoryPanelProps,
+          categoriesList: categories,
+          categoryPanel: categories.length > 0 ? CategoryPanelType.Existing : CategoryPanelType.New,
+          chosenCategory: categories.length > 0 ? categories[0].address : "",
+        },
+        isCategoriesListFetched: true,
+      };
     });
 
     if (this.props.formData) {
-      this.setState({
-        answers: this.props.formData.answers,
-        categoryPanel: this.props.formData.categoryPanel,
-        chosenCategory: this.props.formData.chosenCategory,
-        privilegedVoters: this.props.formData.privilegedVoters,
-        question: this.props.formData.question,
-        voteEndTime: this.props.formData.voteEndTime,
-        voteType: this.props.formData.voteType,
-        votingExpiryOption: this.props.formData.votingExpiryOption,
+      this.setState((state, props) => {
+        return {
+          answers: this.props.formData.answers,
+          categoryPanelProps: {
+            ...state.categoryPanelProps,
+            categoryPanel: props.formData.categoryPanel,
+            chosenCategory: props.formData.chosenCategory,
+          },
+          privilegedVoters: this.props.formData.privilegedVoters,
+          question: this.props.formData.question,
+          voteEndTime: this.props.formData.voteEndTime,
+          voteType: this.props.formData.voteType,
+          votingExpiryOption: this.props.formData.votingExpiryOption,
+        };
       });
     }
   };
@@ -140,12 +159,6 @@ export default class CreateVoteForm extends Component<ICreateVoteFormProps, ICre
     }));
   };
 
-  public setCategory = (categoryFromChild) => {
-    this.setState(() => ({
-      chosenCategory: categoryFromChild,
-    }));
-  };
-
   public setVoteType = (voteTypeFromChild) => {
     this.setState(() => ({
       voteType: voteTypeFromChild,
@@ -162,22 +175,38 @@ export default class CreateVoteForm extends Component<ICreateVoteFormProps, ICre
     if (!event.currentTarget.value) {
       return;
     }
-    const chosenCategory = this.state.categoriesList.length > 0 ? this.state.categoriesList[0].address : null;
+    const chosenCategory =
+      this.state.categoryPanelProps.categoriesList.length > 0
+        ? this.state.categoryPanelProps.categoriesList[0].address
+        : "";
 
-    this.setState(() => ({
-      categoryPanel: CategoryPanelType.Existing,
-      chosenCategory,
-    }));
+    this.setState((state) => {
+      return {
+        categoryPanelProps: {
+          ...state.categoryPanelProps,
+          categoryPanel: CategoryPanelType.Existing,
+          chosenCategory,
+          valid: true,
+        },
+      };
+    });
   };
 
   public changeCategoryPanelToNew = (event: React.FormEvent<Radio & HTMLInputElement>) => {
     if (!event.currentTarget.value) {
       return;
     }
-    this.setState(() => ({
-      categoryPanel: CategoryPanelType.New,
-      chosenCategory: null,
-    }));
+
+    this.setState((state) => {
+      return {
+        categoryPanelProps: {
+          ...state.categoryPanelProps,
+          categoryPanel: CategoryPanelType.New,
+          chosenCategory: "",
+          valid: false,
+        },
+      };
+    });
   };
 
   public handleCreateVote = () => {
@@ -262,8 +291,10 @@ export default class CreateVoteForm extends Component<ICreateVoteFormProps, ICre
               <Radio
                 name="categoryGroup"
                 id="category-from-list"
-                disabled={this.state.isCategoriesListFetched && this.state.categoriesList.length === 0}
-                checked={this.state.categoryPanel === "existing"}
+                disabled={
+                  this.state.isCategoriesListFetched && this.state.categoryPanelProps.categoriesList.length === 0
+                }
+                checked={this.state.categoryPanelProps.categoryPanel === "existing"}
                 onChange={this.changeCategoryPanelToExisting}
                 inline
               >
@@ -272,7 +303,7 @@ export default class CreateVoteForm extends Component<ICreateVoteFormProps, ICre
               <Radio
                 name="categoryGroup"
                 id="category-new"
-                checked={this.state.categoryPanel === "new"}
+                checked={this.state.categoryPanelProps.categoryPanel === "new"}
                 onChange={this.changeCategoryPanelToNew}
                 inline
               >
@@ -285,10 +316,12 @@ export default class CreateVoteForm extends Component<ICreateVoteFormProps, ICre
         <Row>
           <Col md={12}>
             <CategoryPanel
-              setCategoryInParent={this.setCategory}
-              categoryPanel={this.state.categoryPanel}
-              categoriesList={this.state.categoriesList}
-              chosenCategory={this.state.chosenCategory}
+              categoryPanel={this.state.categoryPanelProps.categoryPanel}
+              categoriesList={this.state.categoryPanelProps.categoriesList}
+              chosenCategory={this.state.categoryPanelProps.chosenCategory}
+              valid={this.state.categoryPanelProps.valid}
+              touched={this.state.categoryPanelProps.touched}
+              setCategoryInParent={this.state.categoryPanelProps.setCategoryInParent}
             />
           </Col>
         </Row>
@@ -312,6 +345,22 @@ export default class CreateVoteForm extends Component<ICreateVoteFormProps, ICre
       </form>
     );
   }
+
+  private setCategory = (categoryFromChild: string) => {
+    const valid =
+      categoryFromChild.length > 0 && this.props.blockchainData.web3.utils.fromUtf8(categoryFromChild).length <= 32;
+
+    this.setState((state) => {
+      return {
+        categoryPanelProps: {
+          ...state.categoryPanelProps,
+          chosenCategory: categoryFromChild,
+          touched: true,
+          valid,
+        },
+      };
+    });
+  };
 
   private setVotingExpiryOption = (votingExpiryOptionFromChild: VotingExpiryOption) => {
     this.setState({ votingExpiryOption: votingExpiryOptionFromChild });

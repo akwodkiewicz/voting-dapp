@@ -3,7 +3,7 @@ import { Col, Grid, Row } from "react-bootstrap";
 import "react-datetime/css/react-datetime.css"; // tslint:disable-line
 import { TransactionReceipt } from "web3/types"; // tslint:disable-line
 import { BlockchainData, ContractAddress, VoteFormData } from "../../utils/types";
-import CreateVoteForm from "./CreateVoteForm";
+import CreateVoteForm, { ICreateVoteFormState } from "./CreateVoteForm";
 import DisplayResult from "./DisplayResult";
 import LoadingResult from "./LoadingResult";
 import { VoteType } from "./VoteTypePanel";
@@ -151,7 +151,17 @@ export default class CreateVotePage extends Component<ICreateVotePageProps, ICre
     );
   }
 
-  private setSubmitData = (formData) => {
+  private setSubmitData = (formState: ICreateVoteFormState) => {
+    const formData: VoteFormData = {
+      answers: formState.answers,
+      categoryPanel: formState.categoryPanelProps.categoryPanel,
+      chosenCategory: formState.categoryPanelProps.chosenCategory,
+      privilegedVoters: formState.privilegedVoters,
+      question: formState.question,
+      voteEndTime: formState.voteEndTime,
+      voteType: formState.voteType,
+      votingExpiryOption: formState.votingExpiryOption,
+    };
     this.setState(() => ({
       formData,
       mode: PageMode.Fetching,
