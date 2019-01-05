@@ -124,7 +124,7 @@ export default class CreateVotePage extends Component<ICreateVotePageProps, ICre
       <Grid>
         <Row>
           {this.state.mode === PageMode.Form ? (
-            <Col md={6} mdOffset={3}>
+            <Col md={10} mdOffset={1}>
               <CreateVoteForm
                 setSubmitData={this.setSubmitData}
                 formData={this.state.formData}
