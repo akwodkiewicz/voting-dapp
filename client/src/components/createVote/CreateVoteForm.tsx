@@ -401,11 +401,12 @@ export default class CreateVoteForm extends Component<ICreateVoteFormProps, ICre
   };
 
   private handleCreateVote = () => {
-    // Touch all inputs
+    // Touch all touchable inputs
     this.setState((state) => {
       return {
         answersTouched: true,
         categoryPanelProps: { ...state.categoryPanelProps, touched: true },
+        privilegedAddressesTouched: true,
         questionTouched: true,
       };
     });
