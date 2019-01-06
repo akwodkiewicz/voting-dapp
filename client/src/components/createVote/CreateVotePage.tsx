@@ -62,7 +62,7 @@ export default class CreateVotePage extends Component<ICreateVotePageProps, ICre
             this.state.formData.voteEndDateTime.unix(),
             this.state.formData.voteEndDateTime.unix() + this.state.formData.votingExpiryOption,
             this.state.formData.voteType === VoteType.Private ? true : false,
-            this.state.formData.privilegedVoters
+            this.state.formData.voteType === VoteType.Private ? this.state.formData.privilegedVoters : []
           )
           .send();
       } else {
@@ -74,7 +74,7 @@ export default class CreateVotePage extends Component<ICreateVotePageProps, ICre
             this.state.formData.voteEndDateTime.unix(),
             this.state.formData.voteEndDateTime.unix() + this.state.formData.votingExpiryOption,
             this.state.formData.voteType === VoteType.Private ? true : false,
-            this.state.formData.privilegedVoters
+            this.state.formData.voteType === VoteType.Private ? this.state.formData.privilegedVoters : []
           )
           .send();
       }

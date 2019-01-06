@@ -82,8 +82,11 @@ export default class CreateVoteForm extends Component<ICreateVoteFormProps, ICre
             ...state.categoryPanelProps,
             categoryPanel: props.formData.categoryPanel,
             chosenCategory: props.formData.chosenCategory,
-            valid: this.isCategoryValid(props.formData.chosenCategory),
+            valid:
+              state.categoryPanelProps.categoryPanel === CategoryPanelType.Existing ||
+              this.isCategoryNameValid(props.formData.chosenCategory),
           },
+          privilegedAddressesValid: this.arePrivilegedAddressesValid(props.formData.privilegedVoters),
           privilegedVoters: props.formData.privilegedVoters,
           question: props.formData.question,
           questionValid: this.isQuestionValid(props.formData.question),
@@ -112,7 +115,9 @@ export default class CreateVoteForm extends Component<ICreateVoteFormProps, ICre
               ...state.categoryPanelProps,
               categoryPanel: props.formData.categoryPanel,
               chosenCategory: props.formData.chosenCategory,
-              valid: this.isCategoryValid(props.formData.chosenCategory),
+              valid:
+                state.categoryPanelProps.categoryPanel === CategoryPanelType.Existing ||
+                this.isCategoryNameValid(props.formData.chosenCategory),
             },
           };
         });
@@ -267,6 +272,7 @@ export default class CreateVoteForm extends Component<ICreateVoteFormProps, ICre
           categoriesList: categories,
           categoryPanel: categories.length > 0 ? CategoryPanelType.Existing : CategoryPanelType.New,
           chosenCategory: categories.length > 0 ? categories[0].address : "",
+          valid: categories.length > 0,
         },
         isCategoriesListFetched: true,
       };
@@ -380,7 +386,9 @@ export default class CreateVoteForm extends Component<ICreateVoteFormProps, ICre
           ...state.categoryPanelProps,
           chosenCategory: categoryFromChild,
           touched: true,
-          valid: this.isCategoryValid(categoryFromChild),
+          valid:
+            state.categoryPanelProps.categoryPanel === CategoryPanelType.Existing ||
+            this.isCategoryNameValid(categoryFromChild),
         },
       };
     });
@@ -388,6 +396,8 @@ export default class CreateVoteForm extends Component<ICreateVoteFormProps, ICre
 
   private setVoteType = (voteTypeFromChild) => {
     this.setState(() => ({
+      privilegedAddressesTouched: false,
+      privilegedVoters: [],
       voteType: voteTypeFromChild,
     }));
   };
@@ -434,7 +444,7 @@ export default class CreateVoteForm extends Component<ICreateVoteFormProps, ICre
       !this.state.answersValid ||
       !this.state.voteDatesProps.valid ||
       !this.state.categoryPanelProps.valid ||
-      !this.state.privilegedAddressesValid
+      (this.state.voteType === VoteType.Private && !this.state.privilegedAddressesValid)
     ) {
       this.setState({
         submitFailed: true,
@@ -452,7 +462,7 @@ export default class CreateVoteForm extends Component<ICreateVoteFormProps, ICre
     return answerList.length >= 2;
   };
 
-  private isCategoryValid = (categoryName: string) => {
+  private isCategoryNameValid = (categoryName: string) => {
     return categoryName.length > 0 && this.props.blockchainData.web3.utils.fromUtf8(categoryName).length <= 32;
   };
 
