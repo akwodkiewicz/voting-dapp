@@ -19,7 +19,9 @@ interface IVoteModalState {
   isWaitingForTxResponse: boolean;
   show: boolean;
 }
-
+export const covertTimestampToDate = (timestamp) => {
+  return moment.unix(timestamp).format("MMMM Do YYYY, h:mm:ss A");
+};
 export default class VoteModal extends Component<IVoteModalProps, IVoteModalState> {
   constructor(props) {
     super(props);
@@ -28,10 +30,6 @@ export default class VoteModal extends Component<IVoteModalProps, IVoteModalStat
       show: false,
     };
   }
-
-  public lol = (x) => {
-    return x;
-  };
 
   public render() {
     return (
@@ -67,11 +65,11 @@ export default class VoteModal extends Component<IVoteModalProps, IVoteModalStat
                   <ControlLabel style={{ fontSize: "1.2em" }}>Question:</ControlLabel>
                   <p>{this.props.voting.info.question}</p>
                   <ControlLabel style={{ fontSize: "1.2em" }}>Voting deadline</ControlLabel>
-                  <p>Voting possible until {this.covertTimestampToDate(this.props.voting.info.votingEndTime)}.</p>
+                  <p>Voting possible until {covertTimestampToDate(this.props.voting.info.votingEndTime)}.</p>
                   <ControlLabel style={{ fontSize: "1.2em" }}>Results viewing</ControlLabel>
                   <p>
                     Available after voting deadline and until{" "}
-                    {this.covertTimestampToDate(this.props.voting.info.resultsEndTime)}.
+                    {covertTimestampToDate(this.props.voting.info.resultsEndTime)}.
                   </p>
                   <ControlLabel style={{ fontSize: "1.2em" }}>Voting type</ControlLabel>
                   <p>{this.props.voting.info.isPrivate ? "Private" : "Public"}.</p>
@@ -153,9 +151,5 @@ export default class VoteModal extends Component<IVoteModalProps, IVoteModalStat
       this.setState({ isWaitingForTxResponse: false });
     }
     this.props.requestDataRefresh();
-  };
-
-  private covertTimestampToDate = (timestamp) => {
-    return moment.unix(timestamp).format("MMMM Do YYYY, h:mm:ss A");
   };
 }
