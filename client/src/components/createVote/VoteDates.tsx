@@ -1,4 +1,4 @@
-import moment from "moment";
+import moment, { Moment } from "moment";
 import React, { Component } from "react";
 import { Col, ControlLabel, FormGroup, HelpBlock, Row, ToggleButton, ToggleButtonGroup } from "react-bootstrap";
 import Datetime from "react-datetime";
@@ -9,10 +9,15 @@ export enum VotingExpiryOption {
   Month = 30 * 24 * 60 * 60,
 }
 
-interface IVoteDatesProps {
-  voteEndDateTime: moment.Moment;
+export function isVotingEndDateTimeValid(votingEndDateTime: Moment) {
+  return votingEndDateTime.isAfter(moment().add(20, "seconds"));
+}
+
+export interface IVoteDatesProps {
+  endDateTime: moment.Moment;
   votingExpiryOption: VotingExpiryOption;
-  getVoteEnd: (arg: number) => void;
+  valid: boolean;
+  setEndDateTimeInParent: (arg: moment.Moment) => void;
   setVotingExpiryOptionInParent: (arg: VotingExpiryOption) => void;
 }
 
@@ -43,20 +48,21 @@ export default class VoteDates extends Component<IVoteDatesProps> {
                   }}
                   timeFormat={false}
                   onChange={this.voteEndDateHandler}
-                  value={this.props.voteEndDateTime}
+                  value={this.props.endDateTime}
                 />
               </FormGroup>
             </Col>
             <Col md={6}>
-              <FormGroup>
+              <FormGroup validationState={isVotingEndDateTimeValid(this.props.endDateTime) ? null : "error"}>
                 <HelpBlock>Time</HelpBlock>
                 <Datetime
                   inputProps={{ id: "voteTimeEnd" }}
                   dateFormat={false}
                   closeOnSelect={true}
                   onChange={this.voteEndTimeHandler}
-                  value={this.props.voteEndDateTime}
+                  value={this.props.endDateTime}
                 />
+                {this.props.valid ? null : <HelpBlock>Voting has to be active for at least 20s</HelpBlock>}
               </FormGroup>
             </Col>
           </Row>
@@ -71,9 +77,7 @@ export default class VoteDates extends Component<IVoteDatesProps> {
           <Row>
             <Col md={12}>
               <FormGroup>
-                <HelpBlock>
-                  How long will the results be available?
-                </HelpBlock>
+                <HelpBlock>How long will the results be available?</HelpBlock>
                 <ToggleButtonGroup
                   type="radio"
                   name="votingExpiryOption"
@@ -95,20 +99,20 @@ export default class VoteDates extends Component<IVoteDatesProps> {
 
   private voteEndDateHandler = (inputMoment) => {
     const newVoteEndDateTime = moment(inputMoment).set({
-      hours: this.props.voteEndDateTime.hours(),
-      minutes: this.props.voteEndDateTime.minutes(),
+      hours: this.props.endDateTime.hours(),
+      minutes: this.props.endDateTime.minutes(),
     });
 
-    this.props.getVoteEnd(newVoteEndDateTime.utc().unix());
+    this.props.setEndDateTimeInParent(newVoteEndDateTime);
   };
   private voteEndTimeHandler = (inputMoment) => {
     const newVoteEndDateTime = moment(inputMoment).set({
-      year: this.props.voteEndDateTime.year(),
-      month: this.props.voteEndDateTime.month(),
-      day: this.props.voteEndDateTime.day(),
+      year: this.props.endDateTime.year(),
+      month: this.props.endDateTime.month(),
+      day: this.props.endDateTime.day(),
     });
 
-    this.props.getVoteEnd(newVoteEndDateTime.utc().unix());
+    this.props.setEndDateTimeInParent(newVoteEndDateTime);
   };
 
   private votingExpiryOptionHandler = (value: VotingExpiryOption) => {

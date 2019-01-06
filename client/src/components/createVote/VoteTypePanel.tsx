@@ -13,6 +13,8 @@ export enum VoteType {
 interface IVoteTypeProps {
   voteType: VoteType;
   privilegedVoters: Voter[];
+  privilegedAddressesTouched: boolean;
+  privilegedAddressesValid: boolean;
   setVoteTypeInParent: (arg: VoteType) => void;
   setPrivilegedVotersInParent: (arg: Voter[]) => void;
 }
@@ -79,6 +81,8 @@ export default class VoteTypePanel extends Component<IVoteTypeProps> {
           textAreaValue={this.props.privilegedVoters.reduce((prevVal, currVal, currIdx) => {
             return currIdx === 0 ? currVal : prevVal + "\n" + currVal;
           }, "")}
+          valid={this.props.privilegedAddressesValid}
+          touched={this.props.privilegedAddressesTouched}
         />
       </Fragment>
     );

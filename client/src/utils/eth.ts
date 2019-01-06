@@ -1,4 +1,5 @@
 import moment from "moment";
+import Web3 from "web3";
 
 import { VotingState } from "../components/listvotings/VotingList";
 import CategoryAbi from "../contracts/CategoryContract.json";
@@ -122,3 +123,9 @@ export const fetchResults = async (voting: Voting) => {
     const results = await votingInstance.methods.viewVotes().call();
     return results;
 };
+
+export function ethStrBytesLength(str: string) {
+    const hex = Web3.utils.fromUtf8(str);
+    const bytes = Web3.utils.hexToBytes(hex);
+    return bytes.length;
+}
