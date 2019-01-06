@@ -1,14 +1,11 @@
 language: node_js
 node_js:
   - "10.2.1"
-cache:
-  directories:
-    - $(npm config get prefix)/bin/truffle
 before_install:
   - npm i -g npm@6.4.0
   - npm install -g truffle@v5.0.0
 script:
   - npm run test-react
-  - npm run test-truffle
-  - echo "{\"address\":\"0x0000000000000000000000000000000000000000\"}" > $TRAVIS_BUILD_DIR/voting-dapp/client/src/managerContract.config.json
+  - echo "{\"address\":\"0x0000000000000000000000000000000000000000\"}" > $TRAVIS_BUILD_DIR/client/src/managerContract.config.json
   - npm run build
+  - npm run test-truffle
