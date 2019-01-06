@@ -27,6 +27,8 @@ export interface ICreateVoteFormState {
   questionTouched: boolean;
   questionValid: boolean;
   typedAnswer: string;
+  typedAnswerValid: boolean;
+  typedAnswerTouched: boolean;
   voteDatesProps: IVoteDatesProps;
   voteType: VoteType;
   categoryPanelProps: ICategoryPanelProps;
@@ -58,6 +60,8 @@ export default class CreateVoteForm extends Component<ICreateVoteFormProps, ICre
       questionValid: false,
       submitFailed: false,
       typedAnswer: "",
+      typedAnswerTouched: false,
+      typedAnswerValid: false,
       voteDatesProps: {
         endDateTime: moment().add(1, "h"), // prettier-ignore
         setEndDateTimeInParent: this.setVoteEnd,
@@ -153,7 +157,13 @@ export default class CreateVoteForm extends Component<ICreateVoteFormProps, ICre
           <Col md={12}>
             <FormGroup
               controlId="answer"
-              validationState={this.state.answersTouched ? (this.state.answersValid ? null : "error") : null}
+              validationState={
+                this.state.answersTouched && !this.state.answersValid
+                  ? "error"
+                  : this.state.typedAnswerTouched && !this.state.typedAnswerValid
+                  ? "warning"
+                  : null
+              }
             >
               <ControlLabel>Answers</ControlLabel>
               <InputGroup>
@@ -163,16 +173,37 @@ export default class CreateVoteForm extends Component<ICreateVoteFormProps, ICre
                   onChange={this.setTypedAnswer}
                   onKeyPress={(event) => {
                     if (event.key === "Enter") {
-                      this.addAnswer();
+                      this.setState({ typedAnswerTouched: true });
+                      if (this.state.typedAnswerValid) {
+                        this.addAnswer();
+                      }
                     }
                   }}
                   value={this.state.typedAnswer}
-                />
+                />{" "}
                 <InputGroup.Button>
-                  <Button onClick={this.addAnswer}>Add answer</Button>
+                  <Button onClick={this.addAnswer} disabled={this.state.typedAnswerValid ? null : true}>
+                    Add answer
+                  </Button>
                 </InputGroup.Button>
               </InputGroup>
-              {this.state.answersTouched && !this.state.answersValid ? (
+              {this.state.typedAnswerTouched &&
+              !this.state.typedAnswerValid &&
+              this.props.blockchainData.web3.utils.fromUtf8(this.state.typedAnswer).length > 32 ? (
+                <HelpBlock>Answer cannot be larger than 32 bytes</HelpBlock>
+              ) : null}
+
+              {this.state.typedAnswerTouched && !this.state.typedAnswerValid && this.state.typedAnswer.length === 0 ? (
+                <HelpBlock>Answer cannot be empty</HelpBlock>
+              ) : null}
+
+              {this.state.typedAnswerTouched &&
+              !this.state.typedAnswerValid &&
+              this.state.answers.indexOf(this.state.typedAnswer) !== -1 ? (
+                <HelpBlock>Answers have to be unique</HelpBlock>
+              ) : null}
+
+              {this.state.answersTouched && !this.state.answersValid && this.state.answers.length < 2 ? (
                 <HelpBlock>There must be at least 2 answers</HelpBlock>
               ) : null}
             </FormGroup>
@@ -295,14 +326,18 @@ export default class CreateVoteForm extends Component<ICreateVoteFormProps, ICre
     const val = e.currentTarget.value;
     this.setState(() => ({
       typedAnswer: val,
+      typedAnswerValid: this.isTypedAnswerValid(val),
     }));
   };
 
   private addAnswer = () => {
     // Adding answers doesn't "touch" them
-    const answer = (document.getElementById("answer") as HTMLInputElement).value;
+    const answer = this.state.typedAnswer;
     const allAnswers = this.state.answers;
-    if (!answer || !answer.trim() || allAnswers.find((a) => a === answer)) {
+    if (!this.isTypedAnswerValid(answer)) {
+      this.setState({
+        typedAnswerValid: false,
+      });
       return;
     }
     allAnswers.push(answer);
@@ -311,6 +346,8 @@ export default class CreateVoteForm extends Component<ICreateVoteFormProps, ICre
       answers: allAnswers,
       answersValid: allAnswers.length >= 2,
       typedAnswer: "",
+      typedAnswerTouched: false,
+      typedAnswerValid: false,
     }));
   };
 
@@ -456,6 +493,14 @@ export default class CreateVoteForm extends Component<ICreateVoteFormProps, ICre
 
   private arePrivilegedAddressesValid = (addresses: Voter[]) => {
     return addresses.every((a) => this.props.blockchainData.web3.utils.isAddress(a));
+  };
+
+  private isTypedAnswerValid = (typedAnswer: string) => {
+    return (
+      typedAnswer.length > 0 &&
+      this.props.blockchainData.web3.utils.fromUtf8(typedAnswer).length <= 32 &&
+      this.state.answers.indexOf(typedAnswer) === -1
+    );
   };
 
   private isAnswerListValid = (answerList: string[]) => {
