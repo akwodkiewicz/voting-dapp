@@ -1,6 +1,9 @@
 language: node_js
 node_js:
   - "10.2.1"
+cache:
+  directories:
+    - $(npm config get prefix)/bin/truffle
 before_install:
   - npm i -g npm@6.4.0
   - npm install -g truffle@v5.0.0
