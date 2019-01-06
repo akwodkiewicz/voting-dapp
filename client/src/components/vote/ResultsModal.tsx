@@ -19,10 +19,6 @@ export default class ResultsModal extends Component<IResultsModalProps> {
   public render() {
     return (
       <Modal show={this.props.show} onHide={this.props.handleOnHide}>
-        <Modal.Header>
-          <Modal.Title className="text-center">{this.props.voting.info.question}</Modal.Title>
-        </Modal.Header>
-
         <Modal.Body>
           <Panel>
             <Panel.Heading>
@@ -51,7 +47,9 @@ export default class ResultsModal extends Component<IResultsModalProps> {
 
           <Panel>
             <Panel.Heading>
-              <Panel.Title componentClass="h3">Voting results</Panel.Title>
+              <Panel.Title className="text-center" style={{ fontSize: "1.5em", fontWeight: "bold" }}>
+                Voting results
+              </Panel.Title>
             </Panel.Heading>
             <Panel.Body>
               {this.props.results.every((val) => parseInt(val, 10) === 0) ? (
