@@ -4,3 +4,7 @@ node_js:
 before_install:
   - npm i -g npm@6.4.0
   - npm install -g truffle@v5.0.0
+script:
+  - npm run test-react
+  - npm run test-truffle
+  - npm run build

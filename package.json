@@ -102,7 +102,8 @@
         "tslint": "tslint --project tsconfig.json",
         "start": "node scripts/start.js",
         "build": "node scripts/build.js",
-        "test-react": "mocha -r ts-node/register client/src/**/*.spec.tsx"
+        "test-react": "mocha -r ts-node/register client/src/**/*.spec.tsx",
+        "test-truffle": "truffle compile && typechain --target truffle './client/src/contracts/*.json' && truffle test"
     },
     "repository": {
         "type": "git",
