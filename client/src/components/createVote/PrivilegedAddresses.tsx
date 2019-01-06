@@ -9,34 +9,10 @@ interface IPrivilegedAddressesProps {
   textAreaValue: string;
   setPrivilegedAddressesInParent: (arg: string[]) => void;
 }
-let fileReader;
 export default class PrivilegedAddresses extends Component<IPrivilegedAddressesProps> {
   constructor(props) {
     super(props);
   }
-
-  public saveAddresses = (e: FormEvent<FormControl & HTMLInputElement>) => {
-    const addressesArray = (e.currentTarget.value as string).split("\n");
-    this.props.setPrivilegedAddressesInParent(addressesArray);
-  };
-
-  public loadAddressesFromFile = (e: any) => {
-    const file = e.target.files[0];
-    console.log(file);
-    if (file) {
-      fileReader = new FileReader();
-      fileReader.onloadend = this.handleFileRead;
-      fileReader.readAsText(file);
-    }
-  };
-
-  public handleFileRead = () => {
-    const content = fileReader.result;
-    const textArea = document.getElementById("privilegedAddressesTextArea") as HTMLInputElement;
-    textArea.value = content;
-    this.props.setPrivilegedAddressesInParent(content.split("\n"));
-    console.log(content);
-  };
 
   public render() {
     if (this.props.voteType === "private") {
@@ -55,7 +31,9 @@ export default class PrivilegedAddresses extends Component<IPrivilegedAddressesP
               <Glyphicon glyph="info-sign" style={{ padding: "0 0 3px 5px", verticalAlign: "middle" }} />
             </OverlayTrigger>
           </ControlLabel>
-          <HelpBlock>Manually enter addresses below or load them from the text file.</HelpBlock>
+          <HelpBlock>
+            Manually enter addresses below or load them from the <span style={{ fontStyle: "italic" }}>.txt</span> file.
+          </HelpBlock>
           <FormControl
             type="file"
             accept=".txt"
@@ -81,4 +59,29 @@ export default class PrivilegedAddresses extends Component<IPrivilegedAddressesP
       );
     } else return null;
   }
+
+  private saveAddresses = (e: FormEvent<FormControl & HTMLInputElement>) => {
+    const addressesArray = (e.currentTarget.value as string).split("\n");
+    this.props.setPrivilegedAddressesInParent(addressesArray);
+  };
+
+  private loadAddressesFromFile = (e: any) => {
+    const file = e.target.files[0];
+    if (file) {
+      let fileReader = new FileReader();
+      fileReader.onloadend = () => {
+        this.handleFileRead(fileReader);
+      };
+      fileReader.readAsText(file);
+    }
+  };
+
+  private handleFileRead = (fileReader) => {
+    const content = fileReader.result;
+    const textArea = document.getElementById("privilegedAddressesTextArea") as HTMLInputElement;
+    textArea.value = content;
+    const contentArray = content.split("\n") as string[];
+    contentArray.pop(); // popping last "" element
+    this.props.setPrivilegedAddressesInParent(contentArray);
+  };
 }
