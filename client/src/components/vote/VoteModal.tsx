@@ -39,17 +39,34 @@ export default class VoteModal extends Component<IVoteModalProps, IVoteModalStat
             <Fragment>
               <Row className="text-center" style={{ marginTop: "-1em" }}>
                 <Col sm={12}>
-                  <h3>Please wait</h3>
+                  <h2
+                    style={{
+                      fontFamily: "Roboto",
+                      marginBottom: "5vh",
+                      marginTop: "5vh",
+                    }}
+                  >
+                    Please wait
+                  </h2>
                 </Col>
               </Row>
               <Row className="text-center">
                 <Col sm={12}>
-                  <Loader type="Grid" color="#00BFFF" height="10%" width="10%" />
+                  <Loader style={{ marginTop: "20vh" }} type="Grid" color="#00BFFF" height="30%" width="30%" />
                 </Col>
               </Row>
               <Row className="text-center">
                 <Col sm={12}>
-                  <h4>Your transaction is being processed</h4>
+                  <h2
+                    style={{
+                      fontFamily: "Roboto",
+                      marginBottom: "5vh",
+                      marginTop: "5vh",
+                      textAlign: "center",
+                    }}
+                  >
+                    Your transaction is being processed{" "}
+                  </h2>
                 </Col>
               </Row>
             </Fragment>
