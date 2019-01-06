@@ -1,6 +1,13 @@
 language: node_js
 node_js:
   - "10.2.1"
+env:
+  - JOB=test-react
+  - JOB=build
+  - JOB=test-truffle
 before_install:
   - npm i -g npm@6.4.0
   - npm install -g truffle@v5.0.0
+script:
+  - echo "{\"address\":\"0x0000000000000000000000000000000000000000\"}" > $TRAVIS_BUILD_DIR/client/src/managerContract.config.json
+  - npm run $JOB
