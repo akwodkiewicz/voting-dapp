@@ -2,7 +2,7 @@ import moment from "moment";
 import React, { Component } from "react";
 import { Button, Col, ControlLabel, FormControl, FormGroup, HelpBlock, InputGroup, Radio, Row } from "react-bootstrap";
 import "react-datetime/css/react-datetime.css"; //tslint:disable-line
-import { fetchCategories } from "../../utils/eth";
+import { ethStrBytesLength, fetchCategories } from "../../utils/eth";
 import { BlockchainData, VoteFormData } from "../../utils/types";
 import AnswersList from "./AnswersList";
 import CategoryPanel, { CategoryPanelType, ICategoryPanelProps } from "./CategoryPanel";
@@ -189,7 +189,7 @@ export default class CreateVoteForm extends Component<ICreateVoteFormProps, ICre
               </InputGroup>
               {this.state.typedAnswerTouched &&
               !this.state.typedAnswerValid &&
-              this.props.blockchainData.web3.utils.fromUtf8(this.state.typedAnswer).length > 32 ? (
+              ethStrBytesLength(this.state.typedAnswer) > 32 ? (
                 <HelpBlock>Answer cannot be larger than 32 bytes</HelpBlock>
               ) : null}
 
@@ -497,9 +497,7 @@ export default class CreateVoteForm extends Component<ICreateVoteFormProps, ICre
 
   private isTypedAnswerValid = (typedAnswer: string) => {
     return (
-      typedAnswer.length > 0 &&
-      this.props.blockchainData.web3.utils.fromUtf8(typedAnswer).length <= 32 &&
-      this.state.answers.indexOf(typedAnswer) === -1
+      typedAnswer.length > 0 && ethStrBytesLength(typedAnswer) <= 32 && this.state.answers.indexOf(typedAnswer) === -1
     );
   };
 
@@ -508,7 +506,7 @@ export default class CreateVoteForm extends Component<ICreateVoteFormProps, ICre
   };
 
   private isCategoryNameValid = (categoryName: string) => {
-    return categoryName.length > 0 && this.props.blockchainData.web3.utils.fromUtf8(categoryName).length <= 32;
+    return categoryName.length > 0 && ethStrBytesLength(categoryName) <= 32;
   };
 
   private isQuestionValid = (question: string) => {
