@@ -82,14 +82,11 @@ export default class VoteModal extends Component<IVoteModalProps, IVoteModalStat
                   <ControlLabel style={{ fontSize: "1.2em" }}>Question</ControlLabel>
                   <p>{this.props.voting.info.question}</p>
                   <ControlLabel style={{ fontSize: "1.2em" }}>Voting deadline</ControlLabel>
-                  <p>Voting possible until {covertTimestampToDate(this.props.voting.info.votingEndTime)}.</p>
-                  <ControlLabel style={{ fontSize: "1.2em" }}>Results viewing</ControlLabel>
-                  <p>
-                    Available after voting deadline and until{" "}
-                    {covertTimestampToDate(this.props.voting.info.resultsEndTime)}.
-                  </p>
+                  <p>Voting possible until {covertTimestampToDate(this.props.voting.info.votingEndTime)}</p>
+                  <ControlLabel style={{ fontSize: "1.2em" }}>Results expiry date</ControlLabel>
+                  <p>{covertTimestampToDate(this.props.voting.info.resultsEndTime)}</p>
                   <ControlLabel style={{ fontSize: "1.2em" }}>Voting type</ControlLabel>
-                  <p>{this.props.voting.info.isPrivate ? "Private" : "Public"}.</p>
+                  <p>{this.props.voting.info.isPrivate ? "Private" : "Public"}</p>
                 </Panel.Body>
               </Panel>
               <Panel>

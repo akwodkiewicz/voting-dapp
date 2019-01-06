@@ -59,11 +59,11 @@ export default class ResultsModal extends Component<IResultsModalProps> {
                 })}
               </ul>
               <ControlLabel style={{ fontSize: "1.2em" }}>Voting deadline</ControlLabel>
-              <p>{covertTimestampToDate(this.props.voting.info.votingEndTime)}.</p>
-              <ControlLabel style={{ fontSize: "1.2em" }}>Results viewing</ControlLabel>
-              <p>Available until {covertTimestampToDate(this.props.voting.info.resultsEndTime)}.</p>
+              <p>{covertTimestampToDate(this.props.voting.info.votingEndTime)}</p>
+              <ControlLabel style={{ fontSize: "1.2em" }}>Results expiry date</ControlLabel>
+              <p>{covertTimestampToDate(this.props.voting.info.resultsEndTime)}</p>
               <ControlLabel style={{ fontSize: "1.2em" }}>Voting type</ControlLabel>
-              <p>{this.props.voting.info.isPrivate ? "Private" : "Public"}.</p>
+              <p>{this.props.voting.info.isPrivate ? "Private" : "Public"}</p>
             </Panel.Body>
           </Panel>
 
