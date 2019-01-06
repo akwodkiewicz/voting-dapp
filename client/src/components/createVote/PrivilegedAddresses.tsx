@@ -1,5 +1,14 @@
 import React, { Component, FormEvent } from "react";
-import { ControlLabel, FormControl, FormGroup, Glyphicon, HelpBlock, OverlayTrigger, Tooltip } from "react-bootstrap";
+import {
+  Button,
+  ControlLabel,
+  FormControl,
+  FormGroup,
+  Glyphicon,
+  HelpBlock,
+  OverlayTrigger,
+  Tooltip,
+} from "react-bootstrap";
 import { VoteType } from "./VoteTypePanel";
 
 interface IPrivilegedAddressesProps {
@@ -37,7 +46,9 @@ export default class PrivilegedAddresses extends Component<IPrivilegedAddressesP
               <Glyphicon glyph="info-sign" style={{ padding: "0 0 3px 5px", verticalAlign: "middle" }} />
             </OverlayTrigger>
           </ControlLabel>
-
+          <HelpBlock>
+            Manually enter addresses below or load them from the text file. {<Button bsSize="xsmall">Load</Button>}
+          </HelpBlock>
           <FormControl
             onChange={this.saveAddresses}
             componentClass="textarea"
