@@ -10,4 +10,5 @@ before_install:
 script:
   - npm run test-react
   - npm run test-truffle
+  - echo "{\"address\":\"0x0000000000000000000000000000000000000000\"}" > $TRAVIS_BUILD_DIR/voting-dapp/client/src/managerContract.config.json
   - npm run build
