@@ -1,14 +1,5 @@
 import React, { Component, FormEvent } from "react";
-import {
-  Button,
-  ControlLabel,
-  FormControl,
-  FormGroup,
-  Glyphicon,
-  HelpBlock,
-  OverlayTrigger,
-  Tooltip,
-} from "react-bootstrap";
+import { ControlLabel, FormControl, FormGroup, Glyphicon, HelpBlock, OverlayTrigger, Tooltip } from "react-bootstrap";
 import { VoteType } from "./VoteTypePanel";
 
 interface IPrivilegedAddressesProps {
@@ -18,7 +9,7 @@ interface IPrivilegedAddressesProps {
   textAreaValue: string;
   setPrivilegedAddressesInParent: (arg: string[]) => void;
 }
-
+let fileReader;
 export default class PrivilegedAddresses extends Component<IPrivilegedAddressesProps> {
   constructor(props) {
     super(props);
@@ -27,6 +18,24 @@ export default class PrivilegedAddresses extends Component<IPrivilegedAddressesP
   public saveAddresses = (e: FormEvent<FormControl & HTMLInputElement>) => {
     const addressesArray = (e.currentTarget.value as string).split("\n");
     this.props.setPrivilegedAddressesInParent(addressesArray);
+  };
+
+  public loadAddressesFromFile = (e: any) => {
+    const file = e.target.files[0];
+    console.log(file);
+    if (file) {
+      fileReader = new FileReader();
+      fileReader.onloadend = this.handleFileRead;
+      fileReader.readAsText(file);
+    }
+  };
+
+  public handleFileRead = () => {
+    const content = fileReader.result;
+    const textArea = document.getElementById("privilegedAddressesTextArea") as HTMLInputElement;
+    textArea.value = content;
+    this.props.setPrivilegedAddressesInParent(content.split("\n"));
+    console.log(content);
   };
 
   public render() {
@@ -46,14 +55,20 @@ export default class PrivilegedAddresses extends Component<IPrivilegedAddressesP
               <Glyphicon glyph="info-sign" style={{ padding: "0 0 3px 5px", verticalAlign: "middle" }} />
             </OverlayTrigger>
           </ControlLabel>
-          <HelpBlock>
-            Manually enter addresses below or load them from the text file. {<Button bsSize="xsmall">Load</Button>}
-          </HelpBlock>
+          <HelpBlock>Manually enter addresses below or load them from the text file.</HelpBlock>
+          <FormControl
+            type="file"
+            accept=".txt"
+            onChange={this.loadAddressesFromFile}
+            label="File"
+            style={{ marginBottom: "1em" }}
+          />
           <FormControl
             onChange={this.saveAddresses}
             componentClass="textarea"
             placeholder="Don't forget to paste your own address here (if you want to vote)!"
             value={this.props.textAreaValue}
+            id="privilegedAddressesTextArea"
           />
           {this.props.touched && !this.props.valid ? (
             this.props.textAreaValue === "" ? (
