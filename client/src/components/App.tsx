@@ -3,8 +3,8 @@ import { Col, Grid, Row } from "react-bootstrap";
 import Loader from "react-loader-spinner";
 import { BrowserRouter as Router, Route } from "react-router-dom";
 import Web3 from "web3";
+import * as AppConfig from "../config.json";
 import ManagerAbi from "../contracts/ManagerContract.json";
-import * as ManagerContractConfig from "../managerContract.config.json";
 import { ManagerContract } from "../typed-contracts/ManagerContract";
 import { BlockchainData } from "../utils/types.js";
 import AboutPage from "./about/AboutPage";
@@ -18,6 +18,8 @@ interface IAppState {
   blockchainData: BlockchainData;
   noMetamask: boolean;
   waitingForAccess: boolean;
+  wrongNetwork: boolean;
+  connectedNetworkType: string;
 }
 
 export default class App extends Component<any, IAppState> {
@@ -25,8 +27,10 @@ export default class App extends Component<any, IAppState> {
     super(props);
     this.state = {
       blockchainData: null,
+      connectedNetworkType: "",
       noMetamask: false,
       waitingForAccess: true,
+      wrongNetwork: false,
     };
   }
   // tslint:disable:no-string-literal
@@ -37,11 +41,17 @@ export default class App extends Component<any, IAppState> {
       });
       return;
     }
-
+    let wrongNetwork = false;
+    let networkType = "";
     try {
       const accounts = await window["ethereum"].enable();
       const web3 = new Web3(window["ethereum"]);
-      const instance = new web3.eth.Contract(ManagerAbi.abi, ManagerContractConfig.address) as ManagerContract;
+      networkType = await (web3.eth.net as any).getNetworkType();
+      if (networkType !== AppConfig.network) {
+        wrongNetwork = true;
+        throw new Error("Metamask is connected to other network than the one defined in application");
+      }
+      const instance = new web3.eth.Contract(ManagerAbi.abi, AppConfig.managerContractAddress) as ManagerContract;
       instance.setProvider(web3.currentProvider);
       instance.options.from = accounts[0];
       this.setState({
@@ -51,7 +61,9 @@ export default class App extends Component<any, IAppState> {
       console.error(e);
     } finally {
       this.setState({
+        connectedNetworkType: networkType,
         waitingForAccess: false,
+        wrongNetwork,
       });
     }
   };
@@ -104,6 +116,21 @@ export default class App extends Component<any, IAppState> {
               </Col>
             </Row>
           </Grid>
+        </div>
+      );
+    } else if (!this.state.blockchainData && this.state.wrongNetwork) {
+      const title = "Wrong network";
+      const firstParagraph =
+        "This decentralized application is defined to work with '" +
+        AppConfig.network +
+        "' network. You are currently connected to '" +
+        this.state.connectedNetworkType +
+        "'";
+      const secondParagraph = "Change the network you are connecting to in your Metamask extension.";
+      return (
+        <div>
+          <Header block={3} />
+          <NoAccessPage title={title} firstParagraph={firstParagraph} secondParagraph={secondParagraph} imgChoice={1} />
         </div>
       );
     } else if (!this.state.blockchainData) {

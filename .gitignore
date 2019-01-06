@@ -4,6 +4,9 @@ client/src/contracts/*
 client/src/typed-contracts/*
 types/*
 
+# App config
+client/src/config.json
+
 # Compiled TS
 client/build/*
 
@@ -83,6 +86,3 @@ typings/
 
 # FuseBox cache
 .fusebox/
-
-# ManagerContract config
-client/src/managerContract.config.json
