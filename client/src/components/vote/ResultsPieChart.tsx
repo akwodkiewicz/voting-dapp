@@ -53,8 +53,10 @@ export default class ResultsPieChart extends Component<IResultsPieChartProps, IR
     const results = this.props.results.map((result) => parseInt(result, 10));
 
     for (let index = 0; index < answers.length; index++) {
-      const singleOption = { name: answers[index], value: results[index] };
-      chartData.push(singleOption);
+      if (results[index] !== 0) {
+        const singleOption = { name: answers[index], value: results[index] };
+        chartData.push(singleOption);
+      }
     }
 
     this.setState({
