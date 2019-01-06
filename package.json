@@ -33,7 +33,6 @@
         "fs-extra": "7.0.0",
         "html-webpack-plugin": "4.0.0-alpha.2",
         "identity-obj-proxy": "3.0.0",
-        "jest": "23.6.0",
         "jest-pnp-resolver": "1.0.1",
         "jest-resolve": "23.6.0",
         "mini-css-extract-plugin": "0.4.3",
@@ -60,6 +59,7 @@
         "sass-loader": "7.1.0",
         "style-loader": "0.23.0",
         "terser-webpack-plugin": "1.1.0",
+        "truffle-typings": "^1.0.6",
         "url-loader": "1.1.1",
         "web3": "^1.0.0-beta.36",
         "webpack-dev-server": "^3.1.14",
@@ -69,6 +69,7 @@
     "devDependencies": {
         "@types/bignumber.js": "^5.0.0",
         "@types/chai": "^4.1.7",
+        "@types/enzyme": "^3.1.15",
         "@types/mocha": "^5.2.5",
         "@types/node": "^10.12.2",
         "@types/react": "^16.7.18",
@@ -79,9 +80,10 @@
         "awesome-typescript-loader": "^5.2.1",
         "babel-plugin-static-fs": "^1.1.0",
         "chai": "^4.2.0",
+        "enzyme": "^3.8.0",
+        "enzyme-adapter-react-16": "^1.7.1",
         "husky": "^1.2.0",
         "mocha": "^5.2.0",
-        "truffle-typings": "^1.0.5",
         "ts-node": "^7.0.1",
         "tslint": "^5.11.0",
         "tslint-config-prettier": "^1.17.0",
@@ -102,7 +104,7 @@
         "tslint": "tslint --project tsconfig.json",
         "start": "node scripts/start.js",
         "build": "node scripts/build.js",
-        "testr": "node scripts/test.js"
+        "test-react": "mocha -r ts-node/register client/src/**/*.spec.tsx"
     },
     "repository": {
         "type": "git",
@@ -131,47 +133,6 @@
         "not ie <= 11",
         "not op_mini all"
     ],
-    "jest": {
-        "collectCoverageFrom": [
-            "src/**/*.{js,jsx,ts,tsx}",
-            "!src/**/*.d.ts"
-        ],
-        "resolver": "jest-pnp-resolver",
-        "setupFiles": [
-            "react-app-polyfill/jsdom"
-        ],
-        "testMatch": [
-            "<rootDir>/src/**/__tests__/**/*.{js,jsx,ts,tsx}",
-            "<rootDir>/src/**/?(*.)(spec|test).{js,jsx,ts,tsx}"
-        ],
-        "testEnvironment": "jsdom",
-        "testURL": "http://localhost",
-        "transform": {
-            "^.+\\.(js|jsx|ts|tsx)$": "<rootDir>/node_modules/babel-jest",
-            "^.+\\.css$": "<rootDir>/config/jest/cssTransform.js",
-            "^(?!.*\\.(js|jsx|ts|tsx|css|json)$)": "<rootDir>/config/jest/fileTransform.js"
-        },
-        "transformIgnorePatterns": [
-            "[/\\\\]node_modules[/\\\\].+\\.(js|jsx|ts|tsx)$",
-            "^.+\\.module\\.(css|sass|scss)$"
-        ],
-        "moduleNameMapper": {
-            "^react-native$": "react-native-web",
-            "^.+\\.module\\.(css|sass|scss)$": "identity-obj-proxy"
-        },
-        "moduleFileExtensions": [
-            "web.js",
-            "js",
-            "web.ts",
-            "ts",
-            "web.tsx",
-            "tsx",
-            "json",
-            "web.jsx",
-            "jsx",
-            "node"
-        ]
-    },
     "babel": {
         "presets": [
             "react-app"
