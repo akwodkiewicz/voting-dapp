@@ -326,6 +326,7 @@ export default class CreateVoteForm extends Component<ICreateVoteFormProps, ICre
     const val = e.currentTarget.value;
     this.setState(() => ({
       typedAnswer: val,
+      typedAnswerTouched: true,
       typedAnswerValid: this.isTypedAnswerValid(val),
     }));
   };
@@ -335,9 +336,6 @@ export default class CreateVoteForm extends Component<ICreateVoteFormProps, ICre
     const answer = this.state.typedAnswer;
     const allAnswers = this.state.answers;
     if (!this.isTypedAnswerValid(answer)) {
-      this.setState({
-        typedAnswerValid: false,
-      });
       return;
     }
     allAnswers.push(answer);
