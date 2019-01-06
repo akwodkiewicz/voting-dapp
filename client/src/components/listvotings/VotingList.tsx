@@ -32,7 +32,7 @@ interface IVotingListState {
 }
 
 export default class VotingList extends Component<IVotingListProps, IVotingListState> {
-  private nrOfVotingsPerPage = 4; // TBD
+  private nrOfVotingsPerPage = 10; // TBD
 
   private publicVotingTooltip = (
     <Tooltip id="tooltip">
@@ -91,94 +91,101 @@ export default class VotingList extends Component<IVotingListProps, IVotingListS
   public render() {
     const pageVotings = this.state.filteredVotings;
     const nrOfPages = Math.ceil(pageVotings.length / this.nrOfVotingsPerPage);
+
     return (
-      <Panel>
+      <Fragment>
         {this.state.areVotingsFetched ? (
           <Fragment>
-            <ListGroup>
-              {this.getVotingsForPage().map((voting) => {
-                if (voting.info.isPrivate && voting.info.isPrivileged) {
-                  return (
-                    <OverlayTrigger placement="right" overlay={this.privateVotingTooltip}>
-                      <ListGroupItem
-                        //style={{ height: "10vh" }}
-                        key={voting.contract._address}
-                        onClick={this.handleVotingClick}
-                        {...(voting.info.hasUserVoted ? { bsStyle: "success" } : null)}
-                        {...(voting.contract._address === this.props.chosenVotingAddress ? { active: true } : null)}
-                      >
-                        {voting.info.question}
-                        <Glyphicon glyph="lock" className="pull-right" />
-                      </ListGroupItem>
-                    </OverlayTrigger>
-                  );
-                } else if (voting.info.isPrivate && !voting.info.isPrivileged) {
-                  return (
-                    <OverlayTrigger placement="right" overlay={this.inaccessibleVotingTooltip}>
-                      <ListGroupItem
-                        //style={{ height: "10vh" }}
-                        key={voting.contract._address}
-                        onClick={this.handleVotingClick}
-                        bsStyle="danger"
-                        {...(voting.contract._address === this.props.chosenVotingAddress ? { active: true } : null)}
-                      >
-                        {voting.info.question}
-                        <Glyphicon glyph="ban-circle" className="pull-right" />
-                      </ListGroupItem>
-                    </OverlayTrigger>
-                  );
-                } else {
-                  return (
-                    <OverlayTrigger placement="right" overlay={this.publicVotingTooltip}>
-                      <ListGroupItem
-                        //style={{ height: "10vh" }}
-                        key={voting.contract._address}
-                        onClick={this.handleVotingClick}
-                        {...(voting.info.hasUserVoted ? { bsStyle: "success" } : null)}
-                        {...(voting.contract._address === this.props.chosenVotingAddress ? { active: true } : null)}
-                      >
-                        {voting.info.question}
-                        <Glyphicon glyph="globe" className="pull-right" />
-                      </ListGroupItem>
-                    </OverlayTrigger>
-                  );
-                }
-              })}
-            </ListGroup>
-            <Pagination>
-              <Pagination.First
-                onClick={this.state.activePageIndex !== 1 ? this.paginationFirst : null}
-                disabled={this.state.activePageIndex === 1 ? true : false}
-              />
-              <Pagination.Prev
-                onClick={this.state.activePageIndex > 1 ? this.paginationPrev : null}
-                disabled={this.state.activePageIndex === 1 ? true : false}
-              />
-            </Pagination>
-            <span>
-              Page {this.state.activePageIndex}/{nrOfPages}
-            </span>
-            <Pagination>
-              <Pagination.Next
-                onClick={this.state.activePageIndex !== nrOfPages ? this.paginationNext : null}
-                disabled={this.state.activePageIndex === nrOfPages ? true : false}
-              />
-              <Pagination.Last
-                onClick={
-                  this.state.activePageIndex !== nrOfPages
-                    ? () => {
-                        this.paginationLast(nrOfPages);
-                      }
-                    : null
-                }
-                disabled={this.state.activePageIndex === nrOfPages ? true : false}
-              />
-            </Pagination>
+            <Panel>
+              <ListGroup>
+                {this.getVotingsForPage().map((voting) => {
+                  if (voting.info.isPrivate && voting.info.isPrivileged) {
+                    return (
+                      <OverlayTrigger placement="right" overlay={this.privateVotingTooltip}>
+                        <ListGroupItem
+                          //style={{ height: "10vh" }}
+                          key={voting.contract._address}
+                          onClick={this.handleVotingClick}
+                          {...(voting.info.hasUserVoted ? { bsStyle: "success" } : null)}
+                          {...(voting.contract._address === this.props.chosenVotingAddress ? { active: true } : null)}
+                        >
+                          {voting.info.question}
+                          <Glyphicon glyph="lock" className="pull-right" />
+                        </ListGroupItem>
+                      </OverlayTrigger>
+                    );
+                  } else if (voting.info.isPrivate && !voting.info.isPrivileged) {
+                    return (
+                      <OverlayTrigger placement="right" overlay={this.inaccessibleVotingTooltip}>
+                        <ListGroupItem
+                          //style={{ height: "10vh" }}
+                          key={voting.contract._address}
+                          onClick={this.handleVotingClick}
+                          bsStyle="danger"
+                          {...(voting.contract._address === this.props.chosenVotingAddress ? { active: true } : null)}
+                        >
+                          {voting.info.question}
+                          <Glyphicon glyph="ban-circle" className="pull-right" />
+                        </ListGroupItem>
+                      </OverlayTrigger>
+                    );
+                  } else {
+                    return (
+                      <OverlayTrigger placement="right" overlay={this.publicVotingTooltip}>
+                        <ListGroupItem
+                          //style={{ height: "10vh" }}
+                          key={voting.contract._address}
+                          onClick={this.handleVotingClick}
+                          {...(voting.info.hasUserVoted ? { bsStyle: "success" } : null)}
+                          {...(voting.contract._address === this.props.chosenVotingAddress ? { active: true } : null)}
+                        >
+                          {voting.info.question}
+                          <Glyphicon glyph="globe" className="pull-right" />
+                        </ListGroupItem>
+                      </OverlayTrigger>
+                    );
+                  }
+                })}
+              </ListGroup>
+            </Panel>
+            <div style={{ width: "100%" }}>
+              <div style={{ width: "50%", margin: "0 auto", textAlign: "center" }}>
+                <Pagination>
+                  <Pagination.First
+                    onClick={this.state.activePageIndex !== 1 ? this.paginationFirst : null}
+                    disabled={this.state.activePageIndex === 1 ? true : false}
+                  />
+                  <Pagination.Prev
+                    onClick={this.state.activePageIndex > 1 ? this.paginationPrev : null}
+                    disabled={this.state.activePageIndex === 1 ? true : false}
+                  />
+                  <Pagination.Item>
+                    Page {this.state.activePageIndex}/{nrOfPages}
+                  </Pagination.Item>
+                  <Pagination.Next
+                    onClick={this.state.activePageIndex !== nrOfPages ? this.paginationNext : null}
+                    disabled={this.state.activePageIndex === nrOfPages ? true : false}
+                  />
+                  <Pagination.Last
+                    onClick={
+                      this.state.activePageIndex !== nrOfPages
+                        ? () => {
+                            this.paginationLast(nrOfPages);
+                          }
+                        : null
+                    }
+                    disabled={this.state.activePageIndex === nrOfPages ? true : false}
+                  />
+                </Pagination>
+              </div>
+            </div>
           </Fragment>
         ) : (
-          <Panel.Body>Fetching data from blockchain...</Panel.Body>
+          <Panel>
+            <Panel.Body>Fetching data from blockchain...</Panel.Body>
+          </Panel>
         )}
-      </Panel>
+      </Fragment>
     );
   }
 
@@ -230,7 +237,7 @@ export default class VotingList extends Component<IVotingListProps, IVotingListS
       dividedVotings.push(votings.slice(i, i + this.nrOfVotingsPerPage));
     }
 
-    return dividedVotings[this.state.activePageIndex - 1];
+    return dividedVotings.length > 0 ? dividedVotings[this.state.activePageIndex - 1] : [];
   }
 
   private handlePageClick(index: number) {

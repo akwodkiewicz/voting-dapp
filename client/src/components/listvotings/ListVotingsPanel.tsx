@@ -101,7 +101,7 @@ export default class ListVotingsPanel extends Component<IListVotingsPanelProps, 
             <h3 style={{ fontSize: "2.5em" }}>{this.props.title}</h3>
           </Col>
         </Row>
-        <Row>
+        <Row style={{ marginTop: "5vh" }}>
           {/* https://github.com/react-bootstrap/react-bootstrap/issues/1928#issuecomment-331509515 */}
           <Col md={6}>
             <CategoryDropdown
@@ -119,7 +119,7 @@ export default class ListVotingsPanel extends Component<IListVotingsPanelProps, 
             />
           </Col>
         </Row>
-        <Row>
+        <Row style={{ marginTop: "3vh" }}>
           <Col md={12}>
             {this.state.chosenCategoryIndex != null && (
               <VotingList
