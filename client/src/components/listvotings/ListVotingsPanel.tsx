@@ -30,7 +30,6 @@ interface IListVotingsPanelState {
   showResultsModal: boolean;
   showVoteModal: boolean;
 }
-
 export default class ListVotingsPanel extends Component<IListVotingsPanelProps, IListVotingsPanelState> {
   constructor(props) {
     super(props);
@@ -133,7 +132,14 @@ export default class ListVotingsPanel extends Component<IListVotingsPanelProps, 
             </Col>
             <Col md={6}>
               <HelpBlock>Display inaccessible votings</HelpBlock>
-              <Switch checked={this.state.displayInacessibleVotings} onChange={this.handleCheck} />
+              <Switch
+                checked={this.state.displayInacessibleVotings}
+                onChange={this.handleCheck}
+                onColor="#86d3ff"
+                onHandleColor="#2693e6"
+                uncheckedIcon={false}
+                checkedIcon={false}
+              />
             </Col>
           </Row>
         )}
