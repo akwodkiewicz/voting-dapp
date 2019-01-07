@@ -124,16 +124,19 @@ export default class ListVotingsPanel extends Component<IListVotingsPanelProps, 
             />
           </Col>
         </Row>
-        <Row>
-          <Col md={6}>
-            <HelpBlock>Filter the results.</HelpBlock>
-            <FormControl type="text" onChange={this.handleFilterChange} />
-          </Col>
-          <Col md={6}>
-            <HelpBlock>Display inaccessible votings</HelpBlock>
-            <Checkbox checked={this.state.displayInacessibleVotings} onChange={this.handleCheck} />
-          </Col>
-        </Row>
+        {this.state.chosenCategoryIndex != null && (
+          <Row>
+            <Col md={6}>
+              <HelpBlock>Filter the results.</HelpBlock>
+              <FormControl type="text" onChange={this.handleFilterChange} />
+            </Col>
+            <Col md={6}>
+              <HelpBlock>Display inaccessible votings</HelpBlock>
+              <Checkbox checked={this.state.displayInacessibleVotings} onChange={this.handleCheck} />
+            </Col>
+          </Row>
+        )}
+
         <Row style={{ marginTop: "3vh" }}>
           <Col md={12}>
             {this.state.chosenCategoryIndex != null && (

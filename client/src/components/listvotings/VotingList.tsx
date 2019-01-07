@@ -1,6 +1,15 @@
 import moment from "moment";
 import React, { Component, Fragment } from "react";
-import { Glyphicon, ListGroup, ListGroupItem, OverlayTrigger, Pagination, Panel, Tooltip } from "react-bootstrap";
+import {
+  Glyphicon,
+  HelpBlock,
+  ListGroup,
+  ListGroupItem,
+  OverlayTrigger,
+  Pagination,
+  Panel,
+  Tooltip,
+} from "react-bootstrap";
 
 import { fetchVotings } from "../../utils/eth";
 import { BlockchainData, Category, ContractAddress, Voting } from "../../utils/types";
@@ -104,57 +113,67 @@ export default class VotingList extends Component<IVotingListProps, IVotingListS
 
   public render() {
     const nrOfPages = Math.ceil(this.filteredVotings().length / this.nrOfVotingsPerPage);
+    const votingsToDisplay = this.getVotingsForPage();
     return (
       <Fragment>
         {this.state.areVotingsFetched ? (
           <Fragment>
             <Panel>
               <ListGroup>
-                {this.getVotingsForPage().map((voting) => {
-                  if (voting.info.isPrivate && voting.info.isPrivileged) {
-                    return (
-                      <OverlayTrigger placement="right" overlay={this.privateVotingTooltip}>
-                        <ListGroupItem
-                          //style={{ height: "10vh" }}
-                          key={voting.contract._address}
-                          onClick={this.handleVotingClick}
-                          {...(voting.info.hasUserVoted ? { bsStyle: "success" } : null)}
-                        >
-                          {voting.info.question}
-                          <Glyphicon glyph="lock" className="pull-right" />
-                        </ListGroupItem>
-                      </OverlayTrigger>
-                    );
-                  } else if (voting.info.isPrivate && !voting.info.isPrivileged) {
-                    return (
-                      <OverlayTrigger placement="right" overlay={this.inaccessibleVotingTooltip}>
-                        <ListGroupItem
-                          //style={{ height: "10vh" }}
-                          key={voting.contract._address}
-                          onClick={this.handleVotingClick}
-                          bsStyle="danger"
-                        >
-                          {voting.info.question}
-                          <Glyphicon glyph="ban-circle" className="pull-right" />
-                        </ListGroupItem>
-                      </OverlayTrigger>
-                    );
-                  } else {
-                    return (
-                      <OverlayTrigger placement="right" overlay={this.publicVotingTooltip}>
-                        <ListGroupItem
-                          //style={{ height: "10vh" }}
-                          key={voting.contract._address}
-                          onClick={this.handleVotingClick}
-                          {...(voting.info.hasUserVoted ? { bsStyle: "success" } : null)}
-                        >
-                          {voting.info.question}
-                          <Glyphicon glyph="globe" className="pull-right" />
-                        </ListGroupItem>
-                      </OverlayTrigger>
-                    );
-                  }
-                })}
+                {votingsToDisplay.length > 0 ? (
+                  votingsToDisplay.map((voting) => {
+                    if (voting.info.isPrivate && voting.info.isPrivileged) {
+                      return (
+                        <OverlayTrigger placement="right" overlay={this.privateVotingTooltip}>
+                          <ListGroupItem
+                            key={voting.contract._address}
+                            onClick={this.handleVotingClick}
+                            {...(voting.info.hasUserVoted ? { bsStyle: "success" } : null)}
+                          >
+                            {voting.info.question}
+                            <Glyphicon glyph="lock" className="pull-right" />
+                          </ListGroupItem>
+                        </OverlayTrigger>
+                      );
+                    } else if (voting.info.isPrivate && !voting.info.isPrivileged) {
+                      return (
+                        <OverlayTrigger placement="right" overlay={this.inaccessibleVotingTooltip}>
+                          <ListGroupItem
+                            key={voting.contract._address}
+                            onClick={this.handleVotingClick}
+                            bsStyle="danger"
+                          >
+                            {voting.info.question}
+                            <Glyphicon glyph="ban-circle" className="pull-right" />
+                          </ListGroupItem>
+                        </OverlayTrigger>
+                      );
+                    } else {
+                      return (
+                        <OverlayTrigger placement="right" overlay={this.publicVotingTooltip}>
+                          <ListGroupItem
+                            key={voting.contract._address}
+                            onClick={this.handleVotingClick}
+                            {...(voting.info.hasUserVoted ? { bsStyle: "success" } : null)}
+                          >
+                            {voting.info.question}
+                            <Glyphicon glyph="globe" className="pull-right" />
+                          </ListGroupItem>
+                        </OverlayTrigger>
+                      );
+                    }
+                  })
+                ) : (
+                  <Fragment>
+                    <HelpBlock style={{ textAlign: "center", fontSize: "1.5em", fontWeight: "bold" }}>
+                      No votings found
+                    </HelpBlock>{" "}
+                    <HelpBlock style={{ textAlign: "center" }}>
+                      Either your filters don't match any of the votings in the selected category or the category you
+                      selected is empty :(
+                    </HelpBlock>
+                  </Fragment>
+                )}
               </ListGroup>
             </Panel>
             <div style={{ width: "100%" }}>
