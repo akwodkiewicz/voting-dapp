@@ -147,7 +147,7 @@ export default class HomePage extends Component<IHomePageProps, IHomePageState> 
     return this.props.displayHome ? (
       <Grid>
         <Row>
-          <div style={{ height: "20vh" }}>
+          <div style={{ marginBottom: "8em" }}>
             <h1 style={{ fontSize: "5em", fontFamily: "Roboto", textAlign: "center", marginTop: "1em" }}>
               Decentralized voting platfrom
             </h1>

@@ -1,3 +1,4 @@
+import moment, { Moment } from "moment";
 import Web3 = require("web3");
 import { CategoryPanelType } from "../components/createVote/CategoryPanel";
 import { VotingExpiryOption } from "../components/createVote/VoteDates";
@@ -28,7 +29,7 @@ export type Voting = {
 export interface VoteFormData {
     question: string;
     answers: string[];
-    voteEndTime: number;
+    voteEndDateTime: moment.Moment;
     votingExpiryOption: VotingExpiryOption;
     categoryPanel: CategoryPanelType;
     chosenCategory: string | ContractAddress;

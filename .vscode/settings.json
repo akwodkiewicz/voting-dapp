@@ -2,5 +2,11 @@
     "solidity.linter": "solhint",
     "editor.formatOnSave": true,
     "typescript.tsdk": "node_modules/typescript/lib",
-    "prettier.eslintIntegration": true
+    "prettier.eslintIntegration": true,
+    "json.schemas": [
+        {
+            "fileMatch": ["/config.json"],
+            "url": "./client/src/config.schema.json"
+        }
+    ]
 }

@@ -17,8 +17,7 @@
         "resolveJsonModule": true,
         "allowSyntheticDefaultImports": true,
         "typeRoots": ["./node_modules/@types", "./types"],
-        "types": ["node", "truffle-contracts"]
+        "types": ["node", "truffle-contracts", "mocha"]
     },
-    "include": ["./client/src/**/*", "./test/**/*.ts"],
-    "exclude": ["node_modules"]
+    "include": ["./client/src/**/*"]
 }
