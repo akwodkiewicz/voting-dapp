@@ -1,6 +1,7 @@
 import moment from "moment";
 import React, { Component, Fragment } from "react";
-import { Checkbox, Col, FormControl, Grid, HelpBlock, Row } from "react-bootstrap";
+import { Col, FormControl, Grid, HelpBlock, Row } from "react-bootstrap";
+import Switch from "react-switch";
 import { fetchResults } from "../../utils/eth";
 import { BlockchainData, Category, ContractAddress, Voting } from "../../utils/types";
 import ResultsModal from "../vote/ResultsModal";
@@ -132,7 +133,7 @@ export default class ListVotingsPanel extends Component<IListVotingsPanelProps, 
             </Col>
             <Col md={6}>
               <HelpBlock>Display inaccessible votings</HelpBlock>
-              <Checkbox checked={this.state.displayInacessibleVotings} onChange={this.handleCheck} />
+              <Switch checked={this.state.displayInacessibleVotings} onChange={this.handleCheck} />
             </Col>
           </Row>
         )}
