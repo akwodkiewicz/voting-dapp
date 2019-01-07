@@ -22,6 +22,8 @@ interface IListVotingsPanelState {
   chosenPrivacySetting: PrivacySetting;
   chosenAnswer: number;
   displayInacessibleVotings: boolean;
+  filterPhase: string;
+
   isDataRefreshRequested: boolean;
   results: string[];
   showResultsModal: boolean;
@@ -38,6 +40,7 @@ export default class ListVotingsPanel extends Component<IListVotingsPanelProps, 
       chosenPrivacySetting: PrivacySetting.All,
       chosenVotingAddress: null,
       displayInacessibleVotings: false,
+      filterPhase: "",
       isDataRefreshRequested: false,
       results: [],
       showResultsModal: false,
@@ -124,7 +127,7 @@ export default class ListVotingsPanel extends Component<IListVotingsPanelProps, 
         <Row>
           <Col md={6}>
             <HelpBlock>Filter the results.</HelpBlock>
-            <FormControl type="input" />
+            <FormControl type="text" onChange={this.handleFilterChange} />
           </Col>
           <Col md={6}>
             <HelpBlock>Display inaccessible votings</HelpBlock>
@@ -146,6 +149,7 @@ export default class ListVotingsPanel extends Component<IListVotingsPanelProps, 
                 dataRefreshRequestHandled={this.dataRefreshed}
                 isDataRefreshRequested={this.state.isDataRefreshRequested}
                 displayInaccessibleVotings={this.state.displayInacessibleVotings}
+                filterPhase={this.state.filterPhase}
               />
             )}
           </Col>
@@ -183,6 +187,12 @@ export default class ListVotingsPanel extends Component<IListVotingsPanelProps, 
   private handleCheck = () => {
     this.setState({
       displayInacessibleVotings: !this.state.displayInacessibleVotings,
+    });
+  };
+
+  private handleFilterChange = (e) => {
+    this.setState({
+      filterPhase: e.target.value,
     });
   };
 }
