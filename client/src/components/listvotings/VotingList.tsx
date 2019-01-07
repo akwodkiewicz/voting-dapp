@@ -90,6 +90,8 @@ export default class VotingList extends Component<IVotingListProps, IVotingListS
     if (!this.state.areVotingsFetched && this.props.blockchainData) {
       this.fetchVotingsAndSetState();
     }
+    const pageInfo = document.getElementById("xd");
+    if (pageInfo) pageInfo.focus();
   };
 
   public render() {
@@ -152,33 +154,35 @@ export default class VotingList extends Component<IVotingListProps, IVotingListS
             </Panel>
             <div style={{ width: "100%" }}>
               <div style={{ width: "50%", margin: "0 auto", textAlign: "center" }}>
-                <Pagination>
-                  <Pagination.First
-                    onClick={this.state.activePageIndex !== 1 ? this.paginationFirst : null}
-                    disabled={this.state.activePageIndex === 1 ? true : false}
-                  />
-                  <Pagination.Prev
-                    onClick={this.state.activePageIndex > 1 ? this.paginationPrev : null}
-                    disabled={this.state.activePageIndex === 1 ? true : false}
-                  />
-                  <Pagination.Item>
-                    Page {this.state.activePageIndex}/{nrOfPages}
-                  </Pagination.Item>
-                  <Pagination.Next
-                    onClick={this.state.activePageIndex !== nrOfPages ? this.paginationNext : null}
-                    disabled={this.state.activePageIndex === nrOfPages ? true : false}
-                  />
-                  <Pagination.Last
-                    onClick={
-                      this.state.activePageIndex !== nrOfPages
-                        ? () => {
-                            this.paginationLast(nrOfPages);
-                          }
-                        : null
-                    }
-                    disabled={this.state.activePageIndex === nrOfPages ? true : false}
-                  />
-                </Pagination>
+                {nrOfPages > 1 && (
+                  <Pagination>
+                    <Pagination.First
+                      onClick={this.state.activePageIndex !== 1 ? this.paginationFirst : null}
+                      disabled={this.state.activePageIndex === 1 ? true : false}
+                    />
+                    <Pagination.Prev
+                      onClick={this.state.activePageIndex > 1 ? this.paginationPrev : null}
+                      disabled={this.state.activePageIndex === 1 ? true : false}
+                    />
+                    <Pagination.Item id="xd" autoFocus={true}>
+                      Page {this.state.activePageIndex}/{nrOfPages}
+                    </Pagination.Item>
+                    <Pagination.Next
+                      onClick={this.state.activePageIndex !== nrOfPages ? this.paginationNext : null}
+                      disabled={this.state.activePageIndex === nrOfPages ? true : false}
+                    />
+                    <Pagination.Last
+                      onClick={
+                        this.state.activePageIndex !== nrOfPages
+                          ? () => {
+                              this.paginationLast(nrOfPages);
+                            }
+                          : null
+                      }
+                      disabled={this.state.activePageIndex === nrOfPages ? true : false}
+                    />
+                  </Pagination>
+                )}
               </div>
             </div>
           </Fragment>
