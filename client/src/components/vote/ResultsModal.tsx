@@ -64,6 +64,8 @@ export default class ResultsModal extends Component<IResultsModalProps> {
               <p>{covertTimestampToDate(this.props.voting.info.resultsEndTime)}</p>
               <ControlLabel style={{ fontSize: "1.2em" }}>Voting type</ControlLabel>
               <p>{this.props.voting.info.isPrivate ? "Private" : "Public"}</p>
+              <ControlLabel style={{ fontSize: "1.2em" }}>Voting address</ControlLabel>
+              <p>{this.props.voting.contract._address}</p>
             </Panel.Body>
           </Panel>
 
