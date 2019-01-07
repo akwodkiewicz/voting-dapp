@@ -66,6 +66,7 @@ export default class PrivilegedAddresses extends Component<IPrivilegedAddressesP
             placeholder="Don't forget to paste your own address here (if you want to vote)!"
             value={this.props.textAreaValue}
             id="privilegedAddressesTextArea"
+            style={{ resize: "vertical" }}
           />
 
           {this.state.noAddressesInFile ? (
