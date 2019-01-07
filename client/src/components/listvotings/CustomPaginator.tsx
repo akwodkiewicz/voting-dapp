@@ -90,7 +90,6 @@ export default class CustomPaginator extends Component<any, ICustomPaginatorStat
 
   private handlePageClick(index: number) {
     if (this.state.activePageIndex !== index) {
-      console.log(index);
       this.setState({
         activePageIndex: index,
       });
