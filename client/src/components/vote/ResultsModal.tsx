@@ -22,23 +22,23 @@ export default class ResultsModal extends Component<IResultsModalProps> {
 
     results.sort().reverse();
     const votingInfo: VotingInfo = this.props.voting.info;
-    const dic = [];
+    const answersAndResults: Array<{ answer: string; result: number }> = [];
     for (let i = 0; i < this.props.voting.info.answers.length; i++) {
       const currentAnswer = votingInfo.answers[i];
       const currenResult = parseInt(this.props.results[i], 10);
-      dic.push({ answer: currentAnswer, result: currenResult });
+      answersAndResults.push({ answer: currentAnswer, result: currenResult });
     }
 
-    dic.sort((first, second) => {
+    answersAndResults.sort((first, second) => {
       return second.result - first.result;
     });
 
-    return dic;
+    return answersAndResults;
   };
 
   public render() {
-    const dic = this.getSortedAnswersWithResults();
-    console.log(dic);
+    const answersAndResults = this.getSortedAnswersWithResults();
+    const sumOfAllVotes = answersAndResults.reduce((partial, obj) => partial + obj.result, 0);
     return (
       <Modal show={this.props.show} onHide={this.props.handleOnHide}>
         <Modal.Body>
@@ -83,11 +83,13 @@ export default class ResultsModal extends Component<IResultsModalProps> {
                   </tr>
                 </thead>
                 <tbody>
-                  {dic.map((element) => (
+                  {answersAndResults.map((element) => (
                     <tr>
                       <td style={{ width: "65%" }}>{element.answer}</td>
                       <td style={{ textAlign: "center" }}>{element.result}</td>
-                      <td style={{ textAlign: "center" }}>{((100 * element.result) / dic.length).toFixed(2)}%</td>
+                      <td style={{ textAlign: "center" }}>
+                        {((100 * element.result) / (sumOfAllVotes > 0 ? sumOfAllVotes : 1)).toFixed(2)}%
+                      </td>
                     </tr>
                   ))}
                 </tbody>
