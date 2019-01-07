@@ -127,7 +127,7 @@ export default class ListVotingsPanel extends Component<IListVotingsPanelProps, 
         {this.state.chosenCategoryIndex != null && (
           <Row>
             <Col md={6}>
-              <HelpBlock>Filter the results.</HelpBlock>
+              <HelpBlock>Filter the results</HelpBlock>
               <FormControl type="text" onChange={this.handleFilterChange} />
             </Col>
             <Col md={6}>

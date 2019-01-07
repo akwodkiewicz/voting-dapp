@@ -25,7 +25,7 @@ export default class PrivacyButtons extends Component<IPrivacyButtonsProps> {
     return (
       <FormGroup>
         <ControlLabel style={{ fontSize: "1.5em" }}>Voting type</ControlLabel>
-        <HelpBlock>Display votings with selected privacy type.</HelpBlock>
+        <HelpBlock>Display votings with selected privacy type</HelpBlock>
         <ToggleButtonGroup
           type="radio"
           name="privacySetting"
