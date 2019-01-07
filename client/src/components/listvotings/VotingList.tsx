@@ -119,7 +119,6 @@ export default class VotingList extends Component<IVotingListProps, IVotingListS
                           key={voting.contract._address}
                           onClick={this.handleVotingClick}
                           {...(voting.info.hasUserVoted ? { bsStyle: "success" } : null)}
-                          {...(voting.contract._address === this.props.chosenVotingAddress ? { active: true } : null)}
                         >
                           {voting.info.question}
                           <Glyphicon glyph="lock" className="pull-right" />
@@ -134,7 +133,6 @@ export default class VotingList extends Component<IVotingListProps, IVotingListS
                           key={voting.contract._address}
                           onClick={this.handleVotingClick}
                           bsStyle="danger"
-                          {...(voting.contract._address === this.props.chosenVotingAddress ? { active: true } : null)}
                         >
                           {voting.info.question}
                           <Glyphicon glyph="ban-circle" className="pull-right" />
@@ -149,7 +147,6 @@ export default class VotingList extends Component<IVotingListProps, IVotingListS
                           key={voting.contract._address}
                           onClick={this.handleVotingClick}
                           {...(voting.info.hasUserVoted ? { bsStyle: "success" } : null)}
-                          {...(voting.contract._address === this.props.chosenVotingAddress ? { active: true } : null)}
                         >
                           {voting.info.question}
                           <Glyphicon glyph="globe" className="pull-right" />
