@@ -48,16 +48,16 @@ export default class ListVotingsPage extends Component<IListVotingsPageProps, IL
 
   public render() {
     return (
-      <Grid>
+      <Grid fluid>
         <Row>
-          <Col md={6}>
+          <Col md={5} mdOffset={1}>
             <ListVotingsPanel
               blockchainData={this.props.blockchainData}
               title="Active Votings"
               votingState={VotingState.Active}
             />
           </Col>
-          <Col md={6}>
+          <Col md={5}>
             <ListVotingsPanel
               blockchainData={this.props.blockchainData}
               title="Finished Votings"
