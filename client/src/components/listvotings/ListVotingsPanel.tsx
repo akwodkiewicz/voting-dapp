@@ -1,6 +1,6 @@
 import moment from "moment";
 import React, { Component, Fragment } from "react";
-import { Col, Grid, Row } from "react-bootstrap";
+import { Checkbox, Col, FormControl, Grid, HelpBlock, Row } from "react-bootstrap";
 import { fetchResults } from "../../utils/eth";
 import { BlockchainData, Category, ContractAddress, Voting } from "../../utils/types";
 import ResultsModal from "../vote/ResultsModal";
@@ -21,6 +21,7 @@ interface IListVotingsPanelState {
   chosenVotingAddress: ContractAddress;
   chosenPrivacySetting: PrivacySetting;
   chosenAnswer: number;
+  displayInacessibleVotings: boolean;
   isDataRefreshRequested: boolean;
   results: string[];
   showResultsModal: boolean;
@@ -36,6 +37,7 @@ export default class ListVotingsPanel extends Component<IListVotingsPanelProps, 
       chosenCategoryIndex: null,
       chosenPrivacySetting: PrivacySetting.All,
       chosenVotingAddress: null,
+      displayInacessibleVotings: false,
       isDataRefreshRequested: false,
       results: [],
       showResultsModal: false,
@@ -119,6 +121,16 @@ export default class ListVotingsPanel extends Component<IListVotingsPanelProps, 
             />
           </Col>
         </Row>
+        <Row>
+          <Col md={6}>
+            <HelpBlock>Filter the results.</HelpBlock>
+            <FormControl type="input" />
+          </Col>
+          <Col md={6}>
+            <HelpBlock>Display inaccessible votings</HelpBlock>
+            <Checkbox checked={this.state.displayInacessibleVotings} onChange={this.handleCheck} />
+          </Col>
+        </Row>
         <Row style={{ marginTop: "3vh" }}>
           <Col md={12}>
             {this.state.chosenCategoryIndex != null && (
@@ -133,6 +145,7 @@ export default class ListVotingsPanel extends Component<IListVotingsPanelProps, 
                 votingState={this.props.votingState}
                 dataRefreshRequestHandled={this.dataRefreshed}
                 isDataRefreshRequested={this.state.isDataRefreshRequested}
+                displayInaccessibleVotings={this.state.displayInacessibleVotings}
               />
             )}
           </Col>
@@ -167,4 +180,9 @@ export default class ListVotingsPanel extends Component<IListVotingsPanelProps, 
       </Grid>
     );
   }
+  private handleCheck = () => {
+    this.setState({
+      displayInacessibleVotings: !this.state.displayInacessibleVotings,
+    });
+  };
 }

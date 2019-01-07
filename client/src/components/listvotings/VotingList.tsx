@@ -16,6 +16,7 @@ interface IVotingListProps {
   blockchainData: BlockchainData;
   chosenVotingAddress: ContractAddress;
   category: Category;
+  displayInaccessibleVotings: boolean;
   votings: Voting[];
   privacySetting: PrivacySetting;
   votingState: VotingState;
@@ -81,6 +82,9 @@ export default class VotingList extends Component<IVotingListProps, IVotingListS
       this.setState({ areVotingsFetched: false });
     }
     if (prevProps.privacySetting !== this.props.privacySetting) {
+      this.setState({ activePageIndex: 1 });
+    }
+    if (prevProps.displayInaccessibleVotings !== this.props.displayInaccessibleVotings) {
       this.setState({ activePageIndex: 1 });
     }
     if (this.props.isDataRefreshRequested && this.props.blockchainData) {
@@ -218,6 +222,11 @@ export default class VotingList extends Component<IVotingListProps, IVotingListS
 
   private filteredVotings = () => {
     return this.props.votings
+      .filter((voting) => {
+        if (!this.props.displayInaccessibleVotings) {
+          return voting.info.isPrivileged === null || voting.info.isPrivileged;
+        } else return true;
+      })
       .filter((voting) => {
         if (this.props.privacySetting === PrivacySetting.Private) {
           return voting.info.isPrivate;
