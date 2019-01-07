@@ -29,6 +29,7 @@ interface IVotingListState {
   activePageIndex: number;
   areVotingsFetched: boolean;
   filteredVotings: Voting[];
+  votingsForPage: Voting[];
 }
 
 export default class VotingList extends Component<IVotingListProps, IVotingListState> {
@@ -65,19 +66,22 @@ export default class VotingList extends Component<IVotingListProps, IVotingListS
       activePageIndex: 1,
       areVotingsFetched: false,
       filteredVotings: [],
+      votingsForPage: [],
     };
   }
 
   public componentDidMount = async () => {
     if (this.props.blockchainData) {
       this.fetchVotingsAndSetState();
-      this.getVotingsForPage();
     }
   };
 
   public componentDidUpdate = async (prevProps: IVotingListProps) => {
     if (prevProps.category !== this.props.category) {
       this.setState({ areVotingsFetched: false });
+    }
+    if (prevProps.privacySetting !== this.props.privacySetting) {
+      this.setState({ activePageIndex: 1 });
     }
     if (this.props.isDataRefreshRequested && this.props.blockchainData) {
       this.fetchVotingsAndSetState();
@@ -89,9 +93,7 @@ export default class VotingList extends Component<IVotingListProps, IVotingListS
   };
 
   public render() {
-    const pageVotings = this.state.filteredVotings;
-    const nrOfPages = Math.ceil(pageVotings.length / this.nrOfVotingsPerPage);
-
+    const nrOfPages = Math.ceil(this.filteredVotings().length / this.nrOfVotingsPerPage);
     return (
       <Fragment>
         {this.state.areVotingsFetched ? (
@@ -230,19 +232,20 @@ export default class VotingList extends Component<IVotingListProps, IVotingListS
   };
 
   private getVotingsForPage() {
+    let index = this.state.activePageIndex - 1;
     const votings = this.filteredVotings();
     const dividedVotings: Voting[][] = [];
 
     for (let i = 0; i < votings.length; i += this.nrOfVotingsPerPage) {
       dividedVotings.push(votings.slice(i, i + this.nrOfVotingsPerPage));
     }
+    if (dividedVotings.length === 1) index = 0;
 
-    return dividedVotings.length > 0 ? dividedVotings[this.state.activePageIndex - 1] : [];
+    return dividedVotings.length > 0 ? dividedVotings[index] : [];
   }
 
   private handlePageClick(index: number) {
     if (this.state.activePageIndex !== index) {
-      console.log(index);
       this.setState({
         activePageIndex: index,
       });
