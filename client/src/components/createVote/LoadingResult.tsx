@@ -20,19 +20,36 @@ export default class LoadingResult extends Component<ILoadingResultProps> {
   public render() {
     return (
       <Fragment>
-        <Row className="text-center">
+        <Row className="text-center" style={{ marginTop: "-1em" }}>
           <Col sm={12}>
-            <h1>Please wait</h1>
+            <h2
+              style={{
+                fontFamily: "Roboto",
+                marginBottom: "5vh",
+                marginTop: "5vh",
+              }}
+            >
+              Please wait
+            </h2>
           </Col>
         </Row>
-        <Row className="text-center" style={{ marginTop: "12px" }}>
+        <Row className="text-center">
           <Col sm={12}>
-            <Loader type="Grid" color="#00BFFF" height="10%" width="10%" />
+            <Loader style={{ marginTop: "20vh" }} type="Grid" color="#00BFFF" height="30%" width="30%" />
           </Col>
         </Row>
         <Row className="text-center">
           <Col sm={12}>
-            <h3>Your transaction is being processed</h3>
+            <h2
+              style={{
+                fontFamily: "Roboto",
+                marginBottom: "5vh",
+                marginTop: "5vh",
+                textAlign: "center",
+              }}
+            >
+              Your transaction is being processed{" "}
+            </h2>
           </Col>
         </Row>
       </Fragment>
