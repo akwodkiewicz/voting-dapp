@@ -53,7 +53,7 @@ export default class VoteDates extends Component<IVoteDatesProps> {
               </FormGroup>
             </Col>
             <Col md={6}>
-              <FormGroup validationState={isVotingEndDateTimeValid(this.props.endDateTime) ? null : "error"}>
+              <FormGroup validationState={this.props.valid ? null : "error"}>
                 <HelpBlock>Time</HelpBlock>
                 <Datetime
                   inputProps={{ id: "voteTimeEnd" }}
