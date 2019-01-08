@@ -32,7 +32,6 @@ export default class AboutPage extends Component {
             <p style={{ fontSize: "1.1em", textAlign: "justify" }}>
               This platform is created on top of a public blockchain, a distributed ledger technology.
             </p>
-            <br />
             <p style={{ fontSize: "1.1em", textAlign: "justify" }}>
               This means blockchain is used as a database for logging all the events that occur in the system. It is
               also used as a network protocol for connecting to and sharing data with other nodes around the world. The
@@ -46,7 +45,6 @@ export default class AboutPage extends Component {
             <p style={{ fontSize: "1.1em", textAlign: "justify" }}>
               Create ballots and polls, and participate in other's people votings.
             </p>
-            <br />
             <p style={{ fontSize: "1.1em", textAlign: "justify" }}>
               This platform allows you to participate in public votings created by people from all around the world. Do
               you want to learn someone else's stance on the matter of your choice – just create your own voting. Or
@@ -71,49 +69,54 @@ export default class AboutPage extends Component {
         </Row>
         <Row>
           <Col md={4}>
-            <img
-              style={{
-                display: "block",
-                maxHeight: "100%", // 2nd option: 50%
-                maxWidth: "100%",
-                marginLeft: "auto",
-                marginRight: "auto",
-              }}
-              src={EthereumLogo}
-            />
+            {" "}
+            <a target="_blank" rel="noopener noreferrer" href="https://www.ethereum.org/">
+              <img
+                style={{
+                  display: "block",
+                  marginLeft: "auto",
+                  marginRight: "auto",
+                  maxHeight: "100%", // 2nd option: 50%
+                  maxWidth: "100%",
+                }}
+                src={EthereumLogo}
+              />{" "}
+            </a>
             <ul style={{ fontSize: "1.2em", marginTop: "2em" }}>
-              <li>Votings stored as smart contracts</li>
-              <li>Validates user's actions based on his adress' permissions </li>
-              <li>Transaction (voting) history visible for anyone</li>
+              <li>Stores votings as smart contracts</li>
+              <li>Validates user's actions based on his adress' permissions</li>
+              <li>Publicly available transaction (voting) history</li>
             </ul>
           </Col>
           <Col md={4}>
             <img
               style={{
                 display: "block",
-                maxHeight: "100%", // 2nd option: 50%
-                maxWidth: "100%",
                 marginLeft: "auto",
                 marginRight: "auto",
+                maxHeight: "100%", // 2nd option: 50%
+                maxWidth: "100%",
               }}
               src={DVPLogo}
             />
             <ul style={{ fontSize: "1.2em", marginTop: "2em" }}>
               <li>Connected to Ethereum blockchain via Metamask</li>
-              <li>Clear and intuitive interface for voting creation, results displaying and voting</li>
+              <li>Clear and intuitive interface for creating polls, voting and displaying results</li>
             </ul>
           </Col>
           <Col md={4}>
-            <img
-              style={{
-                display: "block",
-                maxHeight: "100%", // 2nd option: 50%
-                maxWidth: "100%",
-                marginLeft: "auto",
-                marginRight: "auto",
-              }}
-              src={MetaMaskLogo}
-            />
+            <a target="_blank" rel="noopener noreferrer" href="https://metamask.io/">
+              <img
+                style={{
+                  display: "block",
+                  marginLeft: "auto",
+                  marginRight: "auto",
+                  maxHeight: "100%", // 2nd option: 50%
+                  maxWidth: "100%",
+                }}
+                src={MetaMaskLogo}
+              />{" "}
+            </a>
             <ul style={{ fontSize: "1.2em", marginTop: "2em" }}>
               <li>Web browser plugin storing user's wallet</li>
               <li>Responsible for communication with blockchain</li>
