@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { Redirect, Route } from "react-router-dom";
 import NoMetamaskAccess from "../../images/no-acceptance.png";
 import NoMetamaskInstalled from "../../images/no-metamask.png";
+import WrongNetwork from "../../images/wrong-network.png";
 import AboutPage from "../about/AboutPage";
 
 interface INoAccessPageProps {
@@ -17,6 +18,14 @@ export default class NoAccessPage extends Component<INoAccessPageProps> {
   }
 
   public render() {
+    let imgSrc;
+    if (this.props.imgChoice == 1) {
+      imgSrc = NoMetamaskInstalled;
+    } else if (this.props.imgChoice === 2) {
+      imgSrc = WrongNetwork;
+    } else {
+      imgSrc = NoMetamaskAccess;
+    }
     return (
       <div>
         <Route
@@ -28,8 +37,8 @@ export default class NoAccessPage extends Component<INoAccessPageProps> {
                 style={{
                   fontFamily: "Roboto",
                   fontSize: "4em",
-                  marginBottom: "5vh",
-                  marginTop: "5vh",
+                  marginBottom: "1.5em",
+                  marginTop: "1.5em",
                   textAlign: "center",
                 }}
               >
@@ -39,14 +48,14 @@ export default class NoAccessPage extends Component<INoAccessPageProps> {
                 style={{
                   display: "block",
                   height: "auto", // 2nd option: 50%
-                  marginBottom: "5vh",
+                  marginBottom: "1.5em",
                   marginLeft: "auto",
                   marginRight: "auto",
                   maxHeight: "50%", // 2nd option: remove
                   maxWidth: "70%", // 2nd option: remove
                   width: "auto", // 2nd option: auto
                 }}
-                src={this.props.imgChoice === 1 ? NoMetamaskInstalled : NoMetamaskAccess}
+                src={imgSrc}
               />
               <p style={{ fontSize: "2em", fontFamily: "Roboto", textAlign: "center" }}>{this.props.firstParagraph}</p>
               <p style={{ fontSize: "2em", fontFamily: "Roboto", textAlign: "center" }}>{this.props.secondParagraph}</p>

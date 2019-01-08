@@ -10,8 +10,6 @@ export default class Header extends Component<IHeaderProps> {
   public render() {
     return (
       <Fragment>
-        {/* <h1>Decentralized Voting Platform</h1>
-        <small>Fully anonymous and transparent voting platform powered by Ethereum blockchain</small> */}
         <Navbar fluid fixedTop={false} collapseOnSelect={false}>
           <Nav bsStyle="tabs" justified>
             <IndexLinkContainer to="/" disabled={this.props.block === 4 ? true : false}>
