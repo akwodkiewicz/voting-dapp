@@ -130,7 +130,7 @@ export default class App extends Component<any, IAppState> {
       return (
         <div>
           <Header block={3} />
-          <NoAccessPage title={title} firstParagraph={firstParagraph} secondParagraph={secondParagraph} imgChoice={1} />
+          <NoAccessPage title={title} firstParagraph={firstParagraph} secondParagraph={secondParagraph} imgChoice={2} />
         </div>
       );
     } else if (!this.state.blockchainData) {
@@ -140,7 +140,7 @@ export default class App extends Component<any, IAppState> {
       return (
         <div>
           <Header block={3} />
-          <NoAccessPage title={title} firstParagraph={firstParagraph} secondParagraph={secondParagraph} imgChoice={2} />
+          <NoAccessPage title={title} firstParagraph={firstParagraph} secondParagraph={secondParagraph} imgChoice={3} />
         </div>
       );
     } else {
