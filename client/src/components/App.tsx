@@ -121,7 +121,7 @@ export default class App extends Component<any, IAppState> {
     } else if (!this.state.blockchainData && this.state.wrongNetwork) {
       const title = "Wrong network";
       const firstParagraph =
-        "This decentralized application is defined to work with '" +
+        "This distributed application is defined to work with '" +
         AppConfig.network +
         "' network. You are currently connected to '" +
         this.state.connectedNetworkType +
@@ -135,7 +135,7 @@ export default class App extends Component<any, IAppState> {
       );
     } else if (!this.state.blockchainData) {
       const title = "Access request rejected";
-      const firstParagraph = "This decentralized application needs access to your Metamask data.";
+      const firstParagraph = "This distributed application needs access to your Metamask data.";
       const secondParagraph = "Refresh page and grant access when the Metamask pop-up window appears.";
       return (
         <div>
