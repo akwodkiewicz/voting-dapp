@@ -18,33 +18,40 @@ export default class AboutPage extends Component {
         <Row>
           <Col md={4}>
             <h3 style={{ textAlign: "center", fontWeight: "bold" }}>Distributed</h3>
-            <p style={{ fontSize: "1.2em", textAlign: "justify" }}>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin nibh augue, suscipit a, scelerisque sed,
-              lacinia in, mi. Cras vel lorem. Etiam pellentesque aliquet tellus. Phasellus pharetra nulla ac diam.
-              Quisque semper justo at risus. Donec venenatis, turpis vel hendrerit interdum, dui ligula ultricies purus,
-              sed posuere libero dui id orci. Nam congue, pede vitae dapibus aliquet, elit magna vulputate arcu, vel
-              tempus metus leo non est.
+            <p style={{ fontSize: "1.1em", textAlign: "justify" }}>
+              This system is running on thousands of nodes at the same time, thus eliminating a single point of failure.
+            </p>
+            <p style={{ fontSize: "1.1em", textAlign: "justify" }}>
+              But distribution serves not only as a way of providing high availability. The lack of central server
+              ensures that the platform has no single authority, which could manage all the operations internally
+              without other participants' consent.
             </p>
           </Col>
           <Col md={4}>
             <h3 style={{ textAlign: "center", fontWeight: "bold" }}>Blockchain-based</h3>
-            <p style={{ fontSize: "1.2em", textAlign: "justify" }}>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin nibh augue, suscipit a, scelerisque sed,
-              lacinia in, mi. Cras vel lorem. Etiam pellentesque aliquet tellus. Phasellus pharetra nulla ac diam.
-              Quisque semper justo at risus. Donec venenatis, turpis vel hendrerit interdum, dui ligula ultricies purus,
-              sed posuere libero dui id orci. Nam congue, pede vitae dapibus aliquet, elit magna vulputate arcu, vel
-              tempus metus leo non est.
+            <p style={{ fontSize: "1.1em", textAlign: "justify" }}>
+              This platform is created on top of a public blockchain, a distributed ledger technology.
+            </p>
+            <br />
+            <p style={{ fontSize: "1.1em", textAlign: "justify" }}>
+              This means blockchain is used as a database for logging all the events that occur in the system. It is
+              also used as a network protocol for connecting to and sharing data with other nodes around the world. The
+              cryptography behind blockchain protects the stored records from alteration and makes them persistent. And
+              there is no registration process, so all the transactions made in the network are anonymous.
             </p>
           </Col>
 
           <Col md={4}>
             <h3 style={{ textAlign: "center", fontWeight: "bold" }}>Voting platform</h3>
-            <p style={{ fontSize: "1.2em", textAlign: "justify" }}>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin nibh augue, suscipit a, scelerisque sed,
-              lacinia in, mi. Cras vel lorem. Etiam pellentesque aliquet tellus. Phasellus pharetra nulla ac diam.
-              Quisque semper justo at risus. Donec venenatis, turpis vel hendrerit interdum, dui ligula ultricies purus,
-              sed posuere libero dui id orci. Nam congue, pede vitae dapibus aliquet, elit magna vulputate arcu, vel
-              tempus metus leo non est.
+            <p style={{ fontSize: "1.1em", textAlign: "justify" }}>
+              Create ballots and polls, and participate in other's people votings.
+            </p>
+            <br />
+            <p style={{ fontSize: "1.1em", textAlign: "justify" }}>
+              This platform allows you to participate in public votings created by people from all around the world. Do
+              you want to learn someone else's stance on the matter of your choice – just create your own voting. Or
+              maybe you want only <em>some</em> people to be able to participate? If you do, you can create a{" "}
+              <em>private voting</em> by defining a list of privileged voters.
             </p>
           </Col>
         </Row>
