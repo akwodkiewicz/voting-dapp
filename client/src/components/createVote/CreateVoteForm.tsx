@@ -490,7 +490,7 @@ export default class CreateVoteForm extends Component<ICreateVoteFormProps, ICre
   };
 
   private arePrivilegedAddressesValid = (addresses: Voter[]) => {
-    return addresses.every((a) => this.props.blockchainData.web3.utils.isAddress(a));
+    return addresses.length > 0 && addresses.every((a) => this.props.blockchainData.web3.utils.isAddress(a));
   };
 
   private isTypedAnswerValid = (typedAnswer: string) => {

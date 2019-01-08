@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { ToggleButton, ToggleButtonGroup } from "react-bootstrap";
+import { ControlLabel, FormGroup, HelpBlock, ToggleButton, ToggleButtonGroup } from "react-bootstrap";
 
 export enum PrivacySetting {
   All = "all",
@@ -23,31 +23,36 @@ export default class PrivacyButtons extends Component<IPrivacyButtonsProps> {
 
   public render() {
     return (
-      <ToggleButtonGroup
-        type="radio"
-        name="privacySetting"
-        value={this.props.chosenPrivacySetting}
-        onChange={this.handleOnChange}
-      >
-        <ToggleButton
-          value={PrivacySetting.All}
-          {...(this.props.chosenPrivacySetting === PrivacySetting.All ? { active: true } : null)}
+      <FormGroup>
+        <ControlLabel style={{ fontSize: "1.5em" }}>Voting type</ControlLabel>
+        <HelpBlock>Display votings with selected privacy type</HelpBlock>
+        <ToggleButtonGroup
+          type="radio"
+          name="privacySetting"
+          value={this.props.chosenPrivacySetting}
+          onChange={this.handleOnChange}
+          justified
         >
-          {PrivacySetting.All}
-        </ToggleButton>
-        <ToggleButton
-          value={PrivacySetting.Public}
-          {...(this.props.chosenPrivacySetting === PrivacySetting.Public ? { active: true } : null)}
-        >
-          {PrivacySetting.Public}
-        </ToggleButton>
-        <ToggleButton
-          value={PrivacySetting.Private}
-          {...(this.props.chosenPrivacySetting === PrivacySetting.Private ? { active: true } : null)}
-        >
-          {PrivacySetting.Private}
-        </ToggleButton>
-      </ToggleButtonGroup>
+          <ToggleButton
+            value={PrivacySetting.All}
+            {...(this.props.chosenPrivacySetting === PrivacySetting.All ? { active: true } : null)}
+          >
+            {PrivacySetting.All}
+          </ToggleButton>
+          <ToggleButton
+            value={PrivacySetting.Public}
+            {...(this.props.chosenPrivacySetting === PrivacySetting.Public ? { active: true } : null)}
+          >
+            {PrivacySetting.Public}
+          </ToggleButton>
+          <ToggleButton
+            value={PrivacySetting.Private}
+            {...(this.props.chosenPrivacySetting === PrivacySetting.Private ? { active: true } : null)}
+          >
+            {PrivacySetting.Private}
+          </ToggleButton>
+        </ToggleButtonGroup>
+      </FormGroup>
     );
   }
 }

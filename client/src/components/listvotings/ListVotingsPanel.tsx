@@ -1,6 +1,7 @@
 import moment from "moment";
 import React, { Component, Fragment } from "react";
-import { ButtonToolbar, Col, Row } from "react-bootstrap";
+import { Col, FormControl, Grid, HelpBlock, Row } from "react-bootstrap";
+import Switch from "react-switch";
 import { fetchResults } from "../../utils/eth";
 import { BlockchainData, Category, ContractAddress, Voting } from "../../utils/types";
 import ResultsModal from "../vote/ResultsModal";
@@ -21,12 +22,14 @@ interface IListVotingsPanelState {
   chosenVotingAddress: ContractAddress;
   chosenPrivacySetting: PrivacySetting;
   chosenAnswer: number;
+  displayInacessibleVotings: boolean;
+  filterPhase: string;
+
   isDataRefreshRequested: boolean;
   results: string[];
   showResultsModal: boolean;
   showVoteModal: boolean;
 }
-
 export default class ListVotingsPanel extends Component<IListVotingsPanelProps, IListVotingsPanelState> {
   constructor(props) {
     super(props);
@@ -36,6 +39,8 @@ export default class ListVotingsPanel extends Component<IListVotingsPanelProps, 
       chosenCategoryIndex: null,
       chosenPrivacySetting: PrivacySetting.All,
       chosenVotingAddress: null,
+      displayInacessibleVotings: false,
+      filterPhase: "",
       isDataRefreshRequested: false,
       results: [],
       showResultsModal: false,
@@ -95,13 +100,15 @@ export default class ListVotingsPanel extends Component<IListVotingsPanelProps, 
 
   public render() {
     return (
-      <Fragment>
-        <Row className="text-center">
-          <h3>{this.props.title}</h3>
+      <Grid fluid>
+        <Row style={{ textAlign: "center" }}>
+          <Col md={12}>
+            <h3 style={{ fontSize: "2.5em" }}>{this.props.title}</h3>
+          </Col>
         </Row>
-        <Row>
+        <Row style={{ marginTop: "5vh" }}>
           {/* https://github.com/react-bootstrap/react-bootstrap/issues/1928#issuecomment-331509515 */}
-          <ButtonToolbar style={{ display: "flex", justifyContent: "center" }}>
+          <Col md={6}>
             <CategoryDropdown
               blockchainData={this.props.blockchainData}
               categories={this.state.categories}
@@ -109,13 +116,35 @@ export default class ListVotingsPanel extends Component<IListVotingsPanelProps, 
               setCategoriesInParent={this.setCategories}
               setChosenCategoryInParent={this.handleCategoryClick}
             />
+          </Col>
+          <Col md={6}>
             <PrivacyButtons
               chosenPrivacySetting={this.state.chosenPrivacySetting}
               setchosenPrivacySettingInParent={this.setPrivacySetting}
             />
-          </ButtonToolbar>
+          </Col>
         </Row>
-        <Row>
+        {this.state.chosenCategoryIndex != null && (
+          <Row>
+            <Col md={6}>
+              <HelpBlock>Filter the results</HelpBlock>
+              <FormControl type="text" onChange={this.handleFilterChange} />
+            </Col>
+            <Col md={6}>
+              <HelpBlock>Display inaccessible votings</HelpBlock>
+              <Switch
+                checked={this.state.displayInacessibleVotings}
+                onChange={this.handleCheck}
+                onColor="#86d3ff"
+                onHandleColor="#2693e6"
+                uncheckedIcon={false}
+                checkedIcon={false}
+              />
+            </Col>
+          </Row>
+        )}
+
+        <Row style={{ marginTop: "3vh" }}>
           <Col md={12}>
             {this.state.chosenCategoryIndex != null && (
               <VotingList
@@ -129,6 +158,8 @@ export default class ListVotingsPanel extends Component<IListVotingsPanelProps, 
                 votingState={this.props.votingState}
                 dataRefreshRequestHandled={this.dataRefreshed}
                 isDataRefreshRequested={this.state.isDataRefreshRequested}
+                displayInaccessibleVotings={this.state.displayInacessibleVotings}
+                filterPhase={this.state.filterPhase}
               />
             )}
           </Col>
@@ -160,7 +191,18 @@ export default class ListVotingsPanel extends Component<IListVotingsPanelProps, 
             )}
           </Col>
         </Row>
-      </Fragment>
+      </Grid>
     );
   }
+  private handleCheck = () => {
+    this.setState({
+      displayInacessibleVotings: !this.state.displayInacessibleVotings,
+    });
+  };
+
+  private handleFilterChange = (e) => {
+    this.setState({
+      filterPhase: e.target.value,
+    });
+  };
 }

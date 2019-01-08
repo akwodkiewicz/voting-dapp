@@ -1,5 +1,6 @@
 import React, { Component, Fragment } from "react";
-import { DropdownButton, MenuItem } from "react-bootstrap";
+import { ControlLabel, DropdownButton, FormGroup, HelpBlock, MenuItem } from "react-bootstrap";
+import Loader from "react-loader-spinner";
 
 import { fetchCategories } from "../../utils/eth";
 import { BlockchainData, Category } from "../../utils/types";
@@ -57,24 +58,32 @@ export default class CategoryDropdown extends Component<ICategoryListProps, ICat
   public render() {
     return (
       <Fragment>
-        {this.state.areCategoriesFetched ? (
-          <DropdownButton id="categories" title={this.state.buttonTitle} bsStyle="default">
-            {this.props.categories.map((cat, index) => {
-              return (
-                <MenuItem
-                  key={cat.name}
-                  eventKey={cat.name}
-                  onSelect={() => this.handleOnClick(cat.name)}
-                  {...(index === this.props.chosenCategoryIndex ? { active: true } : null)}
-                >
-                  {cat.name}
-                </MenuItem>
-              );
-            })}
-          </DropdownButton>
-        ) : (
-          <h2>Fetching data from blockchain...</h2>
-        )}
+        <FormGroup>
+          <ControlLabel style={{ fontSize: "1.5em" }}>Category</ControlLabel>
+          <HelpBlock>Select an existing category from the list</HelpBlock>
+          {this.state.areCategoriesFetched ? (
+            <DropdownButton id="categories" title={this.state.buttonTitle} bsStyle="default">
+              {this.props.categories.map((cat, index) => {
+                return (
+                  <MenuItem
+                    key={cat.name}
+                    eventKey={cat.name}
+                    onSelect={() => this.handleOnClick(cat.name)}
+                    {...(index === this.props.chosenCategoryIndex ? { active: true } : null)}
+                  >
+                    {cat.name}
+                  </MenuItem>
+                );
+              })}
+            </DropdownButton>
+          ) : (
+            <div>
+              <Loader type="Grid" color="#00BFFF" height="10%" width="10%" />
+
+              <h2>Fetching data from blockchain...</h2>
+            </div>
+          )}
+        </FormGroup>
       </Fragment>
     );
   }
