@@ -26,7 +26,6 @@ interface IHomePageProps {
 
 interface IHomePageState {
   chosenAnswer: number;
-  disableSearch: boolean;
   isDataRefreshRequested: boolean;
   searchActionCalled: boolean;
   searchBoxText: string;
@@ -42,7 +41,6 @@ export default class HomePage extends Component<IHomePageProps, IHomePageState> 
     super(props);
     this.state = {
       chosenAnswer: null,
-      disableSearch: false,
       isDataRefreshRequested: false,
       searchActionCalled: false,
       searchBoxText: "",
@@ -55,7 +53,7 @@ export default class HomePage extends Component<IHomePageProps, IHomePageState> 
   }
 
   public searchVoting = async () => {
-    if (this.getValidationState().validation !== Validation.Success) {
+    if (this.getValidationState() !== Validation.Success) {
       return;
     }
 
@@ -98,16 +96,15 @@ export default class HomePage extends Component<IHomePageProps, IHomePageState> 
   };
 
   public getValidationState = () => {
-    const searchText = this.state.searchBoxText.toLowerCase();
-    if (searchText !== "") {
-      const isValid = this.props.blockchainData.web3.utils.isAddress(searchText);
+    if (this.state.searchBoxText !== "") {
+      const isValid = this.props.blockchainData.web3.utils.isAddress(this.state.searchBoxText);
       if (isValid) {
-        return { validation: Validation.Success, disableSearch: false };
+        return Validation.Success;
       } else {
-        return { validation: Validation.Error, disableSearch: true };
+        return Validation.Error;
       }
     }
-    return { validation: null, disableSearch: false };
+    return null;
   };
 
   public handleSearchBoxChange = (e) => {
@@ -117,6 +114,7 @@ export default class HomePage extends Component<IHomePageProps, IHomePageState> 
   };
 
   public render() {
+    const validationState = this.getValidationState();
     let modal;
     if (this.state.voting != null) {
       if (this.state.showVoteModal) {
@@ -165,10 +163,11 @@ export default class HomePage extends Component<IHomePageProps, IHomePageState> 
         <Row />
         <Row>
           <Col md={12}>
-            <FormGroup bsSize="large" controlId="address" validationState={this.getValidationState().validation}>
+            <FormGroup bsSize="large" controlId="address" validationState={validationState}>
               <ControlLabel style={{ fontSize: "2em" }}>Search for the voting</ControlLabel>
               <HelpBlock>
-                Enter a valid keccak256 Ethereum address. It must start with '0x' and be exactly 42 characters long.
+                Enter a valid keccak256 Ethereum address. Use all upper- or lowercase characters to ignore{" "}
+                <a href="https://github.com/ethereum/EIPs/blob/master/EIPS/eip-55.md">checksum validation</a>.
               </HelpBlock>
               <InputGroup>
                 <FormGroup bsSize="large" controlId="address">
@@ -186,7 +185,7 @@ export default class HomePage extends Component<IHomePageProps, IHomePageState> 
                   <FormControl.Feedback />
                 </FormGroup>
                 <InputGroup.Button>
-                  <Button bsSize="large" onClick={this.searchVoting} disabled={this.getValidationState().disableSearch}>
+                  <Button bsSize="large" onClick={this.searchVoting} disabled={validationState === Validation.Error}>
                     <Glyphicon glyph="search" />
                   </Button>
                 </InputGroup.Button>
