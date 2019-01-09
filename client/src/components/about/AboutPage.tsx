@@ -142,8 +142,8 @@ export default class AboutPage extends Component {
             <p style={{ fontSize: "1.2em", textAlign: "justify" }}>
               Distributed Voting Platform was created by Andrzej Wódkiewicz and Gustaw Żyngiel, final year students
               pursuing the BSc in Computer Science programme at Warsaw University of Technology, Faculty of Mathematics
-              and Information Science. The application is their thesis project, developed under the guidance of Senior
-              Lecturer Paweł Kotowski, their thesis supervisor.
+              and Information Science. The application is their thesis project, developed under the guidance of Paweł
+              Kotowski, BEng, PhD, their thesis supervisor.
             </p>
           </Col>
         </Row>
