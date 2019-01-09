@@ -1,11 +1,8 @@
 import { expect } from "chai";
-import { configure, shallow } from "enzyme";
-import Adapter from "enzyme-adapter-react-16";
+import { shallow } from "enzyme";
 import React from "react";
 
 import Header from "./Header";
-
-configure({ adapter: new Adapter() });
 
 describe("<Header/>", () => {
   it("should have 4 NavItems", () => {
