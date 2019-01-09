@@ -466,12 +466,14 @@ export default class CreateVoteForm extends Component<ICreateVoteFormProps, ICre
     if (!isVotingEndDateTimeValid(this.state.voteDatesProps.endDateTime)) {
       this.setState((state) => {
         return {
+          submitFailed: true,
           voteDatesProps: {
             ...state.voteDatesProps,
             valid: false,
           },
         };
       });
+      return; // setState not updating state fast enough and control flow goes straight to setSubmitData call
     }
 
     if (
