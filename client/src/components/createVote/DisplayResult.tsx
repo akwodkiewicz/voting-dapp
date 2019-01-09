@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { Alert, Button } from "react-bootstrap";
-import { ContractAddress } from "../../utils/types";
-import { ResultStatus, VotingCreatedEventData } from "./CreateVotePage";
+import { ResultStatus } from "../../utils/enums";
+import { ContractAddress, VotingCreatedEventData } from "../../utils/types";
 
 interface IDisplayResultProps {
   status: ResultStatus;

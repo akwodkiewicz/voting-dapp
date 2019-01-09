@@ -10,16 +10,9 @@ import {
   Panel,
   Tooltip,
 } from "react-bootstrap";
-
+import { PrivacySetting, VotingState } from "../../utils/enums";
 import { fetchVotings } from "../../utils/eth";
 import { BlockchainData, Category, ContractAddress, Voting } from "../../utils/types";
-import { PrivacySetting } from "./PrivacyButtons";
-
-export enum VotingState {
-  Active = "active",
-  Passive = "passive",
-  Disabled = "disabled",
-}
 
 interface IVotingListProps {
   blockchainData: BlockchainData;

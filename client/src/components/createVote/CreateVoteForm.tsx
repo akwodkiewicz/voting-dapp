@@ -2,12 +2,13 @@ import moment from "moment";
 import React, { Component } from "react";
 import { Button, Col, ControlLabel, FormControl, FormGroup, HelpBlock, InputGroup, Radio, Row } from "react-bootstrap";
 import "react-datetime/css/react-datetime.css"; //tslint:disable-line
+import { CategoryPanelType, Validation, VoteType, VotingExpiryOption } from "../../utils/enums";
 import { ethStrBytesLength, fetchCategories } from "../../utils/eth";
-import { BlockchainData, VoteFormData } from "../../utils/types";
+import { BlockchainData, VoteFormData, Voter } from "../../utils/types";
 import AnswersList from "./AnswersList";
-import CategoryPanel, { CategoryPanelType, ICategoryPanelProps } from "./CategoryPanel";
-import VoteDates, { isVotingEndDateTimeValid, IVoteDatesProps, VotingExpiryOption } from "./VoteDates";
-import VoteTypePanel, { Voter, VoteType } from "./VoteTypePanel";
+import CategoryPanel, { ICategoryPanelProps } from "./CategoryPanel";
+import VoteDates, { isVotingEndDateTimeValid, IVoteDatesProps } from "./VoteDates";
+import VoteTypePanel from "./VoteTypePanel";
 
 interface ICreateVoteFormProps {
   formData: VoteFormData;
@@ -136,7 +137,9 @@ export default class CreateVoteForm extends Component<ICreateVoteFormProps, ICre
           <Col md={12}>
             <FormGroup
               controlId="question"
-              validationState={this.state.questionTouched ? (this.state.questionValid ? "success" : "error") : null}
+              validationState={
+                this.state.questionTouched ? (this.state.questionValid ? Validation.Success : Validation.Error) : null
+              }
             >
               <ControlLabel>Question</ControlLabel>
               <FormControl
@@ -159,9 +162,9 @@ export default class CreateVoteForm extends Component<ICreateVoteFormProps, ICre
               controlId="answer"
               validationState={
                 this.state.answersTouched && !this.state.answersValid
-                  ? "error"
+                  ? Validation.Error
                   : this.state.typedAnswerTouched && !this.state.typedAnswerValid
-                  ? "warning"
+                  ? Validation.Warning
                   : null
               }
             >
@@ -284,7 +287,7 @@ export default class CreateVoteForm extends Component<ICreateVoteFormProps, ICre
 
         <Row style={{ marginBottom: "10px" }}>
           <Col md={12}>
-            <FormGroup validationState={this.state.submitFailed ? "error" : null}>
+            <FormGroup validationState={this.state.submitFailed ? Validation.Error : null}>
               <Button onClick={this.handleCreateVote}>Submit</Button>
               {this.state.submitFailed ? <HelpBlock>You need to fill the form correctly</HelpBlock> : null}
             </FormGroup>

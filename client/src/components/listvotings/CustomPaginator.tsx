@@ -1,10 +1,6 @@
 import React, { Component } from "react";
 import { Button, Col, Grid, Pagination, Row } from "react-bootstrap";
 
-// interface IVotingListProps {
-
-// }
-
 interface ICustomPaginatorState {
   activePageIndex: number;
 }

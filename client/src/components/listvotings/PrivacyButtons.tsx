@@ -1,11 +1,6 @@
 import React, { Component } from "react";
 import { ControlLabel, FormGroup, HelpBlock, ToggleButton, ToggleButtonGroup } from "react-bootstrap";
-
-export enum PrivacySetting {
-  All = "all",
-  Public = "public",
-  Private = "private",
-}
+import { PrivacySetting } from "../../utils/enums";
 
 interface IPrivacyButtonsProps {
   chosenPrivacySetting: PrivacySetting;

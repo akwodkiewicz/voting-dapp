@@ -1,11 +1,8 @@
+import { CategoryPanelType, PrivacySetting, VoteType, VotingExpiryOption } from "./enums";
 import moment, { Moment } from "moment";
-import Web3 = require("web3");
-import { CategoryPanelType } from "../components/createVote/CategoryPanel";
-import { VotingExpiryOption } from "../components/createVote/VoteDates";
-import { Voter, VoteType } from "../components/createVote/VoteTypePanel";
-import { PrivacySetting } from "../components/listvotings/PrivacyButtons";
 import { ManagerContract } from "../typed-contracts/ManagerContract";
 import { VotingContract } from "../typed-contracts/VotingContract";
+import Web3 = require("web3");
 
 export type ContractAddress = string;
 
@@ -47,3 +44,11 @@ export type VotingInfo = {
     isPrivileged: boolean;
     hasUserVoted: boolean;
 };
+
+export type VotingCreatedEventData = {
+    creator: ContractAddress;
+    votingAddress: ContractAddress;
+    question: string;
+};
+
+export type Voter = string;

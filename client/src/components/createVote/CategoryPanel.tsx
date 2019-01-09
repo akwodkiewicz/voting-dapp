@@ -1,11 +1,7 @@
 import React, { Component } from "react";
 import { FormControl, FormGroup, HelpBlock } from "react-bootstrap";
+import { CategoryPanelType, Validation } from "../../utils/enums";
 import { Category, ContractAddress } from "../../utils/types";
-
-export enum CategoryPanelType {
-  Existing = "existing",
-  New = "new",
-}
 
 export interface ICategoryPanelProps {
   categoriesList: Category[];
@@ -48,7 +44,9 @@ export default class CategoryPanel extends Component<ICategoryPanelProps> {
       }
     } else {
       return (
-        <FormGroup validationState={this.props.touched ? (this.props.valid ? "success" : "error") : null}>
+        <FormGroup
+          validationState={this.props.touched ? (this.props.valid ? Validation.Success : Validation.Error) : null}
+        >
           <FormControl
             onChange={this.categoryHandler}
             id="answer"

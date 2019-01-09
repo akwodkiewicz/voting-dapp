@@ -1,7 +1,6 @@
 import React, { Component, Fragment } from "react";
 import { ControlLabel, DropdownButton, FormGroup, HelpBlock, MenuItem } from "react-bootstrap";
 import Loader from "react-loader-spinner";
-
 import { fetchCategories } from "../../utils/eth";
 import { BlockchainData, Category } from "../../utils/types";
 

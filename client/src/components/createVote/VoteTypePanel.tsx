@@ -1,14 +1,8 @@
 import React, { Component, Fragment } from "react";
-
 import { ControlLabel, FormGroup, Glyphicon, OverlayTrigger, Radio, Tooltip } from "react-bootstrap";
+import { VoteType } from "../../utils/enums";
+import { Voter } from "../../utils/types";
 import PrivilegedAddresses from "./PrivilegedAddresses";
-
-export type Voter = string;
-
-export enum VoteType {
-  Public = "public",
-  Private = "private",
-}
 
 interface IVoteTypeProps {
   voteType: VoteType;

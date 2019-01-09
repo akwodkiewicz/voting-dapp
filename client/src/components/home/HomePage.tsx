@@ -12,17 +12,13 @@ import {
   InputGroup,
   Row,
 } from "react-bootstrap";
+import { Validation } from "../../utils/enums";
 import { fetchResults, fetchVoting } from "../../utils/eth";
 import { BlockchainData, Voting } from "../../utils/types";
 import NotFoundModal from "../vote/NotFoundModal";
 import ResultsModal from "../vote/ResultsModal";
 import VoteModal from "../vote/VoteModal";
 
-export enum Validation {
-  Success = "success",
-  Error = "error",
-  Warning = "warning",
-}
 interface IHomePageProps {
   blockchainData: BlockchainData;
   displayHome: boolean;
@@ -59,7 +55,7 @@ export default class HomePage extends Component<IHomePageProps, IHomePageState> 
   }
 
   public searchVoting = async () => {
-    if (this.getValidationState().validation !== "success") {
+    if (this.getValidationState().validation !== Validation.Success) {
       return;
     }
 
@@ -106,9 +102,9 @@ export default class HomePage extends Component<IHomePageProps, IHomePageState> 
     if (searchText !== "") {
       const isValid = this.props.blockchainData.web3.utils.isAddress(searchText);
       if (isValid) {
-        return { validation: "success" as Validation, disableSearch: false };
+        return { validation: Validation.Success, disableSearch: false };
       } else {
-        return { validation: "error" as Validation, disableSearch: true };
+        return { validation: Validation.Error, disableSearch: true };
       }
     }
     return { validation: null, disableSearch: false };

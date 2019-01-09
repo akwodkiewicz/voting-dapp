@@ -1,12 +1,11 @@
 import moment from "moment";
 import Web3 from "web3";
-
-import { VotingState } from "../components/listvotings/VotingList";
 import CategoryAbi from "../contracts/CategoryContract.json";
 import VotingAbi from "../contracts/VotingContract.json";
 import { CategoryContract } from "../typed-contracts/CategoryContract";
 import { ManagerContract } from "../typed-contracts/ManagerContract";
 import { VotingContract } from "../typed-contracts/VotingContract";
+import { VotingState } from "./enums";
 import { BlockchainData, Category, Voting, VotingInfo } from "./types";
 
 export const fetchCategories = async (blockchainData: BlockchainData) => {

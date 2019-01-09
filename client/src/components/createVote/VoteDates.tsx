@@ -2,12 +2,7 @@ import moment, { Moment } from "moment";
 import React, { Component } from "react";
 import { Col, ControlLabel, FormGroup, HelpBlock, Row, ToggleButton, ToggleButtonGroup } from "react-bootstrap";
 import Datetime from "react-datetime";
-
-export enum VotingExpiryOption {
-  ThreeDays = 3 * 24 * 60 * 60,
-  Week = 7 * 24 * 60 * 60,
-  Month = 30 * 24 * 60 * 60,
-}
+import { Validation, VotingExpiryOption } from "../../utils/enums";
 
 export function isVotingEndDateTimeValid(votingEndDateTime: Moment) {
   return votingEndDateTime.isAfter(moment().add(20, "seconds"));
@@ -53,7 +48,7 @@ export default class VoteDates extends Component<IVoteDatesProps> {
               </FormGroup>
             </Col>
             <Col md={6}>
-              <FormGroup validationState={isVotingEndDateTimeValid(this.props.endDateTime) ? null : "error"}>
+              <FormGroup validationState={isVotingEndDateTimeValid(this.props.endDateTime) ? null : Validation.Error}>
                 <HelpBlock>Time</HelpBlock>
                 <Datetime
                   inputProps={{ id: "voteTimeEnd" }}
