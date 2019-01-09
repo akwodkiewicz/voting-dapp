@@ -113,6 +113,27 @@ export default class HomePage extends Component<IHomePageProps, IHomePageState> 
     });
   };
 
+  public setErrorHelper = () => {
+    const text = this.state.searchBoxText;
+    if (text.length === 1) {
+      if (this.state.searchBoxText[0] !== "0") {
+        return "Address must begin with '0x'";
+      }
+    } else if (text.length === 2) {
+      if (this.state.searchBoxText.substring(0, 2) !== "0x") {
+        return "Address must begin with '0x'";
+      }
+    } else if (text.length < 42) {
+      if (!text.match("^[A-z0-9]+$")) {
+        return "Address must consist of only letters and digits";
+      }
+    } else if (text.length === 42) {
+      return "Wrong checksum";
+    }
+
+    return "Address must be 42 characters long";
+  };
+
   public render() {
     const validationState = this.getValidationState();
     let modal;
@@ -163,14 +184,14 @@ export default class HomePage extends Component<IHomePageProps, IHomePageState> 
         <Row />
         <Row>
           <Col md={12}>
-            <FormGroup bsSize="large" controlId="address" validationState={validationState}>
+            <FormGroup>
               <ControlLabel style={{ fontSize: "2em" }}>Search for the voting</ControlLabel>
               <HelpBlock>
                 Enter a valid keccak256 Ethereum address. Use all upper- or lowercase characters to ignore{" "}
                 <a href="https://github.com/ethereum/EIPs/blob/master/EIPS/eip-55.md">checksum validation</a>.
               </HelpBlock>
               <InputGroup>
-                <FormGroup bsSize="large" controlId="address">
+                <FormGroup bsSize="large" controlId="address" validationState={validationState}>
                   <FormControl
                     type="text"
                     value={this.state.searchBoxText}
@@ -190,6 +211,9 @@ export default class HomePage extends Component<IHomePageProps, IHomePageState> 
                   </Button>
                 </InputGroup.Button>
               </InputGroup>
+              {validationState === Validation.Error && (
+                <HelpBlock style={{ color: "#a94442" }}>{this.setErrorHelper()}</HelpBlock>
+              )}
             </FormGroup>
           </Col>
         </Row>
