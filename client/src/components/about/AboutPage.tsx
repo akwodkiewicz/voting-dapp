@@ -123,14 +123,6 @@ export default class AboutPage extends Component {
             </ul>
           </Col>
         </Row>
-        <Row style={{ marginTop: "2em" }}>
-          <Col md={8} mdOffset={2}>
-            <p style={{ fontSize: "1.2em", textAlign: "justify" }}>
-              (Optional) Lorum ipsum main description Lorum ipsum main description Lorum ipsum main description Lorum
-              ipsum main description
-            </p>
-          </Col>
-        </Row>
         <Row>
           <Col md={12}>
             <h2
