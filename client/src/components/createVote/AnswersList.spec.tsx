@@ -1,12 +1,9 @@
 import { expect } from "chai";
-import { configure, mount } from "enzyme";
+import { mount } from "enzyme";
 import React from "react";
 import { ListGroup, ListGroupItem } from "react-bootstrap";
 import sinon from "sinon";
 import AnswersList from "./AnswersList";
-
-import Adapter from "enzyme-adapter-react-16";
-configure({ adapter: new Adapter() });
 
 describe("<AnswersList/>", () => {
   let component;
@@ -16,7 +13,7 @@ describe("<AnswersList/>", () => {
   beforeEach(() => {
     component = mount(<AnswersList setAnswers={setAnswers} answers={answers} />);
   });
-  it("should exists", () => {
+  it("should exist", () => {
     expect(component).to.exist;
     expect(component.props().answers).eq(answers);
     expect(component.props().answers[0]).eq("a");
