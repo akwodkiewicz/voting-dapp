@@ -2,8 +2,7 @@ import { expect } from "chai";
 import { configure, mount } from "enzyme";
 import React from "react";
 import { ListGroup, ListGroupItem } from "react-bootstrap";
-import sinon from "../../../../node_modules/sinon/pkg/sinon-esm.js";
-
+import sinon from "sinon";
 import AnswersList from "./AnswersList";
 
 import Adapter from "enzyme-adapter-react-16";
