@@ -18,6 +18,11 @@ import NotFoundModal from "../vote/NotFoundModal";
 import ResultsModal from "../vote/ResultsModal";
 import VoteModal from "../vote/VoteModal";
 
+export enum Validation {
+  Success = "success",
+  Error = "error",
+  Warning = "warning",
+}
 interface IHomePageProps {
   blockchainData: BlockchainData;
   displayHome: boolean;
@@ -54,7 +59,7 @@ export default class HomePage extends Component<IHomePageProps, IHomePageState> 
   }
 
   public searchVoting = async () => {
-    if (this.getValidationState() !== "success") {
+    if (this.getValidationState().validation !== "success") {
       return;
     }
 
@@ -98,11 +103,15 @@ export default class HomePage extends Component<IHomePageProps, IHomePageState> 
 
   public getValidationState = () => {
     const searchText = this.state.searchBoxText.toLowerCase();
-
     if (searchText !== "") {
-      return this.props.blockchainData.web3.utils.isAddress(searchText) ? "success" : "error";
+      const isValid = this.props.blockchainData.web3.utils.isAddress(searchText);
+      if (isValid) {
+        return { validation: "success" as Validation, disableSearch: false };
+      } else {
+        return { validation: "error" as Validation, disableSearch: true };
+      }
     }
-    return null;
+    return { validation: null, disableSearch: false };
   };
 
   public handleSearchBoxChange = (e) => {
@@ -160,13 +169,13 @@ export default class HomePage extends Component<IHomePageProps, IHomePageState> 
         <Row />
         <Row>
           <Col md={12}>
-            <FormGroup bsSize="large" controlId="address" validationState={this.getValidationState()}>
+            <FormGroup bsSize="large" controlId="address" validationState={this.getValidationState().validation}>
               <ControlLabel style={{ fontSize: "2em" }}>Search for the voting</ControlLabel>
               <HelpBlock>
                 Enter a valid keccak256 Ethereum address. It must start with '0x' and be exactly 42 characters long.
               </HelpBlock>
               <InputGroup>
-                <FormGroup bsSize="large" controlId="address" validationState={this.getValidationState()}>
+                <FormGroup bsSize="large" controlId="address">
                   <FormControl
                     type="text"
                     value={this.state.searchBoxText}
@@ -181,7 +190,7 @@ export default class HomePage extends Component<IHomePageProps, IHomePageState> 
                   <FormControl.Feedback />
                 </FormGroup>
                 <InputGroup.Button>
-                  <Button bsSize="large" onClick={this.searchVoting} disabled={this.state.disableSearch}>
+                  <Button bsSize="large" onClick={this.searchVoting} disabled={this.getValidationState().disableSearch}>
                     <Glyphicon glyph="search" />
                   </Button>
                 </InputGroup.Button>
