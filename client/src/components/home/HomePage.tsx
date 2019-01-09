@@ -58,7 +58,7 @@ export default class HomePage extends Component<IHomePageProps, IHomePageState> 
       return;
     }
 
-    const address = (document.getElementById("address") as HTMLInputElement).value;
+    const address = this.state.searchBoxText;
     const fetchedVoting = await fetchVoting(this.props.blockchainData, address);
 
     this.setState({
@@ -97,7 +97,8 @@ export default class HomePage extends Component<IHomePageProps, IHomePageState> 
   };
 
   public getValidationState = () => {
-    const searchText = this.state.searchBoxText;
+    const searchText = this.state.searchBoxText.toLowerCase();
+
     if (searchText !== "") {
       return this.props.blockchainData.web3.utils.isAddress(searchText) ? "success" : "error";
     }
@@ -162,16 +163,25 @@ export default class HomePage extends Component<IHomePageProps, IHomePageState> 
             <FormGroup bsSize="large" controlId="address" validationState={this.getValidationState()}>
               <ControlLabel style={{ fontSize: "2em" }}>Search for the voting</ControlLabel>
               <HelpBlock>
-                Enter a valid keccak256 Ethereum address. Use all upper- or lowercase characters to ignore{" "}
-                <a href="https://github.com/ethereum/EIPs/blob/master/EIPS/eip-55.md">checksum validation</a>.
+                Enter a valid keccak256 Ethereum address. It must start with '0x' and be exactly 42 characters long.
               </HelpBlock>
               <InputGroup>
                 <FormGroup bsSize="large" controlId="address" validationState={this.getValidationState()}>
-                  <FormControl type="text" value={this.state.searchBoxText} onChange={this.handleSearchBoxChange} />
+                  <FormControl
+                    type="text"
+                    value={this.state.searchBoxText}
+                    onChange={this.handleSearchBoxChange}
+                    placeholder="Enter voting adress"
+                    onKeyPress={(event) => {
+                      if (event.key === "Enter") {
+                        this.searchVoting();
+                      }
+                    }}
+                  />
                   <FormControl.Feedback />
                 </FormGroup>
                 <InputGroup.Button>
-                  <Button bsSize="large" onClick={this.searchVoting}>
+                  <Button bsSize="large" onClick={this.searchVoting} disabled={this.state.disableSearch}>
                     <Glyphicon glyph="search" />
                   </Button>
                 </InputGroup.Button>
