@@ -2,13 +2,14 @@ import moment from "moment";
 import React, { Component, Fragment } from "react";
 import { Col, FormControl, Grid, HelpBlock, Row } from "react-bootstrap";
 import Switch from "react-switch";
+import { PrivacySetting, VotingState } from "../../utils/enums";
 import { fetchResults } from "../../utils/eth";
 import { BlockchainData, Category, ContractAddress, Voting } from "../../utils/types";
 import ResultsModal from "../vote/ResultsModal";
 import VoteModal from "../vote/VoteModal";
 import CategoryDropdown from "./CategoryDropdown";
-import PrivacyButtons, { PrivacySetting } from "./PrivacyButtons";
-import VotingList, { VotingState } from "./VotingList";
+import PrivacyButtons from "./PrivacyButtons";
+import VotingList from "./VotingList";
 interface IListVotingsPanelProps {
   blockchainData: BlockchainData;
   votingState: VotingState;

@@ -1,7 +1,7 @@
 import React, { Component, FormEvent } from "react";
 import { ControlLabel, FormControl, FormGroup, Glyphicon, HelpBlock, OverlayTrigger, Tooltip } from "react-bootstrap";
 import Web3 from "web3";
-import { VoteType } from "./VoteTypePanel";
+import { Validation, VoteType } from "../../utils/enums";
 
 interface IPrivilegedAddressesProps {
   voteType: VoteType;
@@ -31,9 +31,9 @@ export default class PrivilegedAddresses extends Component<IPrivilegedAddressesP
         <FormGroup
           validationState={
             this.props.touched && !this.props.valid
-              ? "error"
+              ? Validation.Error
               : this.state.fileContentMismatch || this.state.noAddressesInFile
-              ? "warning"
+              ? Validation.Warning
               : null
           }
         >

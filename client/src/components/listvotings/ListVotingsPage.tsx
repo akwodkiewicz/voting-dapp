@@ -1,10 +1,8 @@
 import React, { Component } from "react";
 import { Col, Grid, Row } from "react-bootstrap";
-
+import { PrivacySetting, VotingState } from "../../utils/enums";
 import { BlockchainData, Category, Voting } from "../../utils/types";
 import ListVotingsPanel from "./ListVotingsPanel";
-import { PrivacySetting } from "./PrivacyButtons";
-import { VotingState } from "./VotingList";
 
 interface IListVotingsPageProps {
   blockchainData: BlockchainData;

@@ -2,24 +2,11 @@ import React, { Component } from "react";
 import { Col, Grid, Row } from "react-bootstrap";
 import "react-datetime/css/react-datetime.css"; // tslint:disable-line
 import { TransactionReceipt } from "web3/types"; // tslint:disable-line
-import { BlockchainData, ContractAddress, VoteFormData } from "../../utils/types";
+import { PageMode, ResultStatus, VoteType } from "../../utils/enums";
+import { BlockchainData, ContractAddress, VoteFormData, VotingCreatedEventData } from "../../utils/types";
 import CreateVoteForm, { ICreateVoteFormState } from "./CreateVoteForm";
 import DisplayResult from "./DisplayResult";
 import LoadingResult from "./LoadingResult";
-import { VoteType } from "./VoteTypePanel";
-
-enum PageMode {
-  Form = "form",
-  Fetching = "fetching",
-  Finalized = "finalized",
-}
-
-export enum ResultStatus {
-  Success = "success",
-  Failure = "failure",
-}
-
-export type VotingCreatedEventData = { creator: ContractAddress; votingAddress: ContractAddress; question: string };
 
 interface ICreateVotePageProps {
   blockchainData: BlockchainData;

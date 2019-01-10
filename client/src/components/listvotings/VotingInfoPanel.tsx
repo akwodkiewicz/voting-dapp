@@ -1,7 +1,6 @@
 import moment from "moment";
 import React, { Component } from "react";
 import { Panel } from "react-bootstrap";
-
 import { BlockchainData, Voting } from "../../utils/types";
 
 interface IVotingInfoPanelProps {

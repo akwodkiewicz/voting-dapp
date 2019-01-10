@@ -12,6 +12,7 @@ import {
   InputGroup,
   Row,
 } from "react-bootstrap";
+import { Validation } from "../../utils/enums";
 import { fetchResults, fetchVoting } from "../../utils/eth";
 import { BlockchainData, Voting } from "../../utils/types";
 import NotFoundModal from "../vote/NotFoundModal";
@@ -25,7 +26,6 @@ interface IHomePageProps {
 
 interface IHomePageState {
   chosenAnswer: number;
-  disableSearch: boolean;
   isDataRefreshRequested: boolean;
   searchActionCalled: boolean;
   searchBoxText: string;
@@ -41,7 +41,6 @@ export default class HomePage extends Component<IHomePageProps, IHomePageState> 
     super(props);
     this.state = {
       chosenAnswer: null,
-      disableSearch: false,
       isDataRefreshRequested: false,
       searchActionCalled: false,
       searchBoxText: "",
@@ -54,11 +53,11 @@ export default class HomePage extends Component<IHomePageProps, IHomePageState> 
   }
 
   public searchVoting = async () => {
-    if (this.getValidationState() !== "success") {
+    if (this.getValidationState() !== Validation.Success) {
       return;
     }
 
-    const address = (document.getElementById("address") as HTMLInputElement).value;
+    const address = this.state.searchBoxText;
     const fetchedVoting = await fetchVoting(this.props.blockchainData, address);
 
     this.setState({
@@ -97,9 +96,13 @@ export default class HomePage extends Component<IHomePageProps, IHomePageState> 
   };
 
   public getValidationState = () => {
-    const searchText = this.state.searchBoxText;
-    if (searchText !== "") {
-      return this.props.blockchainData.web3.utils.isAddress(searchText) ? "success" : "error";
+    if (this.state.searchBoxText !== "") {
+      const isValid = this.props.blockchainData.web3.utils.isAddress(this.state.searchBoxText);
+      if (!isValid || this.state.searchBoxText.length !== 42) {
+        return Validation.Error;
+      } else {
+        return Validation.Success;
+      }
     }
     return null;
   };
@@ -110,7 +113,32 @@ export default class HomePage extends Component<IHomePageProps, IHomePageState> 
     });
   };
 
+  public setErrorHelper = () => {
+    const text = this.state.searchBoxText;
+
+    if (text.length < 42) {
+      if (text[0] !== "0" || (text.length >= 2 && text.substring(0, 2) !== "0x")) {
+        return "Address must begin with '0x' prefix";
+      }
+      if (text.length > 2 && !text.match("^0x[A-Fa-f0-9]+$")) {
+        return "Address suffix must consist of only hexadecimal digits (0-9, A-F, a-f)";
+      }
+      return "Address must be 42 characters long";
+    }
+    if (text.length === 42) {
+      if (text.substring(0, 2) !== "0x") {
+        return "Address must begin with '0x' prefix";
+      }
+      if (!text.match("^0x[A-Fa-f0-9]+$")) {
+        return "Address suffix must consist of only hexadecimal digits (0-9, A-F, a-f)";
+      }
+      return "Wrong checksum";
+    }
+    return "Address must be 42 characters long";
+  };
+
   public render() {
+    const validationState = this.getValidationState();
     let modal;
     if (this.state.voting != null) {
       if (this.state.showVoteModal) {
@@ -159,23 +187,36 @@ export default class HomePage extends Component<IHomePageProps, IHomePageState> 
         <Row />
         <Row>
           <Col md={12}>
-            <FormGroup bsSize="large" controlId="address" validationState={this.getValidationState()}>
+            <FormGroup>
               <ControlLabel style={{ fontSize: "2em" }}>Search for the voting</ControlLabel>
               <HelpBlock>
                 Enter a valid keccak256 Ethereum address. Use all upper- or lowercase characters to ignore{" "}
                 <a href="https://github.com/ethereum/EIPs/blob/master/EIPS/eip-55.md">checksum validation</a>.
               </HelpBlock>
               <InputGroup>
-                <FormGroup bsSize="large" controlId="address" validationState={this.getValidationState()}>
-                  <FormControl type="text" value={this.state.searchBoxText} onChange={this.handleSearchBoxChange} />
+                <FormGroup bsSize="large" controlId="address" validationState={validationState}>
+                  <FormControl
+                    type="text"
+                    value={this.state.searchBoxText}
+                    onChange={this.handleSearchBoxChange}
+                    placeholder="Enter voting adress"
+                    onKeyPress={(event) => {
+                      if (event.key === "Enter") {
+                        this.searchVoting();
+                      }
+                    }}
+                  />
                   <FormControl.Feedback />
                 </FormGroup>
                 <InputGroup.Button>
-                  <Button bsSize="large" onClick={this.searchVoting}>
+                  <Button bsSize="large" onClick={this.searchVoting} disabled={validationState === Validation.Error}>
                     <Glyphicon glyph="search" />
                   </Button>
                 </InputGroup.Button>
               </InputGroup>
+              {validationState === Validation.Error && (
+                <HelpBlock style={{ color: "#a94442" }}>{this.setErrorHelper()}</HelpBlock>
+              )}
             </FormGroup>
           </Col>
         </Row>
