@@ -149,7 +149,7 @@ export default class HomePage extends Component<IHomePageProps, IHomePageState> 
         <Row>
           <div style={{ marginBottom: "8em" }}>
             <h1 style={{ fontSize: "5em", fontFamily: "Roboto", textAlign: "center", marginTop: "1em" }}>
-              Decentralized voting platfrom
+              Distributed Voting Platform
             </h1>
             <h3 style={{ fontFamily: "Roboto", textAlign: "center" }}>
               Fully anonymous and transparent voting platform powered by Ethereum blockchain.
