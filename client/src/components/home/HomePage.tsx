@@ -118,19 +118,19 @@ export default class HomePage extends Component<IHomePageProps, IHomePageState> 
 
     if (text.length < 42) {
       if (text[0] !== "0" || (text.length >= 2 && text.substring(0, 2) !== "0x")) {
-        return "Address must begin with '0x'";
+        return "Address must begin with '0x' prefix";
       }
-      if (!text.match("^[A-z0-9]+$")) {
-        return "Address must consist of only letters and digits";
+      if (text.length > 2 && !text.match("^0x[A-Fa-f0-9]+$")) {
+        return "Address suffix must consist of only hexadecimal digits (0-9, A-F, a-f)";
       }
       return "Address must be 42 characters long";
     }
     if (text.length === 42) {
       if (text.substring(0, 2) !== "0x") {
-        return "Address must begin with '0x'";
+        return "Address must begin with '0x' prefix";
       }
-      if (!text.match("^[A-z0-9]+$")) {
-        return "Address must consist of only letters and digits";
+      if (!text.match("^0x[A-Fa-f0-9]+$")) {
+        return "Address suffix must consist of only hexadecimal digits (0-9, A-F, a-f)";
       }
       return "Wrong checksum";
     }
