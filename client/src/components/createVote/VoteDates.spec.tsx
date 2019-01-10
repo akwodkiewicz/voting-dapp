@@ -3,7 +3,7 @@ import { mount, shallow } from "enzyme";
 import moment, { Moment } from "moment";
 import React from "react";
 // import { Col, ControlLabel, FormGroup, HelpBlock, Row, , ToggleButtonGroup } from "react-bootstrap";
-import { ToggleButton, ToggleButtonGroup } from "react-bootstrap";
+import { ToggleButtonGroup } from "react-bootstrap";
 
 import Datetime from "react-datetime";
 import sinon from "sinon";
