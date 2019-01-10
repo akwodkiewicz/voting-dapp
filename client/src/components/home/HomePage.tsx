@@ -115,22 +115,25 @@ export default class HomePage extends Component<IHomePageProps, IHomePageState> 
 
   public setErrorHelper = () => {
     const text = this.state.searchBoxText;
-    if (text.length === 1) {
-      if (this.state.searchBoxText[0] !== "0") {
-        return "Address must begin with '0x'";
+
+    if (text.length < 42) {
+      if (text[0] !== "0" || (text.length >= 2 && text.substring(0, 2) !== "0x")) {
+        return "Address must begin with '0x' prefix";
       }
-    } else if (text.length === 2) {
-      if (this.state.searchBoxText.substring(0, 2) !== "0x") {
-        return "Address must begin with '0x'";
+      if (text.length > 2 && !text.match("^0x[A-Fa-f0-9]+$")) {
+        return "Address suffix must consist of only hexadecimal digits (0-9, A-F, a-f)";
       }
-    } else if (text.length < 42) {
-      if (!text.match("^[A-z0-9]+$")) {
-        return "Address must consist of only letters and digits";
+      return "Address must be 42 characters long";
+    }
+    if (text.length === 42) {
+      if (text.substring(0, 2) !== "0x") {
+        return "Address must begin with '0x' prefix";
       }
-    } else if (text.length === 42) {
+      if (!text.match("^0x[A-Fa-f0-9]+$")) {
+        return "Address suffix must consist of only hexadecimal digits (0-9, A-F, a-f)";
+      }
       return "Wrong checksum";
     }
-
     return "Address must be 42 characters long";
   };
 
