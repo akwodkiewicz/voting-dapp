@@ -27,11 +27,26 @@ describe("<ResultsModal/>", () => {
   context("when no one has voted", () => {
     beforeEach(() => {
       wrapper = shallow(
-        <ResultsModal results={[]} show={true} voting={{ contract, info: votingInfo }} handleOnHide={sinon.fake()} />
+        <ResultsModal
+          results={["0", "0", "0"]}
+          show={true}
+          voting={{ contract, info: votingInfo }}
+          handleOnHide={sinon.fake()}
+        />
       );
     });
+
+    it("has all results equal to 0", () => {
+      const results = (wrapper.instance() as ResultsModal).props.results;
+      results.forEach((r) => expect(parseInt(r, 10)).to.equal(0));
+    });
+
     it("does not show a pie chart", () => {
       expect(wrapper.find(ResultsPieChart).exists()).to.be.false;
+    });
+
+    it("shows message about no votes", () => {
+      expect(wrapper.containsMatchingElement(<h3>No one has voted!</h3>)).to.be.true;
     });
   });
 
@@ -46,8 +61,13 @@ describe("<ResultsModal/>", () => {
         />
       );
     });
-    it("does show a pie chart", () => {
+
+    it("shows a pie chart", () => {
       expect(wrapper.find(ResultsPieChart).exists()).to.be.true;
+    });
+
+    it("has no message about no votes", () => {
+      expect(wrapper.containsMatchingElement(<h3>No one has voted!</h3>)).to.be.false;
     });
   });
 });
