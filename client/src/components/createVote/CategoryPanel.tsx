@@ -24,8 +24,9 @@ export default class CategoryPanel extends Component<ICategoryPanelProps> {
         return (
           <FormGroup>
             <FormControl
-              onChange={this.categoryHandler}
               componentClass="select"
+              id="categoryPanelExisting"
+              onChange={this.categoryHandler}
               placeholder="select"
               value={this.props.chosenCategory ? this.props.chosenCategory : ""}
             >
@@ -40,7 +41,7 @@ export default class CategoryPanel extends Component<ICategoryPanelProps> {
           </FormGroup>
         );
       } else {
-        return <h2>Loading categories from blockchain...</h2>;
+        return <h2 id="categoryPanelFetchingMessage">Loading categories from blockchain...</h2>;
       }
     } else {
       return (
@@ -57,9 +58,11 @@ export default class CategoryPanel extends Component<ICategoryPanelProps> {
           <FormControl.Feedback />
           {this.props.touched && !this.props.valid ? (
             this.props.chosenCategory.length === 0 ? (
-              <HelpBlock>Category name cannot be empty</HelpBlock>
+              <HelpBlock id="categoryPanelValidationEmptyMessage">Category name cannot be empty</HelpBlock>
             ) : (
-              <HelpBlock>Category name cannot be larger than 32 bytes</HelpBlock>
+              <HelpBlock id="categoryPanelValidationTooLongMessage">
+                Category name cannot be larger than 32 bytes
+              </HelpBlock>
             )
           ) : null}
         </FormGroup>
