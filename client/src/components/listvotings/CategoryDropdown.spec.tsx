@@ -22,16 +22,18 @@ describe("<CategoryDropdown/>", () => {
   context("when mounted (and blockchainData is null)", () => {
     let wrapper: ShallowWrapper;
     const fetchCategoriesStub = sinon.stub(eth, "fetchCategories").returns((async () => categories)());
-    const setCategoriesInParentExpectation = sinon
-      .mock()
-      .atLeast(1)
-      .withExactArgs(categories);
-    const setChosenCategoryInParentExpectation = sinon
-      .mock()
-      .once()
-      .withExactArgs(chosenCategoryIndexTest);
+    let setCategoriesInParentExpectation;
+    let setChosenCategoryInParentExpectation;
 
     beforeEach(() => {
+      setCategoriesInParentExpectation = sinon
+        .mock()
+        .atLeast(1)
+        .withExactArgs(categories);
+      setChosenCategoryInParentExpectation = sinon
+        .mock()
+        .once()
+        .withExactArgs(chosenCategoryIndexTest);
       wrapper = shallow(
         <CategoryDropdown
           blockchainData={null}
@@ -87,15 +89,16 @@ describe("<CategoryDropdown/>", () => {
 
         context("and user chooses one category", () => {
           beforeEach(() => {
-            // wrapper.find(DropdownButton).simulate("click");
             wrapper
               .find(MenuItem)
               .filter({ eventKey: categories[chosenCategoryIndexTest].name })
-              .simulate("click");
+              .simulate("select");
           });
+
           it("sets chosen category name as dropdown title", () => {
             expect(wrapper.find(DropdownButton).prop("title")).to.equal(categories[chosenCategoryIndexTest].name);
           });
+
           it("sets chosen category in parent", () => {
             setChosenCategoryInParentExpectation.verify();
           });
