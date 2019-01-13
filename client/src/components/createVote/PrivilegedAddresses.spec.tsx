@@ -2,7 +2,6 @@ import { expect } from "chai";
 import { mount } from "enzyme";
 import React from "react";
 import sinon from "sinon";
-import { VoteType } from "../../utils/enums";
 import PrivilegedAddresses from "./PrivilegedAddresses";
 
 describe("<PrivilegedAddresses/>", () => {
@@ -12,7 +11,6 @@ describe("<PrivilegedAddresses/>", () => {
   beforeEach(() => {
     wrapper = mount(
       <PrivilegedAddresses
-        voteType={VoteType.Private}
         touched={false}
         valid={false}
         textAreaValue={""}
@@ -44,4 +42,7 @@ describe("<PrivilegedAddresses/>", () => {
   });
 
   // TODO: test reading from file
+  // it("reads file and tests it", () =? {
+
+  // });
 });

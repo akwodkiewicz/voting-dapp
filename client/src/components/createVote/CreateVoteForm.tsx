@@ -279,12 +279,12 @@ export default class CreateVoteForm extends Component<ICreateVoteFormProps, ICre
         <Row>
           <Col md={12}>
             <VoteTypePanel
-              setVoteTypeInParent={this.setVoteType}
-              setPrivilegedVotersInParent={this.setPrivilegedVoters}
-              voteType={this.state.voteType}
-              privilegedVoters={this.state.privilegedVoters}
-              privilegedAddressesValid={this.state.privilegedAddressesValid}
               privilegedAddressesTouched={this.state.privilegedAddressesTouched}
+              privilegedAddressesValid={this.state.privilegedAddressesValid}
+              privilegedVoters={this.state.privilegedVoters}
+              setPrivilegedVotersInParent={this.setPrivilegedVoters}
+              setVoteTypeInParent={this.setVoteType}
+              voteType={this.state.voteType}
             />
           </Col>
         </Row>
