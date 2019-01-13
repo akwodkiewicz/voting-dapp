@@ -70,41 +70,40 @@ describe("<PrivacyButtons/>", () => {
             .forEach((n) => {
               expect(n.prop("active")).to.be.undefined;
             });
+        });
+        context("and when user selects 'Private' setting", () => {
+          before(() => {
+            wrapper
+              .find(ToggleButtonGroup)
+              .getElement()
+              .props.onChange(PrivacySetting.Private);
+            wrapper.update();
+          });
 
-          context("and when user selects 'Private' setting", () => {
+          it("calls #setChosenPrivacySettingInParent with 'Private'", () => {
+            expect(setChosenPrivacySettingInParentSpy.calledTwice).to.be.true;
+            expect(setChosenPrivacySettingInParentSpy.calledWith(PrivacySetting.Private)).to.be.true;
+          });
+
+          context("and parent updates the chosenPrivacySetting prop to 'Private'", () => {
             before(() => {
-              wrapper
-                .find(ToggleButtonGroup)
-                .getElement()
-                .props.onChange(PrivacySetting.Private);
-              wrapper.update();
+              wrapper.setProps({ chosenPrivacySetting: PrivacySetting.Private });
             });
 
-            it("calls #setChosenPrivacySettingInParent with 'Private'", () => {
-              expect(setChosenPrivacySettingInParentSpy.calledTwice).to.be.true;
-              expect(setChosenPrivacySettingInParentSpy.calledWith(PrivacySetting.Private)).to.be.true;
-            });
-
-            context("and parent updates the chosenPrivacySetting prop to 'Private'", () => {
-              before(() => {
-                wrapper.setProps({ chosenPrivacySetting: PrivacySetting.Private });
-              });
-
-              it("has only 'Private' ToggleButton active", () => {
-                expect(
-                  wrapper
-                    .find(ToggleButton)
-                    .filter({ value: PrivacySetting.Private })
-                    .prop("active")
-                ).to.be.true;
-
+            it("has only 'Private' ToggleButton active", () => {
+              expect(
                 wrapper
                   .find(ToggleButton)
-                  .filterWhere((n) => n.prop("value") !== PrivacySetting.Private)
-                  .forEach((n) => {
-                    expect(n.prop("active")).to.be.undefined;
-                  });
-              });
+                  .filter({ value: PrivacySetting.Private })
+                  .prop("active")
+              ).to.be.true;
+
+              wrapper
+                .find(ToggleButton)
+                .filterWhere((n) => n.prop("value") !== PrivacySetting.Private)
+                .forEach((n) => {
+                  expect(n.prop("active")).to.be.undefined;
+                });
             });
           });
         });
