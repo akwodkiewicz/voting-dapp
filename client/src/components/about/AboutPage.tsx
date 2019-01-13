@@ -22,9 +22,9 @@ export default class AboutPage extends Component {
               This system is running on thousands of nodes at the same time, thus eliminating a single point of failure.
             </p>
             <p style={{ fontSize: "1.1em", textAlign: "justify" }}>
-              But distribution serves not only as a way of providing high availability. The lack of central server
-              ensures that the platform has no single authority, which could manage all the operations internally
-              without other participants' consent.
+              But distribution serves not only as a way of providing high availability. The lack of a central server
+              ensures that the platform has no single authority, which could potentially manage all the operations
+              internally without other participants' consent.
             </p>
           </Col>
           <Col md={4}>
@@ -36,7 +36,7 @@ export default class AboutPage extends Component {
               This means blockchain is used as a database for logging all the events that occur in the system. It is
               also used as a network protocol for connecting to and sharing data with other nodes around the world. The
               cryptography behind blockchain protects the stored records from alteration and makes them persistent. And
-              there is no registration process, so all the transactions made in the network are anonymous.
+              because there is no registration process, all the transactions made in the network are anonymous.
             </p>
           </Col>
 
@@ -47,9 +47,9 @@ export default class AboutPage extends Component {
             </p>
             <p style={{ fontSize: "1.1em", textAlign: "justify" }}>
               This platform allows you to participate in public votings created by people from all around the world. Do
-              you want to learn someone else's stance on the matter of your choice – just create your own voting. Or
-              maybe you want only <em>some</em> people to be able to participate? If you do, you can create a{" "}
-              <em>private voting</em> by defining a list of privileged voters.
+              you want to know someone's stance on a particular matter? Simply create your own voting. Or maybe you want
+              to know only <em>some</em> people's opinion? If you do, you can create a private voting by defining a list
+              of privileged voters.
             </p>
           </Col>
         </Row>
@@ -84,7 +84,7 @@ export default class AboutPage extends Component {
             </a>
             <ul style={{ fontSize: "1.2em", marginTop: "2em" }}>
               <li>Stores votings as smart contracts</li>
-              <li>Validates user's actions based on his adress' permissions</li>
+              <li>Validates user's actions based on their address' permissions</li>
               <li>Publicly available transaction (voting) history</li>
             </ul>
           </Col>
