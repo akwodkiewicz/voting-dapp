@@ -95,10 +95,6 @@ export default class ListVotingsPanel extends Component<IListVotingsPanelProps, 
     this.setState({ isDataRefreshRequested: false });
   };
 
-  public votingTime = () => {
-    return true;
-  };
-
   public render() {
     return (
       <Grid fluid>
