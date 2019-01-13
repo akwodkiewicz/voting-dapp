@@ -41,8 +41,15 @@ describe("<PrivilegedAddresses/>", () => {
     expect(invalidAddressBlock.text()).eq(invalidInputMessage);
   });
 
-  // TODO: test reading from file
-  // it("reads file and tests it", () =? {
+  // TODO: test reading from file + validations
+  xit("reads file with only good addresses and puts them to textarea", async () => {
+    expect(wrapper.state().fileContentMismatch).to.be.false;
+    const fileContents = "0x0752B4F663e46205B2FE3e030cC0C513254050A3\nNotAnAddress";
+    const file = new Blob([fileContents], { type: "text/plain" });
+    const fileUploader = wrapper.find("#privilegedAddressesFileLoader").first();
+    await fileUploader.prop("onChange")({ target: { files: [file] } });
 
-  // });
+    expect(wrapper.state().fileContentMismatch).to.be.true;
+    // expect(wrapper.state().noAddressesInFile).to.be.false;
+  });
 });

@@ -293,7 +293,10 @@ export default class CreateVoteForm extends Component<ICreateVoteFormProps, ICre
           <Col md={12}>
             <FormGroup validationState={this.state.submitFailed ? Validation.Error : null}>
               <Button id="submit" onClick={this.handleCreateVote}>Submit</Button>
-              {this.state.submitFailed ? <HelpBlock>You need to fill the form correctly</HelpBlock> : null}
+              {this.state.submitFailed &&
+                <HelpBlock id="submitValidationMessage">
+                  You need to fill the form correctly
+                </HelpBlock>}
             </FormGroup>
           </Col>
         </Row>
@@ -462,15 +465,17 @@ export default class CreateVoteForm extends Component<ICreateVoteFormProps, ICre
         questionTouched: true,
       };
     });
-
     // Validate answer list on submit
     if (!this.isAnswerListValid(this.state.answers)) {
+      console.log("XD2")
+
       this.setState({
         answersValid: false,
       });
     }
-
     if (!isVotingEndDateTimeValid(this.state.voteDatesProps.endDateTime)) {
+      console.log("XD3")
+
       this.setState((state) => {
         return {
           submitFailed: true,
@@ -482,18 +487,17 @@ export default class CreateVoteForm extends Component<ICreateVoteFormProps, ICre
       });
       return; // setState not updating state fast enough and control flow goes straight to setSubmitData call
     }
-
     if (
       !this.state.questionValid ||
       !this.state.answersValid ||
       !this.state.voteDatesProps.valid ||
       !this.state.categoryPanelProps.valid ||
       (this.state.voteType === VoteType.Private && !this.state.privilegedAddressesValid)
-    ) {
+    ) {console.log("XD5")
       this.setState({
         submitFailed: true,
       });
-    } else {
+    } else {console.log("XD6")
       this.props.setSubmitData(this.state);
     }
   };

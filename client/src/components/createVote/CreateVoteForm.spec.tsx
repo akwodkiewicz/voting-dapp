@@ -88,7 +88,7 @@ describe("<CreateVoteForm/>", () => {
   });
 
   context("Answers section", () => {
-    // tests isTypedAnswerValid
+    // tests isTypedAnswerValid 2x refresh
     it("has 'add answer' button disabled when answer is too long, enabled when it is correct", () => {
       wrapper = shallow(
         <CreateVoteForm blockchainData={blockchainData} formData={null} setSubmitData={setSubmitData} />
@@ -183,6 +183,7 @@ describe("<CreateVoteForm/>", () => {
       expect(wrapper.state().answersValid).to.be.false;
     });
 
+    // 6 refreshes
     it("renders proper validation messages", () => {
       wrapper = shallow(
         <CreateVoteForm blockchainData={blockchainData} formData={null} setSubmitData={setSubmitData} />
@@ -371,15 +372,62 @@ describe("<CreateVoteForm/>", () => {
       expect(wrapper.state().categoryPanelProps.chosenCategory).eq(categories[0].address);
     });
 
+    // TODO:
     // tests setCategory
-    // context("gets category from CategoryPanel and saves it to state", () => {
-    //   it("from existing categories list", () => {
+    context("gets category from CategoryPanel and saves it to state", () => {
+      xit("from existing categories list", () => {});
 
-    //   });
+      xit("from new category input", () => {});
+    });
+  });
 
-    //   it("from new category input", () => {
+  context("Vote type section", () => {
+    it("has two radio buttons, Public selected on default", () => {
+      const publicRadioButton = wrapper.find("#votePublic").at(0);
+      const privateRadioButton = wrapper.find("#votePrivate").at(0);
+      expect(publicRadioButton.props().checked).to.be.true;
+      expect(privateRadioButton.props().checked).to.be.false;
+    });
+  });
 
-    //   });
-    // });
+  context("On submit", () => {
+    it("renders all validation messages due to empty form", () => {
+      const submitButton = wrapper.find("#submit").first();
+      submitButton.simulate("click");
+      expect(wrapper.state().submitFailed).to.be.true;
+
+      // question
+      const questionValidationBlock = wrapper.find("#questionValidationMessage").first();
+      const questionValidationMessage = "Question cannot be empty";
+      expect(questionValidationBlock.text()).eq(questionValidationMessage);
+
+      // answers
+      const answersValidationBlock = wrapper.find("#answerAtLeastTwo").first();
+      const answersValidationMessage = "There must be at least 2 answers";
+      expect(answersValidationBlock.text()).eq(answersValidationMessage);
+
+      // submit
+      const submitValidationBlock = wrapper.find("#submitValidationMessage").first();
+      const submitValidationMessage = "You need to fill the form correctly";
+      expect(submitValidationBlock.text()).eq(submitValidationMessage);
+    });
+
+    xit("proceeds to loading screen with properly filled form", () => {
+      wrapper = mount(<CreateVoteForm blockchainData={null} formData={null} setSubmitData={setSubmitData} />);
+
+      const question = "Question";
+      const answers: string[] = [];
+      answers.push("answer1");
+      answers.push("answer2");
+      const votingType = "private";
+      const privilegedAddresses = "0x0752B4F663e46205B2FE3e030cC0C513254050A3";
+      wrapper.setState({ question, answers, votingType, privilegedVoters: privilegedAddresses });
+
+      expect(wrapper.state().answers).to.have.length(2);
+      const submitButton = wrapper.find("#submit").first();
+      submitButton.simulate("click");
+
+      expect(setSubmitData.calledOnce).to.be.true;
+    });
   });
 });
