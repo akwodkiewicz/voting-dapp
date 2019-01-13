@@ -109,6 +109,15 @@ export default class CreateVotePage extends Component<ICreateVotePageProps, ICre
   public render() {
     return (
       <Grid>
+        {this.state.mode === PageMode.Form && (
+          <Row>
+            <Col md={12}>
+              <h1 style={{ fontWeight: "bold", marginTop: "1.2em", marginBottom: "1.2em", textAlign: "center" }}>
+                Create new voting
+              </h1>
+            </Col>
+          </Row>
+        )}
         <Row>
           {this.state.mode === PageMode.Form ? (
             <Col md={10} mdOffset={1}>
