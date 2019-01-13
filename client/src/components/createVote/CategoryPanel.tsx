@@ -7,6 +7,7 @@ export interface ICategoryPanelProps {
   categoriesList: Category[];
   categoryPanel: CategoryPanelType;
   chosenCategory: string | ContractAddress;
+  newCategoryExists: boolean;
   setCategoryInParent: (arg: string) => void;
   touched: boolean;
   valid: boolean;
@@ -58,6 +59,8 @@ export default class CategoryPanel extends Component<ICategoryPanelProps> {
           {this.props.touched && !this.props.valid ? (
             this.props.chosenCategory.length === 0 ? (
               <HelpBlock>Category name cannot be empty</HelpBlock>
+            ) : this.props.newCategoryExists ? (
+              <HelpBlock>Category with this name already exists</HelpBlock>
             ) : (
               <HelpBlock>Category name cannot be larger than 32 bytes</HelpBlock>
             )
