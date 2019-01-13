@@ -6,8 +6,9 @@ import { ListGroupItem, ToggleButtonGroup } from "react-bootstrap";
 import Datetime from "react-datetime";
 import sinon from "sinon";
 import Web3 from "web3";
-import { VotingExpiryOption } from "../../utils/enums";
-import { BlockchainData } from "../../utils/types";
+import { VotingExpiryOption, CategoryPanelType } from "../../utils/enums";
+import { BlockchainData, Category } from "../../utils/types";
+import { ICategoryPanelProps } from "./CategoryPanel";
 import CreateVoteForm from "./CreateVoteForm";
 
 describe("<CreateVoteForm/>", () => {
@@ -207,6 +208,7 @@ describe("<CreateVoteForm/>", () => {
   });
 
   context("Deadline section", () => {
+    // tests setVoteEnd
     it("saves picked date to state", () => {
       const currentlySetDate = moment().add(1, "hours");
       const newDate = moment()
@@ -244,12 +246,103 @@ describe("<CreateVoteForm/>", () => {
       expect(wrapper.state().voteDatesProps.endDateTime.minutes()).eq(newTime.minutes());
     });
 
-    it("saves picked date and time to state", () => {
+    // tests setVotingExpiryOption
+    it("saves picked expiry option to state", () => {
       expect(wrapper.state().voteDatesProps.votingExpiryOption).eq(VotingExpiryOption.ThreeDays);
       const newExpiryOption = VotingExpiryOption.Month;
       const votingExpiryOptionComponent = wrapper.find(ToggleButtonGroup).at(0);
       votingExpiryOptionComponent.prop("onChange")(newExpiryOption);
       expect(wrapper.state().voteDatesProps.votingExpiryOption).eq(newExpiryOption);
+    });
+  });
+
+  context("Category section", () => {
+    it("has 'Select existing category' button disabled due to no categories", () => {
+      const newCategoryPanel: ICategoryPanelProps = {
+        categoriesList: [],
+        categoryPanel: CategoryPanelType.New,
+        chosenCategory: "",
+        setCategoryInParent: () => {},
+        touched: false,
+        valid: false,
+      };
+      wrapper.setState({ categoryPanelProps: newCategoryPanel, isCategoriesListFetched: true });
+      const selectExistingButton = wrapper.find("#category-from-list").first();
+      expect(wrapper.state().isCategoriesListFetched).to.be.true;
+      expect(wrapper.state().categoryPanelProps.categoriesList.length).eq(0);
+      expect(selectExistingButton.props().disabled).to.be.true;
+      expect(selectExistingButton.props().checked).to.be.false;
+    });
+
+    it("has 'Select existing category' button enabled an selected when there are some fetched categories", () => {
+      const categories: Category[] = [
+        {
+          address: "0x1",
+          name: "CategoryA",
+        },
+        {
+          address: "0x2",
+          name: "CategoryB",
+        },
+      ];
+      const newCategoryPanel: ICategoryPanelProps = {
+        categoriesList: categories,
+        categoryPanel: categories.length > 0 ? CategoryPanelType.Existing : CategoryPanelType.New,
+        chosenCategory: categories.length > 0 ? categories[0].address : "",
+        setCategoryInParent: () => {},
+        touched: false,
+        valid: categories.length > 0,
+      };
+      wrapper.setState({ categoryPanelProps: newCategoryPanel, isCategoriesListFetched: true });
+      const selectExistingButton = wrapper.find("#category-from-list").first();
+      expect(wrapper.state().isCategoriesListFetched).to.be.true;
+      expect(wrapper.state().categoryPanelProps.categoryPanel).eq(CategoryPanelType.Existing);
+      expect(wrapper.state().categoryPanelProps.categoriesList).eq(categories);
+      expect(wrapper.state().categoryPanelProps.chosenCategory).eq(categories[0].address);
+      expect(selectExistingButton.props().disabled).to.be.false;
+      expect(selectExistingButton.props().checked).to.be.true;
+    });
+
+    // tests changeCategoryPanelToNew and changeCategoryPanelToExisting
+    it("changes state on radio button switch based on selected option", () => {
+      wrapper = shallow(
+        <CreateVoteForm blockchainData={blockchainData} formData={null} setSubmitData={setSubmitData} />
+      );
+
+      const categories: Category[] = [
+        {
+          address: "0x1",
+          name: "CategoryA",
+        },
+        {
+          address: "0x2",
+          name: "CategoryB",
+        },
+      ];
+      const newCategoryPanel: ICategoryPanelProps = {
+        categoriesList: categories,
+        categoryPanel: categories.length > 0 ? CategoryPanelType.Existing : CategoryPanelType.New,
+        chosenCategory: categories.length > 0 ? categories[0].address : "",
+        setCategoryInParent: () => {},
+        touched: false,
+        valid: categories.length > 0,
+      };
+      wrapper.setState({ categoryPanelProps: newCategoryPanel, isCategoriesListFetched: true });
+
+      expect(wrapper.state().categoryPanelProps.categoryPanel).eq(CategoryPanelType.Existing);
+      expect(wrapper.state().categoryPanelProps.chosenCategory).eq(categories[0].address);
+
+      const newCategoryButton = wrapper.find("#category-new").first();
+      // value cannot be empty for validation to pass
+      newCategoryButton.prop("onChange")({ currentTarget: { value: " " } });
+      expect(wrapper.state().categoryPanelProps.categoryPanel).eq(CategoryPanelType.New);
+      expect(wrapper.state().categoryPanelProps.chosenCategory).eq("");
+
+      const selectExistingButton = wrapper.find("#category-from-list").first();
+      // value cannot be empty for validation to pass
+      selectExistingButton.prop("onChange")({ currentTarget: { value: " " } });
+      expect(wrapper.state().categoryPanelProps.categoryPanel).eq(CategoryPanelType.Existing);
+      expect(wrapper.state().categoryPanelProps.chosenCategory).eq(categories[0].address);
     });
   });
 });
