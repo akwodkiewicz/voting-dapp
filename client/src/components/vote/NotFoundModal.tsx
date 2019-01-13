@@ -6,7 +6,7 @@ interface INotFoundModalProps {
   handleOnHide: () => void;
 }
 
-export default class NotFound extends Component<INotFoundModalProps> {
+export default class NotFoundModal extends Component<INotFoundModalProps> {
   constructor(props) {
     super(props);
   }
@@ -28,8 +28,7 @@ export default class NotFound extends Component<INotFoundModalProps> {
               <h4>Voting has expired</h4>
               <p>
                 Every voting has an expiration date. When it passes, it is impossible to check the results of the voting
-                via our application.
-               However, because transactions on the blockchain are permanent, you can still
+                via our application. However, because transactions on the blockchain are permanent, you can still
                 examine the voting contract's state using Etherscan:
                 <ul>
                   <li>
