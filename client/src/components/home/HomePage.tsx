@@ -12,13 +12,13 @@ import {
   InputGroup,
   Row,
 } from "react-bootstrap";
+import DVPLogo from "../../images/distributed-voting-platform.png";
 import { Validation } from "../../utils/enums";
 import { fetchResults, fetchVoting } from "../../utils/eth";
 import { BlockchainData, Voting } from "../../utils/types";
 import NotFoundModal from "../vote/NotFoundModal";
 import ResultsModal from "../vote/ResultsModal";
 import VoteModal from "../vote/VoteModal";
-
 interface IHomePageProps {
   blockchainData: BlockchainData;
 }
@@ -174,7 +174,16 @@ export default class HomePage extends Component<IHomePageProps, IHomePageState> 
     return (
       <Grid>
         <Row>
-          <div style={{ marginBottom: "8em" }}>
+          <img
+            style={{
+              display: "block",
+              marginLeft: "auto",
+              marginRight: "auto",
+              maxHeight: "250px",
+            }}
+            src={DVPLogo}
+          />
+          <div style={{ marginBottom: "4em", marginTop: "-5em" }}>
             <h1 style={{ fontSize: "5em", fontFamily: "Roboto", textAlign: "center", marginTop: "1em" }}>
               Distributed Voting Platform
             </h1>
@@ -183,7 +192,6 @@ export default class HomePage extends Component<IHomePageProps, IHomePageState> 
             </h3>
           </div>
         </Row>
-        <Row />
         <Row>
           <Col md={12}>
             <FormGroup>
