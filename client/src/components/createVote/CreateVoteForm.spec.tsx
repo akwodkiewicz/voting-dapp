@@ -52,6 +52,9 @@ describe("<CreateVoteForm/>", () => {
   });
 
   context("Question section", () => {
+    beforeEach(() => {
+      wrapper = mount(<CreateVoteForm blockchainData={null} formData={null} setSubmitData={setSubmitData} />);
+    });
     // tests private setQuestion and isQuestionValid\
     // https://github.com/airbnb/enzyme/issues/218#issuecomment-401397775
     // on why not to use simulate with event arguments
@@ -236,6 +239,10 @@ describe("<CreateVoteForm/>", () => {
 
   context("Deadline section", () => {
     // tests setVoteEnd
+    beforeEach(() => {
+      wrapper = mount(<CreateVoteForm blockchainData={null} formData={null} setSubmitData={setSubmitData} />);
+    });
+
     it("saves picked date to state", () => {
       const currentlySetDate = moment().add(1, "hours");
       const newDate = moment()
@@ -284,6 +291,11 @@ describe("<CreateVoteForm/>", () => {
   });
 
   context("Category section", () => {
+    beforeEach(() => {
+      wrapper = shallow(
+        <CreateVoteForm blockchainData={blockchainData} formData={null} setSubmitData={setSubmitData} />
+      );
+    });
     it("has 'Select existing category' button disabled due to no categories", () => {
       const newCategoryPanel: ICategoryPanelProps = {
         categoriesList: [],
@@ -332,10 +344,6 @@ describe("<CreateVoteForm/>", () => {
 
     // tests changeCategoryPanelToNew and changeCategoryPanelToExisting
     it("changes state on radio button switch based on selected option", () => {
-      wrapper = shallow(
-        <CreateVoteForm blockchainData={blockchainData} formData={null} setSubmitData={setSubmitData} />
-      );
-
       categories = [
         {
           address: "0x1",
@@ -382,6 +390,9 @@ describe("<CreateVoteForm/>", () => {
   });
 
   context("Vote type section", () => {
+    beforeEach(() => {
+      wrapper = mount(<CreateVoteForm blockchainData={null} formData={null} setSubmitData={setSubmitData} />);
+    });
     it("has two radio buttons, Public selected on default", () => {
       const publicRadioButton = wrapper.find("#votePublic").at(0);
       const privateRadioButton = wrapper.find("#votePrivate").at(0);
@@ -391,6 +402,10 @@ describe("<CreateVoteForm/>", () => {
   });
 
   context("On submit", () => {
+    beforeEach(() => {
+      wrapper = shallow(<CreateVoteForm blockchainData={null} formData={null} setSubmitData={setSubmitData} />);
+    });
+
     it("renders all validation messages due to empty form", () => {
       const submitButton = wrapper.find("#submit").first();
       submitButton.simulate("click");
@@ -399,17 +414,17 @@ describe("<CreateVoteForm/>", () => {
       // question
       const questionValidationBlock = wrapper.find("#questionValidationMessage").first();
       const questionValidationMessage = "Question cannot be empty";
-      expect(questionValidationBlock.text()).eq(questionValidationMessage);
+      expect(questionValidationBlock.render().text()).eq(questionValidationMessage);
 
       // answers
       const answersValidationBlock = wrapper.find("#answerAtLeastTwo").first();
       const answersValidationMessage = "There must be at least 2 answers";
-      expect(answersValidationBlock.text()).eq(answersValidationMessage);
+      expect(answersValidationBlock.render().text()).eq(answersValidationMessage);
 
       // submit
       const submitValidationBlock = wrapper.find("#submitValidationMessage").first();
       const submitValidationMessage = "You need to fill the form correctly";
-      expect(submitValidationBlock.text()).eq(submitValidationMessage);
+      expect(submitValidationBlock.render().text()).eq(submitValidationMessage);
     });
 
     xit("proceeds to loading screen with properly filled form", () => {

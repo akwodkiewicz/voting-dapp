@@ -292,11 +292,12 @@ export default class CreateVoteForm extends Component<ICreateVoteFormProps, ICre
         <Row style={{ marginBottom: "10px" }}>
           <Col md={12}>
             <FormGroup validationState={this.state.submitFailed ? Validation.Error : null}>
-              <Button id="submit" onClick={this.handleCreateVote}>Submit</Button>
-              {this.state.submitFailed &&
-                <HelpBlock id="submitValidationMessage">
-                  You need to fill the form correctly
-                </HelpBlock>}
+              <Button id="submit" onClick={this.handleCreateVote}>
+                Submit
+              </Button>
+              {this.state.submitFailed && (
+                <HelpBlock id="submitValidationMessage">You need to fill the form correctly</HelpBlock>
+              )}
             </FormGroup>
           </Col>
         </Row>
@@ -467,15 +468,11 @@ export default class CreateVoteForm extends Component<ICreateVoteFormProps, ICre
     });
     // Validate answer list on submit
     if (!this.isAnswerListValid(this.state.answers)) {
-      console.log("XD2")
-
       this.setState({
         answersValid: false,
       });
     }
     if (!isVotingEndDateTimeValid(this.state.voteDatesProps.endDateTime)) {
-      console.log("XD3")
-
       this.setState((state) => {
         return {
           submitFailed: true,
@@ -493,11 +490,11 @@ export default class CreateVoteForm extends Component<ICreateVoteFormProps, ICre
       !this.state.voteDatesProps.valid ||
       !this.state.categoryPanelProps.valid ||
       (this.state.voteType === VoteType.Private && !this.state.privilegedAddressesValid)
-    ) {console.log("XD5")
+    ) {
       this.setState({
         submitFailed: true,
       });
-    } else {console.log("XD6")
+    } else {
       this.props.setSubmitData(this.state);
     }
   };
