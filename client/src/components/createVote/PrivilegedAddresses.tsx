@@ -79,9 +79,11 @@ export default class PrivilegedAddresses extends Component<IPrivilegedAddressesP
 
           {this.props.touched && !this.props.valid ? (
             this.props.textAreaValue === "" ? (
-              <HelpBlock>You have to provide at least one address</HelpBlock>
+              <HelpBlock id="validationZeroAddresses">You have to provide at least one address</HelpBlock>
             ) : (
-              <HelpBlock>Addresses have to be valid keccak256 Ethereum addresses</HelpBlock>
+              <HelpBlock id="validationInvalidFormat">
+                Addresses have to be valid keccak256 Ethereum addresses
+              </HelpBlock>
             )
           ) : null}
         </FormGroup>
