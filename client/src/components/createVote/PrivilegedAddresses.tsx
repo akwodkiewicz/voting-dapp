@@ -54,6 +54,7 @@ export default class PrivilegedAddresses extends Component<IPrivilegedAddressesP
             Manually enter addresses below or load them from the <span style={{ fontStyle: "italic" }}>.txt</span> file.
           </HelpBlock>
           <FormControl
+            id="privilegedAddressesFileLoader"
             type="file"
             accept=".txt"
             onChange={this.loadAddressesFromFile}
