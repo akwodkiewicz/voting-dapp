@@ -9,7 +9,7 @@ export default class AboutPage extends Component {
       <Grid>
         <Row>
           <Col md={12}>
-            <h1 style={{ fontWeight: "bold", marginTop: "2em", marginBottom: "1.2em", textAlign: "center" }}>
+            <h1 style={{ fontWeight: "bold", marginTop: "1.2em", marginBottom: "1.2em", textAlign: "center" }}>
               Distributed Voting Platform
             </h1>
             <h2 style={{ fontWeight: "bold", marginBottom: "0.5em", textAlign: "center" }}>is a</h2>

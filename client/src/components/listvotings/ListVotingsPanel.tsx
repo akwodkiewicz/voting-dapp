@@ -104,10 +104,12 @@ export default class ListVotingsPanel extends Component<IListVotingsPanelProps, 
       <Grid fluid>
         <Row style={{ textAlign: "center" }}>
           <Col md={12}>
-            <h3 style={{ fontSize: "2.5em" }}>{this.props.title}</h3>
+            <h3 style={{ fontWeight: "bold", marginTop: "1.2em", marginBottom: "1.2em", fontSize: "2.5em" }}>
+              {this.props.title}
+            </h3>
           </Col>
         </Row>
-        <Row style={{ marginTop: "5vh" }}>
+        <Row>
           {/* https://github.com/react-bootstrap/react-bootstrap/issues/1928#issuecomment-331509515 */}
           <Col md={6}>
             <CategoryDropdown
