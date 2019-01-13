@@ -5,6 +5,7 @@ import React from "react";
 import { ListGroupItem, Pagination } from "react-bootstrap";
 import sinon from "sinon";
 import Web3 from "web3";
+import { VotingContract } from "../../typed-contracts/VotingContract";
 import { PrivacySetting, VotingState } from "../../utils/enums";
 import * as eth from "../../utils/eth";
 import { BlockchainData, Voting } from "../../utils/types";
@@ -12,10 +13,10 @@ import VotingList from "./VotingList";
 
 const votingsSmall: Voting[] = [
   {
-    contract: null,
+    contract: ({ address: "0x0" } as any) as VotingContract,
     info: {
       answers: ["African swallow", "European swallow"],
-      categoryAddress: "0x0",
+      categoryAddress: "0xAAA",
       hasUserVoted: false,
       isPrivate: false,
       isPrivileged: null,
@@ -29,10 +30,10 @@ const votingsSmall: Voting[] = [
     },
   },
   {
-    contract: null,
+    contract: ({ address: "0x1" } as any) as VotingContract,
     info: {
       answers: ["A pleasant surprise", "A scary surprise"],
-      categoryAddress: "0x1",
+      categoryAddress: "0xAAA",
       hasUserVoted: false,
       isPrivate: true,
       isPrivileged: true,
@@ -46,10 +47,10 @@ const votingsSmall: Voting[] = [
     },
   },
   {
-    contract: null,
+    contract: ({ address: "0x2" } as any) as VotingContract,
     info: {
       answers: ["What?!", "He's big", "He's bald"],
-      categoryAddress: "0x2",
+      categoryAddress: "0xAAA",
       hasUserVoted: false,
       isPrivate: false,
       isPrivileged: null,
@@ -63,10 +64,10 @@ const votingsSmall: Voting[] = [
     },
   },
   {
-    contract: null,
+    contract: ({ address: "0x3" } as any) as VotingContract,
     info: {
       answers: ["It's over there", "The maze is not meant for you"],
-      categoryAddress: "0x3",
+      categoryAddress: "0xAAA",
       hasUserVoted: false,
       isPrivate: true,
       isPrivileged: false,
@@ -80,10 +81,10 @@ const votingsSmall: Voting[] = [
     },
   },
   {
-    contract: null,
+    contract: ({ address: "0x4" } as any) as VotingContract,
     info: {
       answers: ["African swallow", "European swallow"],
-      categoryAddress: "0x4",
+      categoryAddress: "0xAAA",
       hasUserVoted: false,
       isPrivate: false,
       isPrivileged: null,
@@ -97,10 +98,10 @@ const votingsSmall: Voting[] = [
     },
   },
   {
-    contract: null,
+    contract: ({ address: "0x5" } as any) as VotingContract,
     info: {
       answers: ["A pleasant surprise", "A scary surprise"],
-      categoryAddress: "0x5",
+      categoryAddress: "0xAAA",
       hasUserVoted: false,
       isPrivate: true,
       isPrivileged: true,
@@ -114,10 +115,10 @@ const votingsSmall: Voting[] = [
     },
   },
   {
-    contract: null,
+    contract: ({ address: "0x6" } as any) as VotingContract,
     info: {
       answers: ["What?!", "He's big", "He's bald"],
-      categoryAddress: "0x6",
+      categoryAddress: "0xAAA",
       hasUserVoted: false,
       isPrivate: false,
       isPrivileged: null,
@@ -131,10 +132,10 @@ const votingsSmall: Voting[] = [
     },
   },
   {
-    contract: null,
+    contract: ({ address: "0x7" } as any) as VotingContract,
     info: {
       answers: ["It's over there", "The maze is not meant for you"],
-      categoryAddress: "0x7",
+      categoryAddress: "0xAAA",
       hasUserVoted: false,
       isPrivate: true,
       isPrivileged: false,
@@ -148,10 +149,10 @@ const votingsSmall: Voting[] = [
     },
   },
   {
-    contract: null,
+    contract: ({ address: "0x8" } as any) as VotingContract,
     info: {
       answers: ["African swallow", "European swallow"],
-      categoryAddress: "0x8",
+      categoryAddress: "0xAAA",
       hasUserVoted: false,
       isPrivate: false,
       isPrivileged: null,
@@ -165,10 +166,10 @@ const votingsSmall: Voting[] = [
     },
   },
   {
-    contract: null,
+    contract: ({ address: "0x9" } as any) as VotingContract,
     info: {
       answers: ["A pleasant surprise", "A scary surprise"],
-      categoryAddress: "0x9",
+      categoryAddress: "0xAAA",
       hasUserVoted: false,
       isPrivate: true,
       isPrivileged: true,
@@ -185,10 +186,10 @@ const votingsSmall: Voting[] = [
 function* publicVotingGenerator(numberOfVotings: number) {
   for (let i = 0; i < numberOfVotings; i++) {
     const voting: Voting = {
-      contract: null,
+      contract: ({ address: `0x${i}` } as any) as VotingContract,
       info: {
         answers: [`A${i}`, `B${i}`],
-        categoryAddress: `0x${i}`,
+        categoryAddress: `0xAAA`,
         hasUserVoted: false,
         isPrivate: false,
         isPrivileged: null,

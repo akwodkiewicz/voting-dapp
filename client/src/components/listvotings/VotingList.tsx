@@ -115,7 +115,7 @@ export default class VotingList extends Component<IVotingListProps, IVotingListS
                     if (voting.info.isPrivate && voting.info.isPrivileged) {
                       return (
                         <OverlayTrigger
-                          key={voting.info.categoryAddress}
+                          key={voting.contract._address}
                           placement="right"
                           overlay={this.privateVotingTooltip}
                         >
@@ -132,7 +132,7 @@ export default class VotingList extends Component<IVotingListProps, IVotingListS
                     } else if (voting.info.isPrivate && !voting.info.isPrivileged) {
                       return (
                         <OverlayTrigger
-                          key={voting.info.categoryAddress}
+                          key={voting.contract._address}
                           placement="right"
                           overlay={this.inaccessibleVotingTooltip}
                         >
@@ -145,7 +145,7 @@ export default class VotingList extends Component<IVotingListProps, IVotingListS
                     } else {
                       return (
                         <OverlayTrigger
-                          key={voting.info.categoryAddress}
+                          key={voting.contract._address}
                           placement="right"
                           overlay={this.publicVotingTooltip}
                         >
