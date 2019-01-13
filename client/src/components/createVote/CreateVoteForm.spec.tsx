@@ -6,23 +6,49 @@ import { ListGroupItem, ToggleButtonGroup } from "react-bootstrap";
 import Datetime from "react-datetime";
 import sinon from "sinon";
 import Web3 from "web3";
-import { VotingExpiryOption, CategoryPanelType } from "../../utils/enums";
+import { CategoryPanelType, VotingExpiryOption } from "../../utils/enums";
+import * as eth from "../../utils/eth";
 import { BlockchainData, Category } from "../../utils/types";
 import { ICategoryPanelProps } from "./CategoryPanel";
 import CreateVoteForm from "./CreateVoteForm";
 
 describe("<CreateVoteForm/>", () => {
   let wrapper;
-  let blockchainData: BlockchainData = {
+  const blockchainData: BlockchainData = {
     accounts: [],
     manager: null,
     web3: new Web3(),
   };
-  blockchainData = null;
+  let categories: Category[] = [
+    {
+      address: "0x1",
+      name: "CategoryA",
+    },
+    {
+      address: "0x2",
+      name: "CategoryB",
+    },
+  ];
   const setSubmitData = sinon.spy();
+  const fetchCategoriesStub = sinon.stub(eth, "fetchCategories").returns((async () => categories)());
 
   beforeEach(() => {
-    wrapper = mount(<CreateVoteForm blockchainData={blockchainData} formData={null} setSubmitData={setSubmitData} />);
+    wrapper = mount(<CreateVoteForm blockchainData={null} formData={null} setSubmitData={setSubmitData} />);
+  });
+
+  // tests fetchCategoriesAndSetState
+  context("ComponentDidMount", async () => {
+    wrapper = shallow(<CreateVoteForm blockchainData={blockchainData} formData={null} setSubmitData={setSubmitData} />);
+    await wrapper.instance().componentDidMount();
+    expect(fetchCategoriesStub.called).to.be.true;
+
+    it("first form rendering (not returned from DisplayResult)", () => {
+      expect(wrapper.state().categoryPanelProps.categoriesList).eq(categories);
+      expect(wrapper.state().categoryPanelProps.categoryPanel).eq(CategoryPanelType.Existing);
+      expect(wrapper.state().categoryPanelProps.chosenCategory).eq(categories[0].address);
+      expect(wrapper.state().categoryPanelProps.categoriesList).deep.equal(categories);
+      expect(wrapper.state().isCategoriesListFetched).to.be.true;
+    });
   });
 
   context("Question section", () => {
@@ -275,7 +301,7 @@ describe("<CreateVoteForm/>", () => {
     });
 
     it("has 'Select existing category' button enabled an selected when there are some fetched categories", () => {
-      const categories: Category[] = [
+      categories = [
         {
           address: "0x1",
           name: "CategoryA",
@@ -309,7 +335,7 @@ describe("<CreateVoteForm/>", () => {
         <CreateVoteForm blockchainData={blockchainData} formData={null} setSubmitData={setSubmitData} />
       );
 
-      const categories: Category[] = [
+      categories = [
         {
           address: "0x1",
           name: "CategoryA",
@@ -344,5 +370,16 @@ describe("<CreateVoteForm/>", () => {
       expect(wrapper.state().categoryPanelProps.categoryPanel).eq(CategoryPanelType.Existing);
       expect(wrapper.state().categoryPanelProps.chosenCategory).eq(categories[0].address);
     });
+
+    // tests setCategory
+    // context("gets category from CategoryPanel and saves it to state", () => {
+    //   it("from existing categories list", () => {
+
+    //   });
+
+    //   it("from new category input", () => {
+
+    //   });
+    // });
   });
 });
