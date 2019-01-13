@@ -108,7 +108,6 @@ export default class ListVotingsPanel extends Component<IListVotingsPanelProps, 
           </Col>
         </Row>
         <Row style={{ marginTop: "5vh" }}>
-          {/* https://github.com/react-bootstrap/react-bootstrap/issues/1928#issuecomment-331509515 */}
           <Col md={6}>
             <CategoryDropdown
               blockchainData={this.props.blockchainData}
