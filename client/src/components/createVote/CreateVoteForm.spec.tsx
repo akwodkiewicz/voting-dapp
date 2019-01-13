@@ -1,9 +1,12 @@
 import { expect } from "chai";
 import { mount, shallow } from "enzyme";
+import moment from "moment";
 import React from "react";
-import { ListGroupItem } from "react-bootstrap";
+import { ListGroupItem, ToggleButtonGroup } from "react-bootstrap";
+import Datetime from "react-datetime";
 import sinon from "sinon";
 import Web3 from "web3";
+import { VotingExpiryOption } from "../../utils/enums";
 import { BlockchainData } from "../../utils/types";
 import CreateVoteForm from "./CreateVoteForm";
 
@@ -23,9 +26,9 @@ describe("<CreateVoteForm/>", () => {
 
   context("Question section", () => {
     // tests private setQuestion and isQuestionValid\
-    // https://github.com/airbnb/enzyme/issues/218#issuecomment-401397775 on why not to use simulate
+    // https://github.com/airbnb/enzyme/issues/218#issuecomment-401397775
+    // on why not to use simulate with event arguments
     it("properly changes state on question change", () => {
-      wrapper = mount(<CreateVoteForm blockchainData={blockchainData} formData={null} setSubmitData={setSubmitData} />);
       const question = "Question";
       expect(wrapper.state().questionTouched).to.be.false;
       expect(wrapper.state().question).eq("");
@@ -200,6 +203,53 @@ describe("<CreateVoteForm/>", () => {
       submitButton.simulate("click");
       notEnoughAnswersBlock = wrapper.find("#answerAtLeastTwo").first();
       expect(notEnoughAnswersBlock.render().text()).eq(notEnoughAnswersMessage);
+    });
+  });
+
+  context("Deadline section", () => {
+    it("saves picked date to state", () => {
+      const currentlySetDate = moment().add(1, "hours");
+      const newDate = moment()
+        .add(1, "days")
+        .add(1, "months")
+        .add(1, "years");
+
+      expect(wrapper.state().voteDatesProps.endDateTime.year()).eq(currentlySetDate.year());
+      expect(wrapper.state().voteDatesProps.endDateTime.month()).eq(currentlySetDate.month());
+      expect(wrapper.state().voteDatesProps.endDateTime.day()).eq(currentlySetDate.day());
+      expect(wrapper.state().voteDatesProps.valid).to.be.true;
+
+      const datePicker = wrapper.find(Datetime).at(0);
+      datePicker.prop("onChange")(newDate);
+
+      expect(wrapper.state().voteDatesProps.endDateTime.year()).eq(newDate.year());
+      expect(wrapper.state().voteDatesProps.endDateTime.month()).eq(newDate.month());
+      expect(wrapper.state().voteDatesProps.endDateTime.day()).eq(newDate.day());
+      expect(wrapper.state().voteDatesProps.valid).to.be.true;
+    });
+
+    it("saves picked time to state", () => {
+      const currentlySetDate = moment().add(1, "hours");
+      const newTime = moment()
+        .add(2, "hours")
+        .add(2, "minutes");
+
+      expect(wrapper.state().voteDatesProps.endDateTime.hours()).eq(currentlySetDate.hours());
+      expect(wrapper.state().voteDatesProps.endDateTime.minutes()).eq(currentlySetDate.minutes());
+
+      const timePicker = wrapper.find(Datetime).at(1);
+      timePicker.prop("onChange")(newTime);
+
+      expect(wrapper.state().voteDatesProps.endDateTime.hours()).eq(newTime.hours());
+      expect(wrapper.state().voteDatesProps.endDateTime.minutes()).eq(newTime.minutes());
+    });
+
+    it("saves picked date and time to state", () => {
+      expect(wrapper.state().voteDatesProps.votingExpiryOption).eq(VotingExpiryOption.ThreeDays);
+      const newExpiryOption = VotingExpiryOption.Month;
+      const votingExpiryOptionComponent = wrapper.find(ToggleButtonGroup).at(0);
+      votingExpiryOptionComponent.prop("onChange")(newExpiryOption);
+      expect(wrapper.state().voteDatesProps.votingExpiryOption).eq(newExpiryOption);
     });
   });
 });
