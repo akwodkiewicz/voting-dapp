@@ -91,7 +91,7 @@ export default class VoteModal extends Component<IVoteModalProps, IVoteModalStat
                   <p>{this.props.voting.contract._address}</p>
                 </Panel.Body>
               </Panel>
-              <Panel>
+              <Panel id={"choice-panel"}>
                 <Panel.Heading>
                   <Panel.Title className="text-center" style={{ fontSize: "1.5em", fontWeight: "bold" }}>
                     Possible answers
@@ -101,7 +101,7 @@ export default class VoteModal extends Component<IVoteModalProps, IVoteModalStat
                 <Panel.Body>
                   {this.props.voting.info.answers.map((answer, index) => {
                     return (
-                      <Row>
+                      <Row key={answer}>
                         <Col sm={10} style={{ paddingLeft: "60px" }}>
                           <h4>{answer}</h4>
                         </Col>
