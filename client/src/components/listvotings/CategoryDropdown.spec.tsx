@@ -26,7 +26,7 @@ describe("<CategoryDropdown/>", () => {
     let setChosenCategoryInParentExpectation;
 
     before(() => {
-      fetchCategoriesStub = sinon.stub(eth, "fetchCategories").returns((async () => categories)());
+      fetchCategoriesStub = sinon.stub(eth, "fetchCategories").resolves(categories);
     });
 
     after(() => {
