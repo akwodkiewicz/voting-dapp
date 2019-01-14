@@ -379,14 +379,6 @@ describe("<CreateVoteForm/>", () => {
       expect(wrapper.state().categoryPanelProps.categoryPanel).eq(CategoryPanelType.Existing);
       expect(wrapper.state().categoryPanelProps.chosenCategory).eq(categories[0].address);
     });
-
-    // TODO:
-    // tests setCategory
-    context("gets category from CategoryPanel and saves it to state", () => {
-      xit("from existing categories list", () => {});
-
-      xit("from new category input", () => {});
-    });
   });
 
   context("Vote type section", () => {
@@ -425,24 +417,6 @@ describe("<CreateVoteForm/>", () => {
       const submitValidationBlock = wrapper.find("#submitValidationMessage").first();
       const submitValidationMessage = "You need to fill the form correctly";
       expect(submitValidationBlock.render().text()).eq(submitValidationMessage);
-    });
-
-    xit("proceeds to loading screen with properly filled form", () => {
-      wrapper = mount(<CreateVoteForm blockchainData={null} formData={null} setSubmitData={setSubmitData} />);
-
-      const question = "Question";
-      const answers: string[] = [];
-      answers.push("answer1");
-      answers.push("answer2");
-      const votingType = "private";
-      const privilegedAddresses = "0x0752B4F663e46205B2FE3e030cC0C513254050A3";
-      wrapper.setState({ question, answers, votingType, privilegedVoters: privilegedAddresses });
-
-      expect(wrapper.state().answers).to.have.length(2);
-      const submitButton = wrapper.find("#submit").first();
-      submitButton.simulate("click");
-
-      expect(setSubmitData.calledOnce).to.be.true;
     });
   });
 });

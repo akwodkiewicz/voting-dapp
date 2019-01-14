@@ -109,7 +109,6 @@ export default class CreateVoteForm extends Component<ICreateVoteFormProps, ICre
   public componentDidUpdate = async () => {
     // If blockchainData was initialized after this component had mounted
     if (!this.state.isCategoriesListFetched && this.props.blockchainData) {
-      console.log("refresh");
       await this.fetchCategoriesAndSetState();
 
       // Restore previously set data
