@@ -4,7 +4,7 @@ import moment from "moment";
 import React from "react";
 import { ListGroupItem, ToggleButtonGroup } from "react-bootstrap";
 import Datetime from "react-datetime";
-import sinon from "sinon";
+import sinon, { SinonStub } from "sinon";
 import Web3 from "web3";
 import { CategoryPanelType, VotingExpiryOption } from "../../utils/enums";
 import * as eth from "../../utils/eth";
@@ -30,7 +30,15 @@ describe("<CreateVoteForm/>", () => {
     },
   ];
   const setSubmitData = sinon.spy();
-  const fetchCategoriesStub = sinon.stub(eth, "fetchCategories").returns((async () => categories)());
+  let fetchCategoriesStub: SinonStub;
+
+  before(() => {
+    fetchCategoriesStub = sinon.stub(eth, "fetchCategories").returns((async () => categories)());
+  });
+
+  after(() => {
+    fetchCategoriesStub.restore();
+  });
 
   beforeEach(() => {
     wrapper = mount(<CreateVoteForm blockchainData={null} formData={null} setSubmitData={setSubmitData} />);
@@ -304,6 +312,7 @@ describe("<CreateVoteForm/>", () => {
         setCategoryInParent: () => {},
         touched: false,
         valid: false,
+        newCategoryExists: false,
       };
       wrapper.setState({ categoryPanelProps: newCategoryPanel, isCategoriesListFetched: true });
       const selectExistingButton = wrapper.find("#category-from-list").first();
@@ -331,6 +340,7 @@ describe("<CreateVoteForm/>", () => {
         setCategoryInParent: () => {},
         touched: false,
         valid: categories.length > 0,
+        newCategoryExists: false,
       };
       wrapper.setState({ categoryPanelProps: newCategoryPanel, isCategoriesListFetched: true });
       const selectExistingButton = wrapper.find("#category-from-list").first();
@@ -361,6 +371,7 @@ describe("<CreateVoteForm/>", () => {
         setCategoryInParent: () => {},
         touched: false,
         valid: categories.length > 0,
+        newCategoryExists: false,
       };
       wrapper.setState({ categoryPanelProps: newCategoryPanel, isCategoriesListFetched: true });
 
