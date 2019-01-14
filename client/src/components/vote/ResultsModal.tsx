@@ -55,7 +55,7 @@ export default class ResultsModal extends Component<IResultsModalProps> {
               <ControlLabel style={{ fontSize: "1.2em" }}>Possible answers</ControlLabel>
               <ul>
                 {this.props.voting.info.answers.map((answer) => {
-                  return <li>{answer}</li>;
+                  return <li key={answer}>{answer}</li>;
                 })}
               </ul>
               <ControlLabel style={{ fontSize: "1.2em" }}>Voting deadline</ControlLabel>
@@ -86,7 +86,7 @@ export default class ResultsModal extends Component<IResultsModalProps> {
                 </thead>
                 <tbody>
                   {answersAndResults.map((element) => (
-                    <tr>
+                    <tr key={element.answer}>
                       <td style={{ width: "65%" }}>{element.answer}</td>
                       <td style={{ textAlign: "center" }}>{element.result}</td>
                       <td style={{ textAlign: "center" }}>

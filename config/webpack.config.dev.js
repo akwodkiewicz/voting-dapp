@@ -90,7 +90,7 @@ module.exports = {
     // of CSS changes), or refresh the page (in case of JS changes). When you
     // make a syntax error, this client will display a syntax error overlay.
     // Note: instead of the default WebpackDevServer client, we use a custom one
-    // to bring better experience for Create React App users. You can replace
+    // to bring better experience. You can replace
     // the line below with these two lines if you prefer the stock client:
     // require.resolve('webpack-dev-server/client') + '?/',
     // require.resolve('webpack/hot/dev-server'),
@@ -343,7 +343,7 @@ module.exports = {
     }),
     // Makes some environment variables available in index.html.
     // The public URL is available as %PUBLIC_URL% in index.html, e.g.:
-    // <link rel="shortcut icon" href="%PUBLIC_URL%/favicon.ico">
+    // <link rel="shortcut icon" href="%PUBLIC_URL%/icon.ico">
     // In development, this will be an empty string.
     new InterpolateHtmlPlugin(HtmlWebpackPlugin, env.raw),
     // This gives some necessary context to module not found errors, such as
