@@ -1,9 +1,9 @@
 {
-  "main.js": "/voting-dapp/static/js/main.c6b75d91.chunk.js",
-  "main.js.map": "/voting-dapp/static/js/main.c6b75d91.chunk.js.map",
-  "static/css/1.a3d3659e.chunk.css": "/voting-dapp/static/css/1.a3d3659e.chunk.css",
-  "static/js/1.d61ffe38.chunk.js": "/voting-dapp/static/js/1.d61ffe38.chunk.js",
-  "static/js/1.d61ffe38.chunk.js.map": "/voting-dapp/static/js/1.d61ffe38.chunk.js.map",
+  "main.js": "/voting-dapp/static/js/main.eb2f09f9.chunk.js",
+  "main.js.map": "/voting-dapp/static/js/main.eb2f09f9.chunk.js.map",
+  "static/css/1.1fc2eda4.chunk.css": "/voting-dapp/static/css/1.1fc2eda4.chunk.css",
+  "static/js/1.e3947c5b.chunk.js": "/voting-dapp/static/js/1.e3947c5b.chunk.js",
+  "static/js/1.e3947c5b.chunk.js.map": "/voting-dapp/static/js/1.e3947c5b.chunk.js.map",
   "runtime~main.js": "/voting-dapp/static/js/runtime~main.cfc80ff4.js",
   "runtime~main.js.map": "/voting-dapp/static/js/runtime~main.cfc80ff4.js.map",
   "static/media/distributed-voting-platform.png": "/voting-dapp/static/media/distributed-voting-platform.8c3a0f52.png",
@@ -12,8 +12,8 @@
   "static/media/no-metamask.png": "/voting-dapp/static/media/no-metamask.afcf3094.png",
   "static/media/wrong-network.png": "/voting-dapp/static/media/wrong-network.2e278d0d.png",
   "static/media/ethereum-logo.png": "/voting-dapp/static/media/ethereum-logo.6b316d3d.png",
-  "static/css/1.a3d3659e.chunk.css.map": "/voting-dapp/static/css/1.a3d3659e.chunk.css.map",
+  "static/css/1.1fc2eda4.chunk.css.map": "/voting-dapp/static/css/1.1fc2eda4.chunk.css.map",
   "index.html": "/voting-dapp/index.html",
-  "precache-manifest.31d121bee39d5ef3a20f5249a02fb69c.js": "/voting-dapp/precache-manifest.31d121bee39d5ef3a20f5249a02fb69c.js",
+  "precache-manifest.594ebdd34070a60d20ed7f84e7227d9b.js": "/voting-dapp/precache-manifest.594ebdd34070a60d20ed7f84e7227d9b.js",
   "service-worker.js": "/voting-dapp/service-worker.js"
 }
