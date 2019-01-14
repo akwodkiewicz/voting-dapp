@@ -14,7 +14,7 @@
 importScripts("https://storage.googleapis.com/workbox-cdn/releases/3.6.3/workbox-sw.js");
 
 importScripts(
-  "/voting-dapp/precache-manifest.232d7b6ecb6d3b9bc7948914c4c64aad.js"
+  "/voting-dapp/precache-manifest.c35bb4289c50e973711293d2457c4aa5.js"
 );
 
 workbox.clientsClaim();
