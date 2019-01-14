@@ -313,10 +313,10 @@ describe("<CreateVoteForm/>", () => {
         categoriesList: [],
         categoryPanel: CategoryPanelType.New,
         chosenCategory: "",
+        newCategoryExists: false,
         setCategoryInParent: () => {},
         touched: false,
         valid: false,
-        newCategoryExists: false,
       };
       wrapper.setState({ categoryPanelProps: newCategoryPanel, isCategoriesListFetched: true });
       const selectExistingButton = wrapper.find("#category-from-list").first();
@@ -341,10 +341,10 @@ describe("<CreateVoteForm/>", () => {
         categoriesList: categories,
         categoryPanel: categories.length > 0 ? CategoryPanelType.Existing : CategoryPanelType.New,
         chosenCategory: categories.length > 0 ? categories[0].address : "",
+        newCategoryExists: false,
         setCategoryInParent: () => {},
         touched: false,
         valid: categories.length > 0,
-        newCategoryExists: false,
       };
       wrapper.setState({ categoryPanelProps: newCategoryPanel, isCategoriesListFetched: true });
       const selectExistingButton = wrapper.find("#category-from-list").first();
@@ -372,10 +372,10 @@ describe("<CreateVoteForm/>", () => {
         categoriesList: categories,
         categoryPanel: categories.length > 0 ? CategoryPanelType.Existing : CategoryPanelType.New,
         chosenCategory: categories.length > 0 ? categories[0].address : "",
+        newCategoryExists: false,
         setCategoryInParent: () => {},
         touched: false,
         valid: categories.length > 0,
-        newCategoryExists: false,
       };
       wrapper.setState({ categoryPanelProps: newCategoryPanel, isCategoriesListFetched: true });
 
