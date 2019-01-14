@@ -8,14 +8,8 @@ interface ILoadingResultProps {
 
 export default class LoadingResult extends Component<ILoadingResultProps> {
   public componentDidMount = async () => {
-    await this.sleep(2000);
-
     this.props.getTransactionResult();
   };
-
-  public sleep(ms) {
-    return new Promise((resolve) => setTimeout(resolve, ms));
-  }
 
   public render() {
     return (

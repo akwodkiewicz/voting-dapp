@@ -48,6 +48,7 @@ export default class CreateVoteForm extends Component<ICreateVoteFormProps, ICre
         categoriesList: [],
         categoryPanel: CategoryPanelType.New,
         chosenCategory: "",
+        newCategoryExists: false,
         setCategoryInParent: this.setCategory,
         touched: false,
         valid: false,
@@ -265,6 +266,7 @@ export default class CreateVoteForm extends Component<ICreateVoteFormProps, ICre
               categoryPanel={this.state.categoryPanelProps.categoryPanel}
               categoriesList={this.state.categoryPanelProps.categoriesList}
               chosenCategory={this.state.categoryPanelProps.chosenCategory}
+              newCategoryExists={this.doesCategoryAlreadyExist(this.state.categoryPanelProps.chosenCategory)}
               valid={this.state.categoryPanelProps.valid}
               touched={this.state.categoryPanelProps.touched}
               setCategoryInParent={this.state.categoryPanelProps.setCategoryInParent}
@@ -426,7 +428,7 @@ export default class CreateVoteForm extends Component<ICreateVoteFormProps, ICre
           touched: true,
           valid:
             state.categoryPanelProps.categoryPanel === CategoryPanelType.Existing ||
-            this.isCategoryNameValid(categoryFromChild),
+            (this.isCategoryNameValid(categoryFromChild) && !this.doesCategoryAlreadyExist(categoryFromChild)),
         },
       };
     });
@@ -495,7 +497,10 @@ export default class CreateVoteForm extends Component<ICreateVoteFormProps, ICre
   };
 
   private arePrivilegedAddressesValid = (addresses: Voter[]) => {
-    return addresses.length > 0 && addresses.every((a) => this.props.blockchainData.web3.utils.isAddress(a));
+    return (
+      addresses.length > 0 &&
+      addresses.every((a) => a.length === 42 && this.props.blockchainData.web3.utils.isAddress(a))
+    );
   };
 
   private isTypedAnswerValid = (typedAnswer: string) => {
@@ -510,6 +515,15 @@ export default class CreateVoteForm extends Component<ICreateVoteFormProps, ICre
 
   private isCategoryNameValid = (categoryName: string) => {
     return categoryName.length > 0 && ethStrBytesLength(categoryName) <= 32;
+  };
+
+  private doesCategoryAlreadyExist = (categorName: string) => {
+    for (let i = 0; i < this.state.categoryPanelProps.categoriesList.length; i++) {
+      if (this.state.categoryPanelProps.categoriesList[i].name === categorName) {
+        return true;
+      }
+    }
+    return false;
   };
 
   private isQuestionValid = (question: string) => {
