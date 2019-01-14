@@ -110,7 +110,6 @@ export default class CreateVoteForm extends Component<ICreateVoteFormProps, ICre
   public componentDidUpdate = async () => {
     // If blockchainData was initialized after this component had mounted
     if (!this.state.isCategoriesListFetched && this.props.blockchainData) {
-      console.log("refresh");
       await this.fetchCategoriesAndSetState();
 
       // Restore previously set data
@@ -137,7 +136,6 @@ export default class CreateVoteForm extends Component<ICreateVoteFormProps, ICre
         <Row>
           <Col md={12}>
             <FormGroup
-              controlId="question"
               validationState={
                 this.state.questionTouched ? (this.state.questionValid ? Validation.Success : Validation.Error) : null
               }
@@ -145,13 +143,14 @@ export default class CreateVoteForm extends Component<ICreateVoteFormProps, ICre
               <ControlLabel>Question</ControlLabel>
               <FormControl
                 type="text"
+                id="questionText"
                 placeholder="E.g. 'Do you believe in life after love?'"
                 onChange={this.setQuestion}
                 value={this.state.question}
               />
               <FormControl.Feedback />
               {this.state.questionTouched && !this.state.questionValid ? (
-                <HelpBlock>Question cannot be empty</HelpBlock>
+                <HelpBlock id="questionValidationMessage">Question cannot be empty</HelpBlock>
               ) : null}
             </FormGroup>
           </Col>
@@ -160,7 +159,6 @@ export default class CreateVoteForm extends Component<ICreateVoteFormProps, ICre
         <Row>
           <Col md={12}>
             <FormGroup
-              controlId="answer"
               validationState={
                 this.state.answersTouched && !this.state.answersValid
                   ? Validation.Error
@@ -172,8 +170,7 @@ export default class CreateVoteForm extends Component<ICreateVoteFormProps, ICre
               <ControlLabel>Answers</ControlLabel>
               <InputGroup>
                 <FormControl
-                  type="text"
-                  placeholder="Your answer here"
+                  id="answersInput"
                   onChange={this.setTypedAnswer}
                   onKeyPress={(event) => {
                     if (event.key === "Enter") {
@@ -183,10 +180,16 @@ export default class CreateVoteForm extends Component<ICreateVoteFormProps, ICre
                       }
                     }
                   }}
+                  placeholder="Your answer here"
+                  type="text"
                   value={this.state.typedAnswer}
                 />{" "}
                 <InputGroup.Button>
-                  <Button onClick={this.addAnswer} disabled={this.state.typedAnswerValid ? null : true}>
+                  <Button
+                    id="answersSubmit"
+                    disabled={this.state.typedAnswerValid ? false : true}
+                    onClick={this.addAnswer}
+                  >
                     Add answer
                   </Button>
                 </InputGroup.Button>
@@ -194,21 +197,21 @@ export default class CreateVoteForm extends Component<ICreateVoteFormProps, ICre
               {this.state.typedAnswerTouched &&
               !this.state.typedAnswerValid &&
               ethStrBytesLength(this.state.typedAnswer) > 32 ? (
-                <HelpBlock>Answer cannot be larger than 32 bytes</HelpBlock>
+                <HelpBlock id="answerTooLong">Answer cannot be larger than 32 bytes</HelpBlock>
               ) : null}
 
               {this.state.typedAnswerTouched && !this.state.typedAnswerValid && this.state.typedAnswer.length === 0 ? (
-                <HelpBlock>Answer cannot be empty</HelpBlock>
+                <HelpBlock id="answerEmpty">Answer cannot be empty</HelpBlock>
               ) : null}
 
               {this.state.typedAnswerTouched &&
               !this.state.typedAnswerValid &&
               this.state.answers.indexOf(this.state.typedAnswer) !== -1 ? (
-                <HelpBlock>Answers have to be unique</HelpBlock>
+                <HelpBlock id="answerNotUnique">Answers have to be unique</HelpBlock>
               ) : null}
 
               {this.state.answersTouched && !this.state.answersValid && this.state.answers.length < 2 ? (
-                <HelpBlock>There must be at least 2 answers</HelpBlock>
+                <HelpBlock id="answerAtLeastTwo">There must be at least 2 answers</HelpBlock>
               ) : null}
             </FormGroup>
           </Col>
@@ -277,12 +280,12 @@ export default class CreateVoteForm extends Component<ICreateVoteFormProps, ICre
         <Row>
           <Col md={12}>
             <VoteTypePanel
-              setVoteTypeInParent={this.setVoteType}
-              setPrivilegedVotersInParent={this.setPrivilegedVoters}
-              voteType={this.state.voteType}
-              privilegedVoters={this.state.privilegedVoters}
-              privilegedAddressesValid={this.state.privilegedAddressesValid}
               privilegedAddressesTouched={this.state.privilegedAddressesTouched}
+              privilegedAddressesValid={this.state.privilegedAddressesValid}
+              privilegedVoters={this.state.privilegedVoters}
+              setPrivilegedVotersInParent={this.setPrivilegedVoters}
+              setVoteTypeInParent={this.setVoteType}
+              voteType={this.state.voteType}
             />
           </Col>
         </Row>
@@ -290,8 +293,12 @@ export default class CreateVoteForm extends Component<ICreateVoteFormProps, ICre
         <Row style={{ marginBottom: "10px" }}>
           <Col md={12}>
             <FormGroup validationState={this.state.submitFailed ? Validation.Error : null}>
-              <Button onClick={this.handleCreateVote}>Submit</Button>
-              {this.state.submitFailed ? <HelpBlock>You need to fill the form correctly</HelpBlock> : null}
+              <Button id="submit" onClick={this.handleCreateVote}>
+                Submit
+              </Button>
+              {this.state.submitFailed && (
+                <HelpBlock id="submitValidationMessage">You need to fill the form correctly</HelpBlock>
+              )}
             </FormGroup>
           </Col>
         </Row>
@@ -460,14 +467,12 @@ export default class CreateVoteForm extends Component<ICreateVoteFormProps, ICre
         questionTouched: true,
       };
     });
-
     // Validate answer list on submit
     if (!this.isAnswerListValid(this.state.answers)) {
       this.setState({
         answersValid: false,
       });
     }
-
     if (!isVotingEndDateTimeValid(this.state.voteDatesProps.endDateTime)) {
       this.setState((state) => {
         return {
@@ -480,7 +485,6 @@ export default class CreateVoteForm extends Component<ICreateVoteFormProps, ICre
       });
       return; // setState not updating state fast enough and control flow goes straight to setSubmitData call
     }
-
     if (
       !this.state.questionValid ||
       !this.state.answersValid ||

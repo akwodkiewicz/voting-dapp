@@ -57,7 +57,9 @@ export default class VoteDates extends Component<IVoteDatesProps> {
                   onChange={this.voteEndTimeHandler}
                   value={this.props.endDateTime}
                 />
-                {this.props.valid ? null : <HelpBlock>Voting has to be active for at least 20s</HelpBlock>}
+                {this.props.valid ? null : <HelpBlock id="validationMessage">
+                Voting has to be active for at least 20s
+                </HelpBlock>}
               </FormGroup>
             </Col>
           </Row>
@@ -92,7 +94,7 @@ export default class VoteDates extends Component<IVoteDatesProps> {
     );
   }
 
-  private voteEndDateHandler = (inputMoment) => {
+  public voteEndDateHandler = (inputMoment) => {
     const newVoteEndDateTime = moment(inputMoment).set({
       hours: this.props.endDateTime.hours(),
       minutes: this.props.endDateTime.minutes(),

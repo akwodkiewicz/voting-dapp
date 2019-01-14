@@ -1,10 +1,9 @@
 import React, { Component, FormEvent } from "react";
 import { ControlLabel, FormControl, FormGroup, Glyphicon, HelpBlock, OverlayTrigger, Tooltip } from "react-bootstrap";
 import Web3 from "web3";
-import { Validation, VoteType } from "../../utils/enums";
+import { Validation } from "../../utils/enums";
 
 interface IPrivilegedAddressesProps {
-  voteType: VoteType;
   touched: boolean;
   valid: boolean;
   textAreaValue: string;
@@ -26,67 +25,66 @@ export default class PrivilegedAddresses extends Component<IPrivilegedAddressesP
   }
 
   public render() {
-    if (this.props.voteType === "private") {
-      return (
-        <FormGroup
-          validationState={
-            this.props.touched && !this.props.valid
-              ? Validation.Error
-              : this.state.fileContentMismatch || this.state.noAddressesInFile
-              ? Validation.Warning
-              : null
-          }
-        >
-          <ControlLabel>
-            Privileged addresses
-            <OverlayTrigger
-              placement="top"
-              overlay={
-                <Tooltip id="tooltip">
-                  <p>Every address should be in a separate line</p>
-                </Tooltip>
-              }
-            >
-              <Glyphicon glyph="info-sign" style={{ padding: "0 0 3px 5px", verticalAlign: "middle" }} />
-            </OverlayTrigger>
-          </ControlLabel>
-          <HelpBlock>
-            Manually enter addresses below or load them from the <span style={{ fontStyle: "italic" }}>.txt</span> file.
-          </HelpBlock>
-          <FormControl
-            type="file"
-            accept=".txt"
-            onChange={this.loadAddressesFromFile}
-            label="File"
-            style={{ marginBottom: "1em" }}
-          />
-          <FormControl
-            onChange={this.saveAddresses}
-            componentClass="textarea"
-            placeholder="Don't forget to paste your own address here (if you want to vote)!"
-            value={this.props.textAreaValue}
-            id="privilegedAddressesTextArea"
-            style={{ resize: "vertical" }}
-          />
+    return (
+      <FormGroup
+        validationState={
+          this.props.touched && !this.props.valid
+            ? Validation.Error
+            : this.state.fileContentMismatch || this.state.noAddressesInFile
+            ? Validation.Warning
+            : null
+        }
+      >
+        <ControlLabel>
+          Privileged addresses
+          <OverlayTrigger
+            placement="top"
+            overlay={
+              <Tooltip id="tooltip">
+                <p>Every address should be in a separate line</p>
+              </Tooltip>
+            }
+          >
+            <Glyphicon glyph="info-sign" style={{ padding: "0 0 3px 5px", verticalAlign: "middle" }} />
+          </OverlayTrigger>
+        </ControlLabel>
+        <HelpBlock>
+          Manually enter addresses below or load them from the <span style={{ fontStyle: "italic" }}>.txt</span> file.
+        </HelpBlock>
+        <FormControl
+          id="privilegedAddressesFileLoader"
+          type="file"
+          accept=".txt"
+          onChange={this.loadAddressesFromFile}
+          label="File"
+          style={{ marginBottom: "1em" }}
+        />
+        <FormControl
+          onChange={this.saveAddresses}
+          componentClass="textarea"
+          placeholder="Don't forget to paste your own address here (if you want to vote)!"
+          value={this.props.textAreaValue}
+          id="privilegedAddressesTextArea"
+          style={{ resize: "vertical" }}
+        />
 
-          {this.state.noAddressesInFile ? (
-            <HelpBlock>Uploaded file does not contain any valid keccak256 Ethereum addresses</HelpBlock>
-          ) : null}
+        {this.state.noAddressesInFile ? (
+          <HelpBlock>Uploaded file does not contain any valid keccak256 Ethereum addresses</HelpBlock>
+        ) : null}
 
-          {this.state.fileContentMismatch ? (
-            <HelpBlock>Uploaded file contained some lines without valid addresses. Verify imported data.</HelpBlock>
-          ) : null}
+        {this.state.fileContentMismatch ? (
+          <HelpBlock>Uploaded file contained some lines without valid addresses. Verify imported data.</HelpBlock>
+        ) : null}
 
-          {this.props.touched && !this.props.valid ? (
-            this.props.textAreaValue === "" ? (
-              <HelpBlock>You have to provide at least one address</HelpBlock>
-            ) : (
-              <HelpBlock>Addresses have to be valid keccak256 Ethereum addresses</HelpBlock>
-            )
-          ) : null}
-        </FormGroup>
-      );
-    } else return null;
+        {this.props.touched && !this.props.valid ? (
+          this.props.textAreaValue === "" ? (
+            <HelpBlock id="validationZeroAddresses">You have to provide at least one address</HelpBlock>
+          ) : (
+            <HelpBlock id="validationInvalidFormat">Addresses have to be valid keccak256 Ethereum addresses</HelpBlock>
+          )
+        ) : null}
+      </FormGroup>
+    );
   }
 
   private saveAddresses = (e: FormEvent<FormControl & HTMLInputElement>) => {

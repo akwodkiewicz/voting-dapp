@@ -48,4 +48,11 @@ describe("<AnswersList/>", () => {
     firstListGroupItem.simulate("click");
     expect(spy.calledOnce);
   });
+
+  it("should call getAnswers when clicked", () => {
+    const firstListGroupItem = component.find(ListGroupItem).at(0);
+    const spy = sinon.spy(setAnswers);
+    firstListGroupItem.simulate("click");
+    expect(spy.calledOnce);
+  });
 });

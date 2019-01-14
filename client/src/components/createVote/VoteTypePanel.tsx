@@ -69,15 +69,16 @@ export default class VoteTypePanel extends Component<IVoteTypeProps> {
           </Radio>
         </FormGroup>
 
-        <PrivilegedAddresses
-          setPrivilegedAddressesInParent={this.setPrivilegedVoters}
-          voteType={this.props.voteType}
-          textAreaValue={this.props.privilegedVoters.reduce((prevVal, currVal, currIdx) => {
-            return currIdx === 0 ? currVal : prevVal + "\n" + currVal;
-          }, "")}
-          valid={this.props.privilegedAddressesValid}
-          touched={this.props.privilegedAddressesTouched}
-        />
+        {this.props.voteType === VoteType.Private && (
+          <PrivilegedAddresses
+            setPrivilegedAddressesInParent={this.setPrivilegedVoters}
+            textAreaValue={this.props.privilegedVoters.reduce((prevVal, currVal, currIdx) => {
+              return currIdx === 0 ? currVal : prevVal + "\n" + currVal;
+            }, "")}
+            valid={this.props.privilegedAddressesValid}
+            touched={this.props.privilegedAddressesTouched}
+          />
+        )}
       </Fragment>
     );
   }

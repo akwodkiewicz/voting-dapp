@@ -3,7 +3,7 @@ import { shallow, ShallowWrapper } from "enzyme";
 import React from "react";
 import { DropdownButton, MenuItem } from "react-bootstrap";
 import Loader from "react-loader-spinner";
-import sinon from "sinon";
+import sinon, { SinonStub } from "sinon";
 import Web3 from "web3";
 
 import * as eth from "../../utils/eth";
@@ -21,9 +21,17 @@ describe("<CategoryDropdown/>", () => {
 
   context("when mounted (and blockchainData is null)", () => {
     let wrapper: ShallowWrapper;
-    const fetchCategoriesStub = sinon.stub(eth, "fetchCategories").returns((async () => categories)());
+    let fetchCategoriesStub: SinonStub;
     let setCategoriesInParentExpectation;
     let setChosenCategoryInParentExpectation;
+
+    before(() => {
+      fetchCategoriesStub = sinon.stub(eth, "fetchCategories").resolves(categories);
+    });
+
+    after(() => {
+      fetchCategoriesStub.restore();
+    });
 
     beforeEach(() => {
       setCategoriesInParentExpectation = sinon
