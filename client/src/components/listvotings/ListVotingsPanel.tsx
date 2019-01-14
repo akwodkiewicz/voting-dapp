@@ -95,10 +95,6 @@ export default class ListVotingsPanel extends Component<IListVotingsPanelProps, 
     this.setState({ isDataRefreshRequested: false });
   };
 
-  public votingTime = () => {
-    return true;
-  };
-
   public render() {
     return (
       <Grid fluid>
@@ -109,8 +105,7 @@ export default class ListVotingsPanel extends Component<IListVotingsPanelProps, 
             </h3>
           </Col>
         </Row>
-        <Row>
-          {/* https://github.com/react-bootstrap/react-bootstrap/issues/1928#issuecomment-331509515 */}
+        <Row style={{ marginTop: "5vh" }}>
           <Col md={6}>
             <CategoryDropdown
               blockchainData={this.props.blockchainData}
