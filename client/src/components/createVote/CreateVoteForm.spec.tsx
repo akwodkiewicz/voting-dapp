@@ -46,9 +46,13 @@ describe("<CreateVoteForm/>", () => {
 
   // tests fetchCategoriesAndSetState
   context("ComponentDidMount", async () => {
-    wrapper = shallow(<CreateVoteForm blockchainData={blockchainData} formData={null} setSubmitData={setSubmitData} />);
-    await wrapper.instance().componentDidMount();
-    expect(fetchCategoriesStub.called).to.be.true;
+    beforeEach(async () => {
+      wrapper = shallow(
+        <CreateVoteForm blockchainData={blockchainData} formData={null} setSubmitData={setSubmitData} />
+      );
+      await (wrapper.instance() as CreateVoteForm).componentDidMount();
+      expect(fetchCategoriesStub.called).to.be.true;
+    });
 
     it("first form rendering (not returned from DisplayResult)", () => {
       expect(wrapper.state().categoryPanelProps.categoriesList).eq(categories);
