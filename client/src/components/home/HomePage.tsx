@@ -12,7 +12,7 @@ import {
   InputGroup,
   Row,
 } from "react-bootstrap";
-import DVPLogo from "../../images/distributed-voting-platform.png";
+
 import { Validation } from "../../utils/enums";
 import { fetchResults, fetchVoting } from "../../utils/eth";
 import { BlockchainData, Voting } from "../../utils/types";
@@ -181,7 +181,7 @@ export default class HomePage extends Component<IHomePageProps, IHomePageState> 
               marginRight: "auto",
               maxHeight: "250px",
             }}
-            src={DVPLogo}
+            src={require("../../images/distributed-voting-platform.png")}
           />
           <div style={{ marginBottom: "4em", marginTop: "-5em" }}>
             <h1 style={{ fontSize: "5em", fontFamily: "Roboto", textAlign: "center", marginTop: "1em" }}>
