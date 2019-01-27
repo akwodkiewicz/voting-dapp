@@ -126,7 +126,7 @@
     "bugs": {
         "url": "https://github.com/pw-mini-inzynierka/voting-dapp/issues"
     },
-    "homepage": ".",
+    "homepage": "",
     "nyc": {
         "include": [
             "app/*.js"
