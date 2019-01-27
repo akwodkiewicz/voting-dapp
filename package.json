@@ -100,9 +100,9 @@
         "extends": "react-app"
     },
     "scripts": {
-        "postinstall": "rm -f node_modules/web3/index.d.ts && npm run generate",
-        "test": "truffle compile && typechain --target truffle './client/src/contracts/*.json' && truffle test",
-        "test-ganache": "truffle compile && typechain --target truffle './client/src/contracts/*.json' && truffle test --network=ganache",
+        "postinstall": "rm -f node_modules/web3/index.d.ts",
+        "test": "npm run test-react && npm run test-truffle",
+        "test-ganache": "truffle test --network=ganache",
         "generate": "truffle compile && typechain --target web3-1.0.0 --outDir './client/src/typed-contracts' './client/src/contracts/*.json' && typechain --target truffle './client/src/contracts/*.json'",
         "prettier:write": "prettier --write \"{,!(node_modules|dist|build|coverage)/**/}*.{js,jsx,ts,tsx,json}\"",
         "tslint": "tslint --project tsconfig.json",
@@ -126,7 +126,7 @@
     "bugs": {
         "url": "https://github.com/pw-mini-inzynierka/voting-dapp/issues"
     },
-    "homepage": "https://github.com/pw-mini-inzynierka/voting-dapp#readme",
+    "homepage": "",
     "nyc": {
         "include": [
             "app/*.js"

@@ -1,8 +1,5 @@
-# Contract ABIs
+# Built application
 build/*
-client/src/contracts/*
-client/src/typed-contracts/*
-types/*
 
 # App config
 client/src/config.json
